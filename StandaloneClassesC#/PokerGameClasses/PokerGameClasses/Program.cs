@@ -21,12 +21,19 @@ namespace PokerGameClasses
             Console.WriteLine(takenCard.Name);
             Console.WriteLine(sampleDeck.TakeOutCard(CardSign.Heart, CardValue.Ace));
             sampleDeck.Cards.ForEach(c => Console.WriteLine(c.Name));
+            Console.WriteLine();
+            sampleDeck.ShuffleCards();
+            sampleDeck.Cards.ForEach(c => Console.WriteLine(c.Name));
 
             Console.WriteLine();
 
-            sampleDeck.ShuffleCards();
-            sampleDeck.Cards.ForEach(c => Console.WriteLine(c.Name));
-            
+            Player samplePlayer = new Player("Gamer1", PlayerType.Human);
+            Console.WriteLine(samplePlayer);
+            samplePlayer.Raise(10);
+            samplePlayer.BuyXP(100);
+            samplePlayer.ChangeNick("Gamer#1");
+            Console.WriteLine(samplePlayer);
+
         }
     }
 }
