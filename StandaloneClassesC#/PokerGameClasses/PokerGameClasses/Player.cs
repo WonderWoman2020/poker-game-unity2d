@@ -27,6 +27,7 @@ namespace PokerGameClasses
         { get; set; }
         public GameTable Table
         { get; set; }
+        public bool folded;
 
         public Player(string nick, PlayerType type)
         {
@@ -37,6 +38,7 @@ namespace PokerGameClasses
             this.TokensCount = 1000;
             this.Rank = "Newbie";
             this.Table = null;
+            this.folded = false;
         }
 
         override public string ToString()
@@ -48,9 +50,30 @@ namespace PokerGameClasses
                 + "Current table: "+this.Table + "\n";
         }
 
+        public void getInput() 
+        {
+            //tutaj trzeba cos wykombinowac
+        }
+
+        public void makeMove()
+        {
+            int input = getInput();
+            switch(input) 
+            {
+                case 0:
+                    Fold();
+                case 1:
+                    Check();
+                case 2:
+                    Raise();
+                default:
+                    Fold();
+            }
+        }
+
         public void Fold()
         {
-            //TODO
+            folded = true;
         }
 
         public void Check()

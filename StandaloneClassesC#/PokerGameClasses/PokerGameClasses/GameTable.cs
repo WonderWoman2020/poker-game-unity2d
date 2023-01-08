@@ -12,9 +12,9 @@ namespace PokerGameClasses
         { get; set; }
         public HumanPlayer Owner
         { get; set; }
-
         public List<Player> Players
         { get; set; }
+        public CardsCollection shownHelpingCards //odsloniete karty pomocnicze, brac z tego pola do GUI
 
         //TODO
         //public GameTableSettings settings;
@@ -85,6 +85,28 @@ namespace PokerGameClasses
         {
             this.Owner = newOwner;
             return true;
+        }
+
+        public void makeTurn() 
+        {
+            foreach(Player player in Players) 
+            {
+                player.MakeMove();
+            }
+        }
+
+        public bool checkIfEveryoneFolded()
+        {
+            bool everyoneFolded = true;
+            foreach (Player player in Players) 
+            {
+                if(player.folded == false) 
+                {
+                    everyoneFolded = false;
+                    break;
+                }
+            }
+            return everyoneFolded;
         }
 
     }
