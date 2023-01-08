@@ -25,7 +25,8 @@ namespace PokerGameClasses
         { get; set; }
         public PlayerType Type
         { get; set; }
-        //public GameTable Table;
+        public GameTable Table
+        { get; set; }
 
         public Player(string nick, PlayerType type)
         {
@@ -35,15 +36,16 @@ namespace PokerGameClasses
             this.XP = 0;
             this.TokensCount = 1000;
             this.Rank = "Newbie";
-            //this.Table = null;
+            this.Table = null;
         }
 
         override public string ToString()
         {
             return this.Nick + " (" + Enum.GetName(typeof(PlayerType), this.Type) + ")\n"
-                +this.Rank+"\n"
+                + this.Rank + "\n"
                 + this.XP + " XP\n"
-                + this.TokensCount + " Tokens\n";
+                + this.TokensCount + " Tokens\n"
+                + "Current table: "+this.Table + "\n";
         }
 
         public void Fold()
@@ -85,15 +87,18 @@ namespace PokerGameClasses
             return true;
         }
 
-        public bool JoinGameTable(string gameTableName)
+        public bool JoinGameTable(GameTable table)
         {
-            //TODO GameTable
+            //TODO
+            table.AddPlayer(this);
+            this.Table = table;
             return true;
         }
 
         public bool LeaveGameTable()
         {
-            //TODO GameTable
+            this.Table.KickOutPlayer(this.Nick);
+            this.Table = null;
             return true;
         }
     }
