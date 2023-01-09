@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,13 +9,13 @@ namespace PokerGameClasses
     {
         public GameTable gameTable
         { get; set; }
-        public CardsCollection deck
-        public CardsCollection helpingCards //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
+        public CardsCollection deck;
+        public CardsCollection helpingCards; //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
 
         public GameplayController(GameTable gameTable)
         {
             this.gameTable = gameTable;
-            this.deck = new CardsCollection.CreateStandardDeck();
+            this.deck = CardsCollection.CreateStandardDeck();
         }
 
         public void dealCards()
@@ -29,9 +28,9 @@ namespace PokerGameClasses
                 player.PlayerHand.AddCard(deck.Cards[cardNumber+1]);
                 cardNumber+=2;
             }
-            for(cardNumber; cardNumber<7; cardNumber++)
+            for(int i = cardNumber; i<7; i++)
             {
-                helpingCards.AddCard(deck.Cards[cardNumber]);
+                helpingCards.AddCard(deck.Cards[i]);
             }
         }
 
@@ -64,8 +63,20 @@ namespace PokerGameClasses
 
         public void determineWinner()
         {
-            //TODO
+            int biggest_score = 11;//gorzej niz najwyzsza karta
+            Player winner;
+            foreach (Player player in gameTable.Players)
+            {
+                //TODO
+                //Card PlayerCards[7];// Karty gracza i 5 wspolnych lezacych na stole
+                CardsCollection PlayerCards = CardsCollection.MergeTwoDecks(player.PlayerHand, gameTable.shownHelpingCards);
+                //TODO
+                CardsCollection SortedPlayerCards = CardsCollection.SortDesc(PlayerCards);
+                //posortuj karty
+               
+            }
         }
 
-    }
+
+}
 }

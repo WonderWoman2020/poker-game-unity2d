@@ -34,6 +34,15 @@ namespace PokerGameClasses
             samplePlayer.ChangeNick("Gamer#1");
             Console.WriteLine(samplePlayer);
 
+            Console.WriteLine("Test łączenia i sortowania");
+            Console.WriteLine("............///////////////////////////.");
+            sampleDeck.Cards.ForEach(c => Console.WriteLine(c.Name));
+            Console.WriteLine("........");
+            CardsCollection.SortDesc(sampleDeck).Cards.ForEach(c => Console.WriteLine(c.Name));
+            Console.WriteLine("............///////////////////////////.");
+            sampleDeck = CardsCollection.MergeTwoDecks(sampleDeck,sampleDeck);
+            CardsCollection.SortDesc(sampleDeck).Cards.ForEach(c => Console.WriteLine(c.Name));
+
         }
     }
 }
