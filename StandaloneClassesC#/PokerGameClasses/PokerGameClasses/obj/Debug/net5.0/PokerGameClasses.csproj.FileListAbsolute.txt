@@ -1,0 +1,16 @@
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.csprojAssemblyReference.cache
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.AssemblyInfoInputs.cache
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.AssemblyInfo.cs
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.csproj.CoreCompileInputs.cache
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\PokerGameClasses.exe
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\PokerGameClasses.deps.json
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\PokerGameClasses.runtimeconfig.json
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\PokerGameClasses.runtimeconfig.dev.json
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\PokerGameClasses.dll
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\ref\PokerGameClasses.dll
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\bin\Debug\net5.0\PokerGameClasses.pdb
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.dll
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\ref\PokerGameClasses.dll
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.pdb
+C:\Users\kasia\OneDrive\Pulpit\Projekt\poker-game-unity2d\StandaloneClassesC#\PokerGameClasses\PokerGameClasses\obj\Debug\net5.0\PokerGameClasses.genruntimeconfig.cache
