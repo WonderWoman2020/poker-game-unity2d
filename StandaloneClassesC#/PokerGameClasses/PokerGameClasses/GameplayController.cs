@@ -68,7 +68,7 @@ namespace PokerGameClasses
             foreach (Player player in gameTable.Players)
             {
                 //TODO
-                Card PlayerCards[7];// Karty gracza i 5 wspolnych lezacych na stole
+                CardsCollection PlayerCards = player.PlayerHand;// Karty gracza i 5 wspolnych lezacych na stole
                 //TODO
                 //posortuj karty
                 if (valueOfCards(PlayerCards) <= biggest_score)
@@ -78,17 +78,17 @@ namespace PokerGameClasses
             }
         }
         //kazda funkcja musi dostac posortowane 7 kart od najwyzszej - As do najnizszej
-        public bool isRoyalFlush(Card Cards[7])//Krolewski
+        public bool isRoyalFlush(CardsCollection Cards)//Krolewski
         {
-            if (Cards[0].CardValue == 14)
+            if ((int)Cards.Cards[0].Value == 14)
             {
-                if (Cards[1].CardValue == 13 && Cards[1].CardSign == Cards[0].CardSign)
+                if ((int)Cards.Cards[1].Value == 13 && Cards.Cards[1].Sign == Cards.Cards[0].Sign)
                 {
-                    if (Cards[2].CardValue == 12 && Cards[2].CardSign == Cards[0].CardSign)
+                    if ((int)Cards.Cards[2].Value == 12 && Cards.Cards[2].Sign == Cards.Cards[0].Sign)
                     {
-                        if (Cards[3].CardValue == 11 && Cards[3].CardSign == Cards[0].CardSign)
+                        if ((int)Cards.Cards[3].Value == 11 && Cards.Cards[3].Sign == Cards.Cards[0].Sign)
                         {
-                            if (Cards[4].CardValue == 10 && Cards[4].CardSign == Cards[0].CardSign)
+                            if ((int)Cards.Cards[4].Value == 10 && Cards.Cards[4].Sign == Cards.Cards[0].Sign)
                             {
                                 return true;
                             }
@@ -98,18 +98,18 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isStraigthFlush(Card Cards[7])//Poker
+        public bool isStraigthFlush(CardsCollection Cards)//Poker
         {
             for (int i = 0; i < 3; i++)
             {
-                int valueOfTheBiggest = Cards[i].CardValue;
-                if (Cards[i + 1].CardValue == valueOfTheBiggest - 1 && Cards[i + 1].CardSign == Cards[i].CardSign)
+                int valueOfTheBiggest = (int)Cards.Cards[i].Value;
+                if ((int)Cards.Cards[i + 1].Value == valueOfTheBiggest - 1 && Cards.Cards[i + 1].Sign == Cards.Cards[i].Sign)
                 {
-                    if (Cards[i + 2].CardValue == valueOfTheBiggest - 2 && Cards[i + 2].CardSign == Cards[i].CardSign)
+                    if ((int)Cards.Cards[i + 2].Value == valueOfTheBiggest - 2 && Cards.Cards[i + 2].Sign == Cards.Cards[i].Sign)
                     {
-                        if (Cards[i + 3].CardValue == valueOfTheBiggest - 3 && Cards[i + 3].CardSign == Cards[i].CardSign)
+                        if ((int)Cards.Cards[i + 3].Value == valueOfTheBiggest - 3 && Cards.Cards[i + 3].Sign == Cards.Cards[i].Sign)
                         {
-                            if (Cards[i + 4].CardValue == valueOfTheBiggest - 4 && Cards[i + 4].CardSign == Cards[i].CardSign)
+                            if ((int)Cards.Cards[i + 4].Value == valueOfTheBiggest - 4 && Cards.Cards[i + 4].Sign == Cards.Cards[i].Sign)
                             {
                                 return true;
                             }
@@ -119,16 +119,16 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isQuads(Card Cards[7])//Kareta
+        public bool isQuads(CardsCollection Cards)//Kareta
         {
             for (int i = 0; i < 4; i++)
             {
-                int quadsValue = Cards[i].CardValue;
-                if (Cards[i + 1].CardValue == quadsValue)
+                int quadsValue = (int)Cards.Cards[i].Value;
+                if ((int)Cards.Cards[i + 1].Value == quadsValue)
                 {
-                    if (Cards[i + 2].CardValue == quadsValue)
+                    if ((int)Cards.Cards[i + 2].Value == quadsValue)
                     {
-                        if (Cards[i + 3].CardValue == quadsValue)
+                        if ((int)Cards.Cards[i + 3].Value == quadsValue)
                         {
                             return true;
                         }
@@ -137,7 +137,7 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isFullHouse(Card Cards[7])//Full
+        public bool isFullHouse(CardsCollection Cards)//Full
         {
             int counterPair = 0;
             int counterThree = 0;
@@ -145,28 +145,28 @@ namespace PokerGameClasses
             {
                 if (counterThree != 1)
                 {
-                    if (Cards[i].CardValue == Cards[i + 1].CardValue)
+                    if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
                     {
-                        if (Cards[i].CardValue == Cards[i + 2].CardValue)
+                        if (Cards.Cards[i].Value == Cards.Cards[i + 2].Value)
                         {
                             counterThree += 1;
                             i += 2;
                         }
                     }
                 }
-                if (Cards[i].CardValue == Cards[i + 1].CardValue)
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
                 {
-                    counterPairs += 1;
+                    counterPair += 1;
                     i += 1;
                 }
             }
-            if (counterThree == 1 && counterPairs != 0)
+            if (counterThree == 1 && counterPair != 0)
             {
                 return true;
             }
             return false;
         }
-        public bool isFlush(Card Cards[7])//Kolor
+        public bool isFlush(CardsCollection Cards)//Kolor
         {
             int HeartCounter = 0;
             int SpadeCounter = 0;
@@ -174,19 +174,19 @@ namespace PokerGameClasses
             int ClubCounter = 0;
             for (int i = 0; i < 7; i++)
             {
-                if (Cards[i].CardValue == 0)
+                if ((int)Cards.Cards[i].Value == 0)
                 {
                     HeartCounter++;
                 }
-                else if (Cards[i].CardValue == 1)
+                else if ((int)Cards.Cards[i].Value == 1)
                 {
                     SpadeCounter++;
                 }
-                else if (Cards[i].CardValue == 2)
+                else if ((int)Cards.Cards[i].Value == 2)
                 {
                     DiamondCounter++;
                 }
-                else if (Cards[i].CardValue == 3)
+                else if ((int)Cards.Cards[i].Value == 3)
                 {
                     ClubCounter++;
                 }
@@ -197,18 +197,18 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isStraight(Card Cards[7])//Strit
+        public bool isStraight(CardsCollection Cards)//Strit
         {
             for (int i = 0; i < 3; i++)
             {
-                int valueOfTheBiggest = Cards[i].CardValue;
-                if (Cards[i + 1].CardValue == valueOfTheBiggest - 1)
+                int valueOfTheBiggest = (int)Cards.Cards[i].Value;
+                if ((int)Cards.Cards[i + 1].Value == valueOfTheBiggest - 1)
                 {
-                    if (Cards[i + 2].CardValue == valueOfTheBiggest - 2)
+                    if ((int)Cards.Cards[i + 2].Value == valueOfTheBiggest - 2)
                     {
-                        if (Cards[i + 3].CardValue == valueOfTheBiggest - 3)
+                        if ((int)Cards.Cards[i + 3].Value == valueOfTheBiggest - 3)
                         {
-                            if (Cards[i + 4].CardValue == valueOfTheBiggest - 4)
+                            if ((int)Cards.Cards[i + 4].Value == valueOfTheBiggest - 4)
                             {
                                 return true;
                             }
@@ -218,14 +218,14 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isThreeOfKind(Card Cards[7])//Trojka
+        public bool isThreeOfKind(CardsCollection Cards)//Trojka
         {
             for (int i = 0; i < 5; i++)
             {
-                int valueOfTheThree = Cards[i].CardValue;
-                if (Cards[i + 1].CardValue == valueOfTheBiggest - 1)
+                int valueOfTheThree = (int)Cards.Cards[i].Value;
+                if ((int)Cards.Cards[i + 1].Value == valueOfTheThree - 1)
                 {
-                    if (Cards[i + 2].CardValue == valueOfTheBiggest - 2)
+                    if ((int)Cards.Cards[i + 2].Value == valueOfTheThree - 2)
                     {
                         return true;
                     }
@@ -233,12 +233,12 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isTwoPairs(Card Cards[7])
+        public bool isTwoPairs(CardsCollection Cards)
         {
             int counterPairs = 0;
             for (int i = 0; i < 6; i++)
             {
-                if (Cards[i].CardValue == Cards[i + 1].CardValue)
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
                 {
                     counterPairs += 1;
                     i += 1;
@@ -250,11 +250,11 @@ namespace PokerGameClasses
             }
             return false;
         }
-        public bool isOnePair(Card Cards[7])
+        public bool isOnePair(CardsCollection Cards)
         {
             for (int i = 0; i < 6; i++)
             {
-                if (Cards[i].CardValue == Cards[i + 1].CardValue)
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
                 {
                     return true;
                 }
@@ -262,39 +262,40 @@ namespace PokerGameClasses
             return false;
         }
 
-        public int valueOfCards(Card Cards[7])){
+        public int valueOfCards(CardsCollection Cards)
+        {
             if (isRoyalFlush(Cards)) {
                 return 1;
             }
-            else if isStraigthFlush(Cards)
+            else if (isStraigthFlush(Cards))
             {
                 return 2;
             }
-            else if isQuads(Cards)
+            else if (isQuads(Cards))
             {
                 return 3;
             }
-            else if isFullHouse(Cards)
+            else if (isFullHouse(Cards))
             {
                 return 4;
             }
-            else if isFlush(Cards)
+            else if (isFlush(Cards))
             {
                 return 5;
             }
-            else if isStraight(Cards)
+            else if (isStraight(Cards))
             {
                 return 6;
             }
-            else if isThreeOfKind(Cards)
+            else if (isThreeOfKind(Cards))
             {
                 return 7;
             }
-            else if isTwoPairs(Cards)
+            else if (isTwoPairs(Cards))
             {
                 return 8;
             }
-            else if isOnePair(Cards)
+            else if (isOnePair(Cards))
             {
                 return 9;
             }
