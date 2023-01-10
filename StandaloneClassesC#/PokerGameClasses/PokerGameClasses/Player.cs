@@ -50,9 +50,10 @@ namespace PokerGameClasses
                 + "Current table: "+this.Table + "\n";
         }
 
-        public void getInput() 
+        public int getInput() 
         {
             //tutaj trzeba cos wykombinowac
+            return 3;
         }
 
         public void makeMove()
@@ -62,12 +63,16 @@ namespace PokerGameClasses
             {
                 case 0:
                     Fold();
+                    break;
                 case 1:
                     Check();
+                    break;
                 case 2:
                     Raise();
+                    break;
                 default:
                     Fold();
+                    break;
             }
         }
 
@@ -81,8 +86,9 @@ namespace PokerGameClasses
             //TODO
         }
 
-        public bool Raise(int amount)
+        public bool Raise()
         {
+            int amount = 0; //TODO pobieranie inputu
             this.TokensCount = this.TokensCount - amount;
             return true;
         }

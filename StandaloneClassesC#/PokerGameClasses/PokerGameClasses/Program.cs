@@ -29,7 +29,7 @@ namespace PokerGameClasses
 
             Player samplePlayer = new Player("Gamer1", PlayerType.Human);
             Console.WriteLine(samplePlayer);
-            samplePlayer.Raise(10);
+            //samplePlayer.Raise(10);
             samplePlayer.BuyXP(100);
             samplePlayer.ChangeNick("Gamer#1");
             Console.WriteLine(samplePlayer);

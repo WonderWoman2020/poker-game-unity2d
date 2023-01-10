@@ -10,13 +10,13 @@ namespace PokerGameClasses
     {
         public GameTable gameTable
         { get; set; }
-        public CardsCollection deck
-        public CardsCollection helpingCards //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
+        public CardsCollection deck;
+        public CardsCollection helpingCards; //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
 
         public GameplayController(GameTable gameTable)
         {
             this.gameTable = gameTable;
-            this.deck = new CardsCollection.CreateStandardDeck();
+            this.deck = CardsCollection.CreateStandardDeck();
         }
 
         public void dealCards()
@@ -29,7 +29,7 @@ namespace PokerGameClasses
                 player.PlayerHand.AddCard(deck.Cards[cardNumber+1]);
                 cardNumber+=2;
             }
-            for(cardNumber; cardNumber<7; cardNumber++)
+            for(; cardNumber<7; cardNumber++)
             {
                 helpingCards.AddCard(deck.Cards[cardNumber]);
             }

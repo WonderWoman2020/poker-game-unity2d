@@ -14,7 +14,7 @@ namespace PokerGameClasses
         { get; set; }
         public List<Player> Players
         { get; set; }
-        public CardsCollection shownHelpingCards //odsloniete karty pomocnicze, brac z tego pola do GUI
+        public CardsCollection shownHelpingCards; //odsloniete karty pomocnicze, brac z tego pola do GUI
 
         //TODO
         //public GameTableSettings settings;
@@ -91,7 +91,7 @@ namespace PokerGameClasses
         {
             foreach(Player player in Players) 
             {
-                player.MakeMove();
+                player.makeMove();
             }
         }
 
