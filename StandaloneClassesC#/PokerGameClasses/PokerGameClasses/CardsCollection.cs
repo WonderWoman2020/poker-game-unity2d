@@ -30,7 +30,18 @@ namespace PokerGameClasses
             this.Cards.Add(card);
             return true;
         }
-
+        public static CardsCollection MergeTwoDecks(CardsCollection firstCardsCollection, CardsCollection secondCardsCollection)
+        {
+            CardsCollection cardsCollection = new CardsCollection();
+            cardsCollection.Cards = firstCardsCollection.Cards;
+            cardsCollection.Cards.AddRange(secondCardsCollection.Cards);
+            return cardsCollection;
+        }
+        public static CardsCollection SortDesc(CardsCollection cards)
+        {
+            cards.Cards.Sort((x,y)=>y.Value-x.Value);
+            return cards;
+        }
         public Card TakeOutCard(CardSign sign, CardValue val)
         {
             Card takenCard = this.Cards.Find(c => c.Sign == sign && c.Value == val);

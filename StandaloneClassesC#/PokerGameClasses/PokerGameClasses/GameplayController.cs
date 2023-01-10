@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +28,7 @@ namespace PokerGameClasses
                 player.PlayerHand.AddCard(deck.Cards[cardNumber + 1]);
                 cardNumber += 2;
             }
+
             for(; cardNumber<7; cardNumber++)
             {
                 helpingCards.AddCard(deck.Cards[cardNumber]);
@@ -67,10 +67,9 @@ namespace PokerGameClasses
             Player winner;
             foreach (Player player in gameTable.Players)
             {
-                //TODO
-                CardsCollection PlayerCards = player.PlayerHand;// Karty gracza i 5 wspolnych lezacych na stole
-                //TODO
-                //posortuj karty
+                // Karty gracza i 5 wspolnych lezacych na stole
+                CardsCollection PlayerCards = CardsCollection.MergeTwoDecks(player.PlayerHand, gameTable.shownHelpingCards);
+                CardsCollection SortedPlayerCards = CardsCollection.SortDesc(PlayerCards);
                 if (valueOfCards(PlayerCards) <= biggest_score)
                 {
                     winner = player;
@@ -304,5 +303,6 @@ namespace PokerGameClasses
             }
         }
 
-    }
+
+}
 }

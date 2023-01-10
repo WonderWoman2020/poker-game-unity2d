@@ -53,7 +53,7 @@ namespace PokerGameClasses
         public int getInput() 
         {
             //tutaj trzeba cos wykombinowac
-            return 3;
+            return 0;
         }
 
         public void makeMove()
