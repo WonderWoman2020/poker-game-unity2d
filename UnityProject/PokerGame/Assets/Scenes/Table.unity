@@ -1733,7 +1733,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 214064857}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286288996}
+        m_TargetAssemblyTypeName: Table, Assembly-CSharp
+        m_MethodName: OnPassButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &214064857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6789,6 +6801,7 @@ GameObject:
   - component: {fileID: 1286288994}
   - component: {fileID: 1286288993}
   - component: {fileID: 1286288992}
+  - component: {fileID: 1286288996}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -6878,6 +6891,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1286288996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286288991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90bdcaee59e995c4a842a7364efbac5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  checkButton: {fileID: 1943595176}
+  allInButton: {fileID: 1609132191}
+  passButton: {fileID: 214064856}
+  bidButton: {fileID: 1649041011}
 --- !u!1 &1292243198
 GameObject:
   m_ObjectHideFlags: 0
@@ -9528,7 +9557,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1609132192}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286288996}
+        m_TargetAssemblyTypeName: Table, Assembly-CSharp
+        m_MethodName: OnAllInButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1609132192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9881,7 +9922,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1649041012}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286288996}
+        m_TargetAssemblyTypeName: Table, Assembly-CSharp
+        m_MethodName: OnBidButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1649041012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11816,7 +11869,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1943595177}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1286288996}
+        m_TargetAssemblyTypeName: Table, Assembly-CSharp
+        m_MethodName: OnCheckButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1943595177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12046,8 +12111,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -31}
+  m_SizeDelta: {x: -47.2407, y: -313.2514}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2003998309
 MonoBehaviour:

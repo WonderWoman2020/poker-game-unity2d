@@ -5,7 +5,25 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Scenes/MainMenu.unity
+    guid: 9df1b874b8245134fb91d9b804a06c29
+  - enabled: 1
+    path: Assets/Scenes/CreateTableMenu.unity
+    guid: 3299a85419a892d4aab175d21ba7b051
+  - enabled: 1
+    path: Assets/Scenes/EndOfHand.unity
+    guid: cb9cd5d6b7c5dac4690ef2d739ff9f03
+  - enabled: 1
+    path: Assets/Scenes/JoinTable.unity
+    guid: 97d303b339b211248a935d27b33f5453
+  - enabled: 1
+    path: Assets/Scenes/PlayMenu.unity
+    guid: 505ed374472e98d4d90e746cf8011cc5
+  - enabled: 1
+    path: Assets/Scenes/Table.unity
+    guid: 8c31d4d8e0a374a41b616fa8e1b5908e
   m_configObjects: {}

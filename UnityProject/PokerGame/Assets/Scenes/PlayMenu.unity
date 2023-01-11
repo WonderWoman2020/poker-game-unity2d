@@ -679,7 +679,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00079345703, y: 378}
+  m_AnchoredPosition: {x: 0.0007324219, y: 378}
   m_SizeDelta: {x: -238.4238, y: -803.2142}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &674996004
@@ -885,7 +885,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 716606196}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: PlayMenu, Assembly-CSharp
+        m_MethodName: OnChangeSettingsButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &716606196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1283,6 +1295,7 @@ GameObject:
   - component: {fileID: 994241596}
   - component: {fileID: 994241595}
   - component: {fileID: 994241594}
+  - component: {fileID: 994241598}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1372,6 +1385,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &994241598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994241593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00899fa65e2605148abbc10429c9588a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joinTableButton: {fileID: 1048196064}
+  createTableButton: {fileID: 1571997390}
+  getChipsButton: {fileID: 1694380610}
+  changeSettingsButton: {fileID: 716606195}
 --- !u!1 &1048196062
 GameObject:
   m_ObjectHideFlags: 0
@@ -1455,7 +1484,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1048196065}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: PlayMenu, Assembly-CSharp
+        m_MethodName: OnJoinTableButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1048196065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2011,7 +2052,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1571997391}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: PlayMenu, Assembly-CSharp
+        m_MethodName: OnCreateTableButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1571997391
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2480,7 +2533,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1694380611}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: PlayMenu, Assembly-CSharp
+        m_MethodName: OnGetChipsButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1694380611
 MonoBehaviour:
   m_ObjectHideFlags: 0
