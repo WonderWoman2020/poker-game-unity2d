@@ -29,9 +29,12 @@ namespace PokerGameClasses
         { get; set; }
         public bool folded;
 
+        public bool AllInMade
+        { get; set; }
+
         public Player(string nick, PlayerType type)
         {
-            this.Nick = nick;
+            this.ChangeNick(nick);
             this.Type = type;
             this.PlayerHand = new CardsCollection();
             this.XP = 0;
@@ -39,6 +42,7 @@ namespace PokerGameClasses
             this.Rank = "Newbie";
             this.Table = null;
             this.folded = false;
+            this.AllInMade = false;
         }
 
         override public string ToString()
@@ -50,15 +54,11 @@ namespace PokerGameClasses
                 + "Current table: "+this.Table + "\n";
         }
 
-        public int getInput() 
-        {
-            //tutaj trzeba cos wykombinowac
-            return 0;
-        }
-
         public bool makeMove()
         {
-            int input = getInput();
+            //potem zamienić na pobieranie inputu z przycisków
+            Console.WriteLine("Podaj numer ruchu do wykonania: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
+            int input = Convert.ToInt32(Console.ReadLine());
 
             bool moveDone = false;
             while (!moveDone)
@@ -72,7 +72,9 @@ namespace PokerGameClasses
                         moveDone = Check();
                         break;
                     case 2:
-                        int amount = 0; //get input
+                        //tu też potem zamienić input
+                        Console.WriteLine("Input how much you want to raise the bid");
+                        int amount = Convert.ToInt32(Console.ReadLine());
                         moveDone = Raise(amount);
                         break;
                     case 3:
@@ -131,6 +133,7 @@ namespace PokerGameClasses
 
             this.Table.TokensInGame = this.Table.TokensInGame + this.TokensCount;
             this.TokensCount = 0;
+            this.AllInMade = true;
 
             return true;
         }
@@ -149,12 +152,26 @@ namespace PokerGameClasses
 
         public bool ChangeNick(string newNick)
         {
+            if (newNick == null)
+            {
+                if (this.Nick == null)
+                {
+                    this.Nick = "Player";
+                    return true;
+                }
+
+                return false;
+            }
+
             this.Nick = newNick;
             return true;
         }
 
         public bool JoinGameTable(GameTable table)
         {
+            if (this.Table != null)
+                this.LeaveGameTable();
+
             table.AddPlayer(this);
             this.Table = table;
             return true;

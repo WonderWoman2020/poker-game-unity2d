@@ -50,12 +50,21 @@ namespace PokerGameClasses
         public bool AddPlayer(Player player)
         {
             if (this.Players.Contains(player))
+            {
+                Console.WriteLine("You already sit at that table, dude, wake up.");
                 return false;
+            }
+
+            if (this.Players.Count == GameTableSettings.MaxPlayersCountByRules)
+            {
+                Console.WriteLine("Too many players already at the table. You can't join this table now.");
+                return false;
+            }
 
             this.Players.Add(player);
 
             if (this.Owner == null && player.Type == PlayerType.Human)
-                this.Owner = (HumanPlayer)player;
+                this.ChangeOwner((HumanPlayer)player);
 
             return true;
         }
@@ -70,10 +79,10 @@ namespace PokerGameClasses
                 if (this.GetPlayerTypeCount(PlayerType.Human) > 0)
                 {
                     HumanPlayer newOwner = (HumanPlayer)this.Players.Find(p => p.Type == PlayerType.Human);
-                    this.Owner = newOwner;
+                    this.ChangeOwner(newOwner);
                 }
                 else
-                    this.Owner = null;
+                    this.ChangeOwner(null);
             }
 
             return true;
@@ -117,7 +126,8 @@ namespace PokerGameClasses
         {
             foreach(Player player in Players) 
             {
-                player.makeMove();
+                if(!player.AllInMade)
+                    player.makeMove();
             }
         }
 
@@ -133,6 +143,16 @@ namespace PokerGameClasses
                 }
             }
             return everyoneFolded;
+        }
+
+        public void ResetGameState()
+        {
+            this.TokensInGame = 0;
+            this.CurrentBid = 0;
+            this.shownHelpingCards = new CardsCollection();
+            this.Players.ForEach(p => p.PlayerHand = new CardsCollection());
+            this.Players.ForEach(p => p.folded = false);
+            this.Players.ForEach(p => p.AllInMade = false);
         }
 
     }

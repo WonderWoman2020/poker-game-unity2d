@@ -30,9 +30,9 @@ namespace PokerGameClasses
                 cardNumber += 2;
             }
 
-            for(; cardNumber<7; cardNumber++)
+            for(int i = 0; i< 7; i++)
             {
-                helpingCards.AddCard(deck.Cards[cardNumber]);
+                helpingCards.AddCard(deck.Cards[cardNumber+i]);
             }
         }
 
@@ -60,12 +60,23 @@ namespace PokerGameClasses
                     gameTable.shownHelpingCards.AddCard(helpingCards.Cards[4]);
                 }
             }
-            determineWinner();
+            
         }
-        public void determineWinner()
+
+        public void ConcludeGame()
+        {
+            Player winner = determineWinner();
+            if (winner != null)
+            {
+                winner.TokensCount = winner.TokensCount + this.gameTable.TokensInGame;
+                winner.XP = winner.XP + 100; // ew. do zmiany
+            }
+            this.ResetGame();
+        }
+        public Player determineWinner()
         {
             int biggest_score = 11;//gorzej niz najwyzsza karta
-            Player winner;
+            Player winner = (this.gameTable.Players.Count > 0) ? this.gameTable.Players[0] : null;
             foreach (Player player in gameTable.Players)
             {
                 // Karty gracza i 5 wspolnych lezacych na stole
@@ -76,7 +87,17 @@ namespace PokerGameClasses
                     winner = player;
                 }
             }
+
+            return winner;
         }
+
+        public void ResetGame()
+        {
+            this.helpingCards = new CardsCollection();
+            this.deck = CardsCollection.CreateStandardDeck();
+            this.gameTable.ResetGameState();
+        }
+
         //kazda funkcja musi dostac posortowane 7 kart od najwyzszej - As do najnizszej
         public bool isRoyalFlush(CardsCollection Cards)//Krolewski
         {
