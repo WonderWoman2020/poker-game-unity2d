@@ -16,6 +16,11 @@ namespace PokerGameClasses
         { get; set; }
         public CardsCollection shownHelpingCards; //odsloniete karty pomocnicze, brac z tego pola do GUI
 
+        public int TokensInGame
+        { get; set; }
+        public int CurrentBid
+        { get; set; }
+
         //TODO
         //public GameTableSettings settings;
 
@@ -23,6 +28,8 @@ namespace PokerGameClasses
         {
             this.Name = name;
             this.Owner = owner;
+            this.TokensInGame = 0;
+            this.CurrentBid = 0;
         }
 
         public int GetPlayerTypeCount(PlayerType type)

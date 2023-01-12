@@ -56,46 +56,83 @@ namespace PokerGameClasses
             return 0;
         }
 
-        public void makeMove()
+        public bool makeMove()
         {
             int input = getInput();
-            switch(input) 
+
+            bool moveDone = false;
+            while (!moveDone)
             {
-                case 0:
-                    Fold();
-                    break;
-                case 1:
-                    Check();
-                    break;
-                case 2:
-                    Raise();
-                    break;
-                default:
-                    Fold();
-                    break;
+                switch (input)
+                {
+                    case 0:
+                        moveDone = Fold();
+                        break;
+                    case 1:
+                        moveDone = Check();
+                        break;
+                    case 2:
+                        int amount = 0; //get input
+                        moveDone = Raise(amount);
+                        break;
+                    case 3:
+                        moveDone = AllIn();
+                        break;
+                    default:
+                        moveDone = Fold();
+                        break;
+                }
             }
+
+            return moveDone;
         }
 
-        public void Fold()
+        public bool Fold()
         {
             folded = true;
+            return true;
         }
 
-        public void Check()
+        public bool Check()
         {
-            //TODO
+            if(this.TokensCount < this.Table.CurrentBid)
+            {
+                Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
+                return false;
+            }
+
+            
+            this.Table.TokensInGame = this.Table.TokensInGame + this.Table.CurrentBid;
+            this.TokensCount = this.TokensCount - this.Table.CurrentBid;
+
+            return true;
         }
 
-        public bool Raise()
+        public bool Raise(int amount)
         {
-            int amount = 0; //TODO pobieranie inputu
+            if(amount < this.Table.CurrentBid || amount > this.TokensCount)
+            {
+                Console.WriteLine("You have not enough tokens to make this move. Make other choice or decrease raise value.");
+                return false;
+            }
+
+            this.Table.TokensInGame = this.Table.TokensInGame + amount;
             this.TokensCount = this.TokensCount - amount;
             return true;
         }
 
-        public void AllIn()
+        public bool AllIn()
         {
-            //TODO
+            if(this.TokensCount < this.Table.CurrentBid)
+            {
+                Console.WriteLine("Amount smaller than current bid in the game. Input bigger value or make different move.");
+                return false;
+            }
+
+            this.Table.TokensInGame = this.Table.TokensInGame + this.TokensCount;
+            this.TokensCount = 0;
+
+            return true;
         }
 
         public void BuyTokens(int amount)
@@ -118,7 +155,6 @@ namespace PokerGameClasses
 
         public bool JoinGameTable(GameTable table)
         {
-            //TODO
             table.AddPlayer(this);
             this.Table = table;
             return true;
