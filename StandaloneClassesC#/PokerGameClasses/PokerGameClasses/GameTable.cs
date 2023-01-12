@@ -126,7 +126,7 @@ namespace PokerGameClasses
         {
             foreach(Player player in Players) 
             {
-                if(!player.AllInMade)
+                if(!player.AllInMade && !player.folded)
                     player.makeMove();
             }
         }
