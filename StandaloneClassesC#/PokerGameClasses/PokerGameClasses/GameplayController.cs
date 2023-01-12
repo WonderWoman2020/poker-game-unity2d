@@ -12,11 +12,15 @@ namespace PokerGameClasses
         public CardsCollection deck;
         public CardsCollection helpingCards; //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
 
+        public GameplayController()
+        {
+        }
         public GameplayController(GameTable gameTable)
         {
             this.gameTable = gameTable;
             this.deck = CardsCollection.CreateStandardDeck();
         }
+
 
         public void dealCards()
         {
@@ -140,7 +144,7 @@ namespace PokerGameClasses
         {
             int counterPair = 0;
             int counterThree = 0;
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 5; i++)
             {
                 if (counterThree != 1)
                 {
@@ -222,9 +226,9 @@ namespace PokerGameClasses
             for (int i = 0; i < 5; i++)
             {
                 int valueOfTheThree = (int)Cards.Cards[i].Value;
-                if ((int)Cards.Cards[i + 1].Value == valueOfTheThree - 1)
+                if ((int)Cards.Cards[i + 1].Value == valueOfTheThree)
                 {
-                    if ((int)Cards.Cards[i + 2].Value == valueOfTheThree - 2)
+                    if ((int)Cards.Cards[i + 2].Value == valueOfTheThree)
                     {
                         return true;
                     }
