@@ -14,11 +14,12 @@ namespace PokerGameClasses
 
         }
 
-        public GameTable CreateYourTable(string name)
+        public GameTable CreateYourTable(string name, GameTableSettings settings)
         {
-            //TODO set settings too
             GameTable table = new GameTable(name, this);
+            table.ChangeSettings(this, settings);
             this.Table = table;
+
             return table;
         }
     }
