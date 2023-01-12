@@ -31,6 +31,9 @@ namespace PokerGameClasses
             this.TokensInGame = 0;
             this.CurrentBid = 0;
             this.shownHelpingCards = new CardsCollection();
+            this.Settings = new GameTableSettings();
+            this.Players = new List<Player>();
+            this.Players.Add(owner);
         }
 
         public int GetPlayerTypeCount(PlayerType type)
@@ -50,6 +53,10 @@ namespace PokerGameClasses
                 return false;
 
             this.Players.Add(player);
+
+            if (this.Owner == null && player.Type == PlayerType.Human)
+                this.Owner = (HumanPlayer)player;
+
             return true;
         }
 
@@ -57,16 +64,26 @@ namespace PokerGameClasses
         {
             Player player = this.Players.Find(p => p.Nick == playerNick);
             this.Players.Remove(player);
-            return true;
-        }
 
-        public void ShowSettings()
-        {
-            //TODO
+            if (player == this.Owner)
+            {
+                if (this.GetPlayerTypeCount(PlayerType.Human) > 0)
+                {
+                    HumanPlayer newOwner = (HumanPlayer)this.Players.Find(p => p.Type == PlayerType.Human);
+                    this.Owner = newOwner;
+                }
+                else
+                    this.Owner = null;
+            }
+
+            return true;
         }
 
         public bool ChangeSettings(Player player, GameTableSettings settings)
         {
+            if (this.Owner == null)
+                return false;
+
             if (player.Nick != this.Owner.Nick)
                 return false;
 
@@ -76,7 +93,6 @@ namespace PokerGameClasses
 
         override public string ToString()
         {
-            //TODO settings about XP and Tokens in ToString included
             return "Name: " + this.Name + "\n"
                 + "Owner: " + this.Owner + "\n"
                 + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
