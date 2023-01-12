@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Linq;
 namespace PokerGameClasses
 {
     class Program
@@ -42,6 +43,26 @@ namespace PokerGameClasses
             Console.WriteLine("............///////////////////////////.");
             sampleDeck = CardsCollection.MergeTwoDecks(sampleDeck,sampleDeck);
             CardsCollection.SortDesc(sampleDeck).Cards.ForEach(c => Console.WriteLine(c.Name));
+
+            Console.WriteLine("Test wyryfikacji układów");
+            CardsCollection mainDeck = CardsCollection.CreateStandardDeck();
+            GameplayController controller = new GameplayController();
+            mainDeck.ShuffleCards();
+            Card[] testingCards = new Card[7];
+            for (int i = 0; i < 7; i++)
+            {
+                testingCards[i] = mainDeck.Cards[i];
+            }
+            List<Card> toCheck = testingCards.ToList();
+            CardsCollection handleCards = new CardsCollection(toCheck);
+            CardsCollection.SortDesc(handleCards);
+            for (int i = 0; i < 7; i++)
+            {
+                Console.WriteLine(handleCards.Cards[i].Name);
+            }
+            int value = controller.valueOfCards(handleCards);
+            Console.WriteLine(value);
+
 
         }
     }
