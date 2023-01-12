@@ -21,8 +21,8 @@ namespace PokerGameClasses
         public int CurrentBid
         { get; set; }
 
-        //TODO
-        //public GameTableSettings settings;
+        public GameTableSettings Settings
+        { get; set; }
 
         public GameTable(string name, HumanPlayer owner)
         {
@@ -64,12 +64,12 @@ namespace PokerGameClasses
             //TODO
         }
 
-        public bool ChangeSettings(Player player)
+        public bool ChangeSettings(Player player, GameTableSettings settings)
         {
-            //TODO
             if (player.Nick != this.Owner.Nick)
                 return false;
 
+            this.Settings = settings;
             return true;
         }
 
@@ -79,7 +79,9 @@ namespace PokerGameClasses
             return "Name: " + this.Name + "\n"
                 + "Owner: " + this.Owner + "\n"
                 + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
-                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n";
+                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
+                + "Min XP: " + this.Settings.MinPlayersXP + "\n"
+                + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
         }
 
         public bool ChangeName(string newName)
