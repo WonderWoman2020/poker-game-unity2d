@@ -47,6 +47,12 @@ namespace PokerGameClasses
         public bool changeMode(GameMode mode)
         {
             this.Mode = mode;
+            if (mode == GameMode.No_Bots)
+                this.BotsNumberOnStart = 0;
+            
+            if (mode == GameMode.You_And_Bots)
+                this.BotsNumberOnStart = MinPlayersCountByRules - 1;
+
             return true;
         }
 
@@ -70,9 +76,16 @@ namespace PokerGameClasses
 
         public bool changeBotsNumber(int botsNumber)
         {
+            if (this.Mode == GameMode.No_Bots)
+                return false;
+
             if (botsNumber < 0)
             {
-                this.BotsNumberOnStart = 0;
+                if (this.Mode == GameMode.You_And_Bots)
+                    this.BotsNumberOnStart = MinPlayersCountByRules - 1;
+                else
+                    this.BotsNumberOnStart = 0;
+
                 return true;
             }
 
