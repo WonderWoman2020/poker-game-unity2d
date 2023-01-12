@@ -44,7 +44,7 @@ namespace PokerGameClasses
             sampleDeck = CardsCollection.MergeTwoDecks(sampleDeck,sampleDeck);
             CardsCollection.SortDesc(sampleDeck).Cards.ForEach(c => Console.WriteLine(c.Name));
 
-            Console.WriteLine("Test wyryfikacji układów");
+            Console.WriteLine("\nTest wyryfikacji układów");
             CardsCollection mainDeck = CardsCollection.CreateStandardDeck();
             GameplayController controller = new GameplayController();
             mainDeck.ShuffleCards();
@@ -55,10 +55,10 @@ namespace PokerGameClasses
             }
             List<Card> toCheck = testingCards.ToList();
             CardsCollection handleCards = new CardsCollection(toCheck);
-            CardsCollection.SortDesc(handleCards);
+            CardsCollection sortedCards = CardsCollection.SortDesc(handleCards);
             for (int i = 0; i < 7; i++)
             {
-                Console.WriteLine(handleCards.Cards[i].Name);
+                Console.WriteLine(sortedCards.Cards[i].Name);
             }
             int value = controller.valueOfCards(handleCards);
             Console.WriteLine(value);

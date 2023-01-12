@@ -184,6 +184,9 @@ namespace PokerGameClasses
                     counterPair += 1;
                     i += 1;
                 }
+                //dopisane, ¿eby nie wywala³o, nwm czy wystarczy w logice gry
+                if (i >= 5)
+                    break;
             }
             if (counterThree == 1 && counterPair != 0)
             {
@@ -268,6 +271,10 @@ namespace PokerGameClasses
                     counterPairs += 1;
                     i += 1;
                 }
+
+                //dopisane, ¿eby nie wywala³o, nwm czy wystarczy w logice gry
+                if (i >= 6)
+                    break;
             }
             if (counterPairs >= 2)
             {
