@@ -16,6 +16,7 @@ namespace PokerGameClasses
         {
             this.gameTable = gameTable;
             this.deck = CardsCollection.CreateStandardDeck();
+            this.helpingCards = new CardsCollection();
         }
 
         public void dealCards()

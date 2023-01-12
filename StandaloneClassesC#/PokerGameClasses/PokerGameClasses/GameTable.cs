@@ -30,6 +30,7 @@ namespace PokerGameClasses
             this.Owner = owner;
             this.TokensInGame = 0;
             this.CurrentBid = 0;
+            this.shownHelpingCards = new CardsCollection();
         }
 
         public int GetPlayerTypeCount(PlayerType type)
