@@ -51,13 +51,19 @@ namespace PokerGameClasses
                 + this.Rank + "\n"
                 + this.XP + " XP\n"
                 + this.TokensCount + " Tokens\n"
-                + "Current table: "+this.Table + "\n";
+                + "Current table: "+(this.Table == null ? "No table" : this.Table.Name) + "\n";
         }
 
         public bool makeMove()
         {
+            if (this.Table == null)
+            {
+                Console.WriteLine("You can't make a move - you're not sitting by any game table. You must join a game table first.");
+                return false;
+            }
+
             //potem zamienić na pobieranie inputu z przycisków
-            Console.WriteLine("Podaj numer ruchu do wykonania: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
+            Console.WriteLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
             int input = Convert.ToInt32(Console.ReadLine());
 
             bool moveDone = false;
@@ -106,20 +112,20 @@ namespace PokerGameClasses
             
             this.Table.TokensInGame = this.Table.TokensInGame + this.Table.CurrentBid;
             this.TokensCount = this.TokensCount - this.Table.CurrentBid;
-
             return true;
         }
 
         public bool Raise(int amount)
         {
-            if(amount < this.Table.CurrentBid || amount > this.TokensCount)
+            if(this.TokensCount < amount + this.Table.CurrentBid)
             {
                 Console.WriteLine("You have not enough tokens to make this move. Make other choice or decrease raise value.");
                 return false;
             }
 
-            this.Table.TokensInGame = this.Table.TokensInGame + amount;
-            this.TokensCount = this.TokensCount - amount;
+            this.Table.TokensInGame = this.Table.TokensInGame + this.Table.CurrentBid + amount;
+            this.TokensCount = this.TokensCount - (this.Table.CurrentBid + amount);
+            this.Table.CurrentBid = this.Table.CurrentBid + amount;
             return true;
         }
 
@@ -132,6 +138,9 @@ namespace PokerGameClasses
             }
 
             this.Table.TokensInGame = this.Table.TokensInGame + this.TokensCount;
+            if (this.TokensCount > this.Table.CurrentBid)
+                this.Table.CurrentBid = this.TokensCount;
+
             this.TokensCount = 0;
             this.AllInMade = true;
 
@@ -164,23 +173,6 @@ namespace PokerGameClasses
             }
 
             this.Nick = newNick;
-            return true;
-        }
-
-        public bool JoinGameTable(GameTable table)
-        {
-            if (this.Table != null)
-                this.LeaveGameTable();
-
-            table.AddPlayer(this);
-            this.Table = table;
-            return true;
-        }
-
-        public bool LeaveGameTable()
-        {
-            this.Table.KickOutPlayer(this.Nick);
-            this.Table = null;
             return true;
         }
     }

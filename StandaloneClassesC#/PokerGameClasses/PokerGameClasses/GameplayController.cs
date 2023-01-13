@@ -179,6 +179,9 @@ namespace PokerGameClasses
                         }
                     }
                 }
+                //dopisane, ¿eby nie wywala³o, nwm czy wystarczy w logice gry
+                if (i >= 5)
+                    break;
                 if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
                 {
                     counterPair += 1;

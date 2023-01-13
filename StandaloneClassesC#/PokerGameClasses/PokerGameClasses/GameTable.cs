@@ -26,14 +26,14 @@ namespace PokerGameClasses
 
         public GameTable(string name, HumanPlayer owner)
         {
-            this.Name = name;
-            this.Owner = owner;
+            this.ChangeName(name);
             this.TokensInGame = 0;
             this.CurrentBid = 0;
             this.shownHelpingCards = new CardsCollection();
             this.Settings = new GameTableSettings();
             this.Players = new List<Player>();
-            this.Players.Add(owner);
+            this.AddPlayer(owner);
+            this.ChangeOwner(owner);
         }
 
         public int GetPlayerTypeCount(PlayerType type)
@@ -55,13 +55,30 @@ namespace PokerGameClasses
                 return false;
             }
 
-            if (this.Players.Count == GameTableSettings.MaxPlayersCountByRules)
+            if (this.Players.Count == this.Settings.MaxPlayersCountInGame)
             {
                 Console.WriteLine("Too many players already at the table. You can't join this table now.");
                 return false;
             }
 
+            if (player != null)
+            {
+                if (this.Settings.MinPlayersXP > player.XP)
+                {
+                    Console.WriteLine("Not enought XP to join the game table");
+                    return false;
+                }
+                if (this.Settings.MinPlayersTokenCount > player.TokensCount)
+                {
+                    Console.WriteLine("Not enought Tokens to join the game table");
+                    return false;
+                }
+            }
+
             this.Players.Add(player);
+
+            if (player != null)
+                player.Table = this;
 
             if (this.Owner == null && player.Type == PlayerType.Human)
                 this.ChangeOwner((HumanPlayer)player);
@@ -73,6 +90,9 @@ namespace PokerGameClasses
         {
             Player player = this.Players.Find(p => p.Nick == playerNick);
             this.Players.Remove(player);
+
+            if (player != null)
+                player.Table = null;
 
             if (player == this.Owner)
             {
@@ -103,7 +123,7 @@ namespace PokerGameClasses
         override public string ToString()
         {
             return "Name: " + this.Name + "\n"
-                + "Owner: " + this.Owner + "\n"
+                + "Owner: " + ((this.Owner == null) ? "No owner" : this.Owner.Nick) + "\n"
                 + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
                 + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
@@ -119,6 +139,9 @@ namespace PokerGameClasses
         public bool ChangeOwner(HumanPlayer newOwner)
         {
             this.Owner = newOwner;
+            if (newOwner != null)
+                this.AddPlayer(newOwner);
+
             return true;
         }
 
