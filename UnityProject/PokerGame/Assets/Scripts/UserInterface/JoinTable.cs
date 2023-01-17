@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
+using PokerGameClasses;
+
 public class JoinTable : MonoBehaviour
 {
     [SerializeField] private Button joinButton;
@@ -20,6 +23,13 @@ public class JoinTable : MonoBehaviour
     }
     public void OnJoinButton()
     {
+        if (MyGameManager.Instance.GameTables.Count > 0)
+        {
+            GameTable gameTable = MyGameManager.Instance.GameTables[0];
+            Player player = MyGameManager.Instance.MainPlayer;
+            gameTable.AddPlayer(player);
+            Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
+        }
         SceneManager.LoadScene("Table");
     }
     public void OnBackToMenuButton()

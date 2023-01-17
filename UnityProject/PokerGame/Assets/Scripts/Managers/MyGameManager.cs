@@ -27,7 +27,8 @@ public class MyGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.MainPlayer = null;
+        //this.MainPlayer = null;
+        this.MainPlayer = new HumanPlayer("Test main player", PlayerType.Human);
         this.GameTables = new List<GameTable>();
     }
 

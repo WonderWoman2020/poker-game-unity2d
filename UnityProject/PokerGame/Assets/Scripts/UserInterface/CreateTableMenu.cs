@@ -27,7 +27,8 @@ public class CreateTableMenu : MonoBehaviour
         GameTable gameTable = new GameTable("Test table",p);
         MyGameManager.Instance.AddTableToGame(gameTable);
         Debug.Log("Created table "+gameTable);
-        SceneManager.LoadScene("Table");
+        //SceneManager.LoadScene("Table");
+        SceneManager.LoadScene("PlayMenu");
     }
     public void OnBackToMenuButton()
     {
