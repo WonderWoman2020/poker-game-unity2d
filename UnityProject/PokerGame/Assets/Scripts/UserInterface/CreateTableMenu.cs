@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
+using PokerGameClasses;
+
 public class CreateTableMenu : MonoBehaviour
 {
     [SerializeField] private Button createButton;
@@ -20,6 +23,10 @@ public class CreateTableMenu : MonoBehaviour
     }
     public void OnCreateButton()
     {
+        HumanPlayer p = new HumanPlayer("Test player", PlayerType.Human);
+        GameTable gameTable = new GameTable("Test table",p);
+        MyGameManager.Instance.AddTableToGame(gameTable);
+        Debug.Log("Created table "+gameTable);
         SceneManager.LoadScene("Table");
     }
     public void OnBackToMenuButton()

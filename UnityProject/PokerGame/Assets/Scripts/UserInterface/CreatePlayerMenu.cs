@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
+using PokerGameClasses;
+
 public class CreatePlayerMenu : MonoBehaviour
 {
     [SerializeField] private Button createButton;
@@ -14,6 +17,9 @@ public class CreatePlayerMenu : MonoBehaviour
     }
     public void OnCreateButton()
     {
+        Player player = new HumanPlayer("I'm main player", PlayerType.Human);
+        MyGameManager.Instance.AddPlayerToGame(player);
+        Debug.Log("Creating player");
         SceneManager.LoadScene("Table");
     }
     // Start is called before the first frame update
