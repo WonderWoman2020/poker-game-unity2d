@@ -116,6 +116,12 @@ namespace PokerGameClasses
             if (player.Nick != this.Owner.Nick)
                 return false;
 
+            if(settings == null)
+            {
+                this.Settings = new GameTableSettings();
+                return true;
+            }
+
             this.Settings = settings;
             return true;
         }

@@ -19,8 +19,9 @@ public class CreatePlayerMenu : MonoBehaviour
     {
         Player player = new HumanPlayer("I'm main player", PlayerType.Human);
         MyGameManager.Instance.AddPlayerToGame(player);
-        Debug.Log("Creating player");
-        SceneManager.LoadScene("Table");
+        Debug.Log("Created player "+player.Nick);
+        //SceneManager.LoadScene("Table");
+        SceneManager.LoadScene("PlayMenu");
     }
     // Start is called before the first frame update
     void Start()

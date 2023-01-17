@@ -23,13 +23,17 @@ public class JoinTable : MonoBehaviour
     }
     public void OnJoinButton()
     {
-        if (MyGameManager.Instance.GameTables.Count > 0)
+        if(MyGameManager.Instance.GameTables.Count == 0)
         {
-            GameTable gameTable = MyGameManager.Instance.GameTables[0];
-            Player player = MyGameManager.Instance.MainPlayer;
-            gameTable.AddPlayer(player);
-            Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
+            Debug.Log("There are no game tables to join. Create one first");
+            SceneManager.LoadScene("PlayMenu");
+            return;
         }
+
+        GameTable gameTable = MyGameManager.Instance.GameTables[0];
+        Player player = MyGameManager.Instance.MainPlayer;
+        gameTable.AddPlayer(player);
+        Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
         SceneManager.LoadScene("Table");
     }
     public void OnBackToMenuButton()

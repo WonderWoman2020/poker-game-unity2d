@@ -23,10 +23,15 @@ public class CreateTableMenu : MonoBehaviour
     }
     public void OnCreateButton()
     {
-        HumanPlayer p = new HumanPlayer("Test player", PlayerType.Human);
-        GameTable gameTable = new GameTable("Test table",p);
+        HumanPlayer p = (HumanPlayer)MyGameManager.Instance.MainPlayer;
+        if(p == null)
+        {
+            Debug.Log("Table not created. Player was null");
+            return;
+        }
+        GameTable gameTable = p.CreateYourTable("Test Table from HumanPlayer", null);
         MyGameManager.Instance.AddTableToGame(gameTable);
-        Debug.Log("Created table "+gameTable);
+        Debug.Log("Player "+p.Nick+ " created table "+gameTable);
         //SceneManager.LoadScene("Table");
         SceneManager.LoadScene("PlayMenu");
     }
