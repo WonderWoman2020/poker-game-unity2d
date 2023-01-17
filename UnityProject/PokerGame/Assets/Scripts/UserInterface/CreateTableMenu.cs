@@ -13,6 +13,12 @@ public class CreateTableMenu : MonoBehaviour
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
 
+    [SerializeField] private Button modeNoBotsButton;
+    [SerializeField] private Button modeYouAndBotsButton;
+    [SerializeField] private Button modeMixedButton;
+
+    private GameMode choosenMode;
+
     private string tableName;
     private string chips;
     private string xp;
@@ -20,7 +26,7 @@ public class CreateTableMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.choosenMode = GameMode.No_Bots;
     }
 
     // Update is called once per frame
@@ -78,6 +84,26 @@ public class CreateTableMenu : MonoBehaviour
         if (this.xp != null)
             gameTable.Settings.changeMinXP(Convert.ToInt32(this.xp));
 
+        gameTable.Settings.changeMode(this.choosenMode);
+
         return true;
+    }
+
+    public void OnModeNoBotsButton()
+    {
+        this.choosenMode = GameMode.No_Bots;
+        Debug.Log(this.choosenMode);
+    }
+
+    public void OnYouAndBotsButton()
+    {
+        this.choosenMode = GameMode.You_And_Bots;
+        Debug.Log(this.choosenMode);
+    }
+
+    public void OnMixedButton()
+    {
+        this.choosenMode = GameMode.Mixed;
+        Debug.Log(this.choosenMode);
     }
 }

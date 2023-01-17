@@ -1401,6 +1401,9 @@ MonoBehaviour:
   createTableButton: {fileID: 1571997390}
   getChipsButton: {fileID: 1694380610}
   changeSettingsButton: {fileID: 716606195}
+  InfoPlayerNick: {fileID: 1598640104}
+  InfoPlayerChips: {fileID: 257129217}
+  InfoPlayerXP: {fileID: 2060760695}
 --- !u!1 &1048196062
 GameObject:
   m_ObjectHideFlags: 0
