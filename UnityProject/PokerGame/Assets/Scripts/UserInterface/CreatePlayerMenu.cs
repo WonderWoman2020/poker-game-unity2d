@@ -23,6 +23,12 @@ public class CreatePlayerMenu : MonoBehaviour
     }
     public void OnCreateButton()
     {
+        if(this.playerNick == null)
+        {
+            Debug.Log("You must set at least player's nick to create them.");
+            return;
+        }
+
         Player player = new HumanPlayer("I'm main player", PlayerType.Human);
         this.SetPlayerInputData(player);
         MyGameManager.Instance.AddPlayerToGame(player);
@@ -33,18 +39,36 @@ public class CreatePlayerMenu : MonoBehaviour
 
     public void ReadPlayerNick(string nick)
     {
+        if (nick.Length == 0)
+        {
+            this.playerNick = null;
+            return;
+        }
+
         this.playerNick = nick;
         Debug.Log(this.playerNick);
     }
 
     public void ReadChips(string chips)
     {
+        if (chips.Length == 0)
+        {
+            this.chips = null;
+            return;
+        }
+
         this.chips = chips;
         Debug.Log(this.chips);
     }
 
     public void ReadXP(string xp)
     {
+        if (xp.Length == 0)
+        {
+            this.xp = null;
+            return;
+        }
+
         this.xp = xp;
         Debug.Log(this.xp);
     }
@@ -75,6 +99,10 @@ public class CreatePlayerMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            if (this.playerNick != null && this.chips != null && this.xp != null)
+                this.OnCreateButton();
+        }
     }
 }

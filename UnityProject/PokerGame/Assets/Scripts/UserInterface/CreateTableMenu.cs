@@ -27,12 +27,19 @@ public class CreateTableMenu : MonoBehaviour
     void Start()
     {
         this.choosenMode = GameMode.No_Bots;
+        this.tableName = null;
+        this.chips = null;
+        this.xp = null;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            if (this.tableName != null && this.chips != null && this.xp != null)
+                this.OnCreateButton();
+        }
     }
     public void OnCreateButton()
     {
@@ -42,7 +49,14 @@ public class CreateTableMenu : MonoBehaviour
             Debug.Log("Table not created. Player was null");
             return;
         }
-        GameTable gameTable = p.CreateYourTable("Test Table from HumanPlayer", null);
+
+        if(this.tableName == null)
+        {
+            Debug.Log("You must set at least table name to create it.");
+            return;
+        }
+
+        GameTable gameTable = p.CreateYourTable("Unnamed table", null);
         this.SetGameTableInputData(gameTable);
         MyGameManager.Instance.AddTableToGame(gameTable);
         Debug.Log("Player "+p.Nick+ " created table "+gameTable);
@@ -56,18 +70,36 @@ public class CreateTableMenu : MonoBehaviour
 
     public void ReadGameTableName(string name)
     {
+        if (name.Length == 0)
+        {
+            this.tableName = null;
+            return;
+        }
+
         this.tableName = name;
         Debug.Log(this.tableName);
     }
 
     public void ReadChips(string chips)
     {
+        if (chips.Length == 0)
+        {
+            this.chips = null;
+            return;
+        }
+
         this.chips = chips;
         Debug.Log(this.chips);
     }
 
     public void ReadXP(string xp)
     {
+        if (xp.Length == 0)
+        {
+            this.xp = null;
+            return;
+        }
+
         this.xp = xp;
         Debug.Log(this.xp);
     }

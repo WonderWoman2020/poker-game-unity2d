@@ -12,6 +12,9 @@ public class MyGameManager : MonoBehaviour
     public Player MainPlayer
     { get; set; }
 
+    public List<Player> HotSeatPlayers
+    { get; set; }
+
     public List<GameTable> GameTables
     { get; set; }
 
@@ -30,6 +33,7 @@ public class MyGameManager : MonoBehaviour
         this.MainPlayer = null;
         //this.MainPlayer = new HumanPlayer("Test main player", PlayerType.Human);
         this.GameTables = new List<GameTable>();
+        this.HotSeatPlayers = new List<Player>();
     }
 
     // Update is called once per frame
@@ -47,6 +51,16 @@ public class MyGameManager : MonoBehaviour
     public bool AddTableToGame(GameTable gt)
     {
         this.GameTables.Add(gt);
+        return true;
+    }
+
+    private bool CreateHotSeatPlayers()
+    {
+        this.HotSeatPlayers.Add(new Player("Gamer#1", PlayerType.Human));
+        this.HotSeatPlayers.Add(new Player("PokerLover123", PlayerType.Human));
+        this.HotSeatPlayers.Add(new Player("Joker", PlayerType.Human));
+        this.HotSeatPlayers.Add(new Player("I'm Rich", PlayerType.Human));
+        this.HotSeatPlayers.Add(new Player("Card Games Enjoyer", PlayerType.Human));
         return true;
     }
 }

@@ -38,7 +38,7 @@ public class JoinTable : MonoBehaviour
         if (MyGameManager.Instance.GameTables == null)
             return;
 
-        this.choosenTable = 0;
+        this.choosenTable = -1;
 
         int tablesToShow = MyGameManager.Instance.GameTables.Count;
         if (tablesToShow > 4)
@@ -68,9 +68,24 @@ public class JoinTable : MonoBehaviour
             return;
         }
 
+        if(this.choosenTable == -1)
+        {
+            Debug.Log("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
+            return;
+        }
+
         GameTable gameTable = MyGameManager.Instance.GameTables[this.choosenTable];
         Player player = MyGameManager.Instance.MainPlayer;
-        gameTable.AddPlayer(player);
+        bool playerAdded = gameTable.AddPlayer(player);
+        if(!playerAdded)
+        {
+            if (!gameTable.Players.Contains(player))
+            {
+                Debug.Log("You can't join this table (" + gameTable.Name + "). It's full or you don't have enough xp or chips.");
+                return;
+            }
+        }
+
         Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
         SceneManager.LoadScene("Table");
     }
