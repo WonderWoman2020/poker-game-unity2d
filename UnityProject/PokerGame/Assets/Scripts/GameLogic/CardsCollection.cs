@@ -7,20 +7,21 @@ using UnityEngine;
 
 namespace PokerGameClasses
 {
-    class CardsCollection : MonoBehaviour
+    public class CardsCollection : MonoBehaviour
     {
 
         static public Sprite[] cardsSprites
         { get; set; }
         [SerializeField]
-        private Sprite[] cardsSpriteSerialization;
+        public Sprite[] cardsSpriteSerialization;
         public List<Card> Cards
         { get; set; }
 
 
         public void Start()
         {
-            
+            //DeserializeCards();
+
         }
         public CardsCollection()
         {
@@ -80,7 +81,7 @@ namespace PokerGameClasses
             {
                 foreach(CardSign cardSign in Enum.GetValues(typeof(CardSign)))
                 {
-                    deck.Add(new Card(cardSign, cardVal, cardsSprites[index]));
+                    deck.Add(new Card(cardSign, cardVal));
                     index++;
                 }
             }

@@ -7,6 +7,7 @@ namespace PokerGameClasses
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Test klas Card i CardsCollection\n");
             Card sampleCard = new Card(CardSign.Heart, CardValue.Ten);
             Console.WriteLine(sampleCard.Name);
             Console.WriteLine(sampleCard.CardColorToString());
@@ -35,7 +36,7 @@ namespace PokerGameClasses
             samplePlayer.ChangeNick("Gamer#1");
             Console.WriteLine(samplePlayer);
 
-            Console.WriteLine("Test łączenia i sortowania");
+            Console.WriteLine("\nTest łączenia i sortowania");
             Console.WriteLine("............///////////////////////////.");
             sampleDeck.Cards.ForEach(c => Console.WriteLine(c.Name));
             Console.WriteLine("........");
@@ -63,6 +64,50 @@ namespace PokerGameClasses
             int value = controller.valueOfCards(handleCards);
             Console.WriteLine(value);
 
+
+            Console.WriteLine("\nTest klas Player i HumanPlayer, GameTable i GameTableSettings\n");
+            Player humanPlayer = new HumanPlayer("BasePlayer#1", PlayerType.Human);
+            Console.WriteLine("Gracz przed dodaniem do stolika:");
+            Console.WriteLine(humanPlayer);          
+
+            humanPlayer.ChangeNick(null);
+            GameTable testTableForPlayer = new GameTable("Table 1", (HumanPlayer)humanPlayer);
+            Console.WriteLine("Gracz i stolik po dodaniu do stolika:");
+            Console.WriteLine(humanPlayer);
+            Console.WriteLine(testTableForPlayer);
+
+            testTableForPlayer.KickOutPlayer(humanPlayer.Nick);
+            Console.WriteLine("Gracz i stolik po odejściu do stolika:");
+            Console.WriteLine(humanPlayer);
+            Console.WriteLine(testTableForPlayer);
+
+            humanPlayer.makeMove();
+            humanPlayer.ChangeNick("Nick#1");
+            testTableForPlayer.AddPlayer(humanPlayer);
+            testTableForPlayer.ChangeName("Best Table In Town");
+            Console.WriteLine("Gracz i stolik po ponownym dodaniu do stolika i zmianie nazwy:");
+            Console.WriteLine(humanPlayer);
+            Console.WriteLine(testTableForPlayer);
+
+            humanPlayer.makeMove();
+            Console.WriteLine("Gracz i stolik po wykonaniu ruchu przez gracza:");
+            Console.WriteLine(humanPlayer);
+            Console.WriteLine(testTableForPlayer);
+            Console.WriteLine(testTableForPlayer.CurrentBid);
+            Console.WriteLine(testTableForPlayer.TokensInGame);
+
+            humanPlayer.BuyTokens(300);
+            humanPlayer.BuyXP(100);
+            Console.WriteLine("Gracz po zakupach:");
+            Console.WriteLine(humanPlayer);
+
+            GameTableSettings settings = new GameTableSettings();
+            settings.changeMinXP(10000);
+            GameTable newGameTable = ((HumanPlayer)humanPlayer).CreateYourTable("My new Table",settings);
+            Console.WriteLine("Utworzenie nowego stolika przez gracza:");
+            Console.WriteLine(newGameTable);
+            Console.WriteLine(humanPlayer);
+            Console.WriteLine(testTableForPlayer);
 
         }
     }

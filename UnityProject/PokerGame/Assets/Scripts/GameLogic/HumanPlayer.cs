@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PokerGameClasses
 {
-    class HumanPlayer : Player
+    public class HumanPlayer : Player
     {
         public HumanPlayer(string nick, PlayerType type)
             : base(nick, type)

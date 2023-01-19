@@ -28,7 +28,10 @@ public class MainMenu : MonoBehaviour
 
     public void OnPlayButton()
     {
-        SceneManager.LoadScene("PlayMenu");
+        if(MyGameManager.Instance.MainPlayer == null)
+            SceneManager.LoadScene("CreatePlayerMenu");
+        else
+            SceneManager.LoadScene("PlayMenu");
     }
 
     // Update is called once per frame

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PokerGameClasses
 {
-    class GameplayController
+    public class GameplayController
     {
         public GameTable gameTable
         { get; set; }

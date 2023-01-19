@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PokerGameClasses
 {
-    class GameTable
+    public class GameTable
     {
         public string Name
         { get; set; }
@@ -115,6 +115,12 @@ namespace PokerGameClasses
 
             if (player.Nick != this.Owner.Nick)
                 return false;
+
+            if(settings == null)
+            {
+                this.Settings = new GameTableSettings();
+                return true;
+            }
 
             this.Settings = settings;
             return true;

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace PokerGameClasses
 {
-    enum CardSign
+   public enum CardSign
     {
         Heart, //Serce
         Spade, // Pik
@@ -15,7 +16,7 @@ namespace PokerGameClasses
         Club //Trefl
     }
 
-    enum CardValue
+    public enum CardValue
     {
         Two = 2,
         Three,
@@ -32,16 +33,17 @@ namespace PokerGameClasses
         Ace //As
     }
 
-    enum CardColor
+   public enum CardColor
     {
         Black,
         Red
     }
  
 
-    class Card : MonoBehaviour
+    public class Card : MonoBehaviour
     {
         SpriteRenderer spriteRenderer;
+        [SerializeField]
         public Sprite cardSprite;
         public CardSign Sign
         { get; set; }
@@ -50,17 +52,28 @@ namespace PokerGameClasses
         public string Name
         { get; set; }
 
+        [SerializeField]
+        int indeksInCardsCollection;
+
+        [SerializeField]
+        CardsCollection c;
+
+        
+        Image img;
         public void Start()
         {
-            cardSprite = CardsCollection.cardsSprites[0];
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = cardSprite;
+
+            //CardsCollection.CreateStandardDeck();
+            // cardSprite = CardsCollection.cardsSprites[0];
+            img = GetComponent<Image>();
+            img.sprite = cardSprite;
+            
         }
-        public Card(CardSign sign, CardValue val, Sprite img)
+        public Card(CardSign sign, CardValue val)
         {
             this.Sign = sign;
             this.Value = val;
-            this.cardSprite = img;
+           // this.cardSprite = img;
             this.Name = this.CreateCardName();
         }
 

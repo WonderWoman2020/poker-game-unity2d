@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PokerGameClasses
 {
-    enum PlayerType
+    public enum PlayerType
     {
         Human,
         Bot
     }
-    class Player
+    public class Player
     {
         public string Nick
         { get; set; }
