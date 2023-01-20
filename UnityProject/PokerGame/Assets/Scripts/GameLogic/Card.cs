@@ -42,8 +42,6 @@ namespace PokerGameClasses
 
     public class Card : MonoBehaviour
     {
-        SpriteRenderer spriteRenderer;
-        [SerializeField]
         public Sprite cardSprite;
         public CardSign Sign
         { get; set; }
@@ -51,24 +49,7 @@ namespace PokerGameClasses
         { get; set; }
         public string Name
         { get; set; }
-
-        [SerializeField]
-        int indeksInCardsCollection;
-
-        [SerializeField]
-        CardsCollection c;
-
         
-        Image img;
-        public void Start()
-        {
-
-            //CardsCollection.CreateStandardDeck();
-            // cardSprite = CardsCollection.cardsSprites[0];
-            img = GetComponent<Image>();
-            img.sprite = cardSprite;
-            
-        }
         public Card(CardSign sign, CardValue val)
         {
             this.Sign = sign;

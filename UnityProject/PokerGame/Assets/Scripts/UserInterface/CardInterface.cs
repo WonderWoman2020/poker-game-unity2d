@@ -22,7 +22,6 @@ public class CardInterface : MonoBehaviour
             img.sprite = collection.cardsSpriteSerialization[numberOfCardInCollection];
         }
     }
-
     // Update is called once per frame
     void Update()
     {

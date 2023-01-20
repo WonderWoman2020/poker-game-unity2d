@@ -10,36 +10,26 @@ namespace PokerGameClasses
     public class CardsCollection : MonoBehaviour
     {
 
-        static public Sprite[] cardsSprites
-        { get; set; }
         [SerializeField]
         public Sprite[] cardsSpriteSerialization;
+        
+        [SerializeField]
         public List<Card> Cards
         { get; set; }
 
-
-        public void Start()
-        {
-            //DeserializeCards();
-
-        }
         public CardsCollection()
         {
-            DeserializeCards();
+
         }
 
         public CardsCollection(List<Card> cards)
         {
             this.Cards = cards;
-            DeserializeCards();
         }
-        public void DeserializeCards()
-        {
-            cardsSprites = cardsSpriteSerialization;
-        }
+
         public void ShowCards()
         {
-
+            
         }
 
         public bool AddCard(Card card)
