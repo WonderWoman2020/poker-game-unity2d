@@ -19,6 +19,8 @@ public class JoinTable : MonoBehaviour
     [SerializeField] private Button table3Button;
     [SerializeField] private Button table4Button;
 
+    public GameObject PopupWindow;
+
     private int choosenTable;
 
     //TODO make this a table of tables later
@@ -64,6 +66,10 @@ public class JoinTable : MonoBehaviour
         if(MyGameManager.Instance.GameTables.Count == 0)
         {
             Debug.Log("There are no game tables to join. Create one first");
+            if (PopupWindow)
+            {
+                ShowNoTablesPopup();
+            }
             SceneManager.LoadScene("PlayMenu");
             return;
         }
@@ -71,6 +77,10 @@ public class JoinTable : MonoBehaviour
         if(this.choosenTable == -1)
         {
             Debug.Log("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
+            if (PopupWindow)
+            {
+                ShowNothingChosenPopup();
+            }
             return;
         }
 
@@ -82,6 +92,10 @@ public class JoinTable : MonoBehaviour
             if (!gameTable.Players.Contains(player))
             {
                 Debug.Log("You can't join this table (" + gameTable.Name + "). It's full or you don't have enough xp or chips.");
+                if (PopupWindow)
+                {
+                    ShowCantJoinPopup(gameTable.Name);
+                }
                 return;
             }
         }
@@ -89,6 +103,24 @@ public class JoinTable : MonoBehaviour
         Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
         SceneManager.LoadScene("Table");
     }
+
+    void ShowNoTablesPopup()
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = "There are no game tables to join. Create one first";
+    }
+
+    void ShowNothingChosenPopup()
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = "You didn't choose any game table. Choose one to join it by clicking the tick near it. ";
+    }
+    void ShowCantJoinPopup(String name)
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = "You can't join this table (" + name + "). It's full or you don't have enough xp or chips.";
+    }
+
     public void OnBackToMenuButton()
     {
         SceneManager.LoadScene("PlayMenu");

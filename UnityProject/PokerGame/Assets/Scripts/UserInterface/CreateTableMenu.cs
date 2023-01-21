@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 using PokerGameClasses;
 
+using TMPro;
 using System;
 
 public class CreateTableMenu : MonoBehaviour
@@ -17,7 +18,9 @@ public class CreateTableMenu : MonoBehaviour
     [SerializeField] private Button modeYouAndBotsButton;
     [SerializeField] private Button modeMixedButton;
 
-    private GameMode choosenMode;
+    private GameMode chosenMode;
+
+    public GameObject PopupWindow;
 
     private string tableName;
     private string chips;
@@ -26,7 +29,7 @@ public class CreateTableMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.choosenMode = GameMode.No_Bots;
+        this.chosenMode = GameMode.No_Bots;
         this.tableName = null;
         this.chips = null;
         this.xp = null;
@@ -47,12 +50,20 @@ public class CreateTableMenu : MonoBehaviour
         if(p == null)
         {
             Debug.Log("Table not created. Player was null");
+            if (PopupWindow)
+            {
+                ShowPlayerNullPopup();
+            }
             return;
         }
 
         if(this.tableName == null)
         {
             Debug.Log("You must set at least table name to create it.");
+            if (PopupWindow)
+            {
+                ShowTableNameEmptyPopup();
+            }
             return;
         }
 
@@ -63,6 +74,18 @@ public class CreateTableMenu : MonoBehaviour
         //SceneManager.LoadScene("Table");
         SceneManager.LoadScene("PlayMenu");
     }
+
+    void ShowPlayerNullPopup()
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = "Table not created. Player was null";
+    }
+    void ShowTableNameEmptyPopup()
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = "You must set at least table name to create it.";
+    }
+
     public void OnBackToMenuButton()
     {
         SceneManager.LoadScene("PlayMenu");
@@ -116,26 +139,26 @@ public class CreateTableMenu : MonoBehaviour
         if (this.xp != null)
             gameTable.Settings.changeMinXP(Convert.ToInt32(this.xp));
 
-        gameTable.Settings.changeMode(this.choosenMode);
+        gameTable.Settings.changeMode(this.chosenMode);
 
         return true;
     }
 
     public void OnModeNoBotsButton()
     {
-        this.choosenMode = GameMode.No_Bots;
-        Debug.Log(this.choosenMode);
+        this.chosenMode = GameMode.No_Bots;
+        Debug.Log(this.chosenMode);
     }
 
     public void OnYouAndBotsButton()
     {
-        this.choosenMode = GameMode.You_And_Bots;
-        Debug.Log(this.choosenMode);
+        this.chosenMode = GameMode.You_And_Bots;
+        Debug.Log(this.chosenMode);
     }
 
     public void OnMixedButton()
     {
-        this.choosenMode = GameMode.Mixed;
-        Debug.Log(this.choosenMode);
+        this.chosenMode = GameMode.Mixed;
+        Debug.Log(this.chosenMode);
     }
 }

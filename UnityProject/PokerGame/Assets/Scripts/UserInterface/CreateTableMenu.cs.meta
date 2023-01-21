@@ -3,7 +3,13 @@ guid: db8d8a50db13db84eaecd06f8563f2c3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - createButton: {instanceID: 0}
+  - backToMenuButton: {instanceID: 0}
+  - modeNoBotsButton: {instanceID: 0}
+  - modeYouAndBotsButton: {instanceID: 0}
+  - modeMixedButton: {instanceID: 0}
+  - PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

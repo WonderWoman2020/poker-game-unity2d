@@ -6,12 +6,15 @@ using UnityEngine.SceneManagement;
 
 using PokerGameClasses;
 
+using TMPro;
 using System;
 
 public class CreatePlayerMenu : MonoBehaviour
 {
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
+
+    public GameObject PopupWindow;
 
     private string playerNick;
     private string chips;
@@ -26,6 +29,10 @@ public class CreatePlayerMenu : MonoBehaviour
         if(this.playerNick == null)
         {
             Debug.Log("You must set at least player's nick to create them.");
+            if (PopupWindow)
+            {
+                ShowWrongInputPopup();
+            }
             return;
         }
 
@@ -35,6 +42,12 @@ public class CreatePlayerMenu : MonoBehaviour
         Debug.Log("Created player "+player.Nick);
         //SceneManager.LoadScene("Table");
         SceneManager.LoadScene("PlayMenu");
+    }
+
+    void ShowWrongInputPopup()
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = "You must set at least player's nick to create them.";
     }
 
     public void ReadPlayerNick(string nick)

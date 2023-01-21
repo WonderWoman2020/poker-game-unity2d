@@ -2129,7 +2129,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 66.2
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2295,6 +2295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   createButton: {fileID: 28378473}
   backToMenuButton: {fileID: 716606195}
+  PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1111787381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2592,7 +2593,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 66.2
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
