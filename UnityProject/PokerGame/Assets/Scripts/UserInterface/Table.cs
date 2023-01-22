@@ -24,7 +24,7 @@ public class Table : MonoBehaviour
     private GameObject[] Players;
     private Component[] Components
     { get; set; }
-
+    private string betFieldText;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +37,7 @@ public class Table : MonoBehaviour
 
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.Components = Players[0].GetComponents(typeof(Component));
-        foreach(Component component in Components)
+        foreach (Component component in Components)
         {
             Debug.Log(component.ToString());
         }
@@ -47,22 +47,36 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
+    }
+    public void ReadInputBet(string inputBet)
+    {
+        if (inputBet.Length == 0)
+        {
+            this.betFieldText = null;
+            return;
+        }
+        this.betFieldText = inputBet;
+        Debug.Log(this.betFieldText);
     }
     public void OnCheckButton()
     {
         Debug.Log("Check");
+        MyGameManager.Instance.MainPlayer.Check();
     }
     public void OnAllInButton()
     {
-        Debug.Log("All on");
+        Debug.Log("All in");
+        MyGameManager.Instance.MainPlayer.AllIn();
     }
     public void OnPassButton()
     {
         Debug.Log("Pass");
+        MyGameManager.Instance.MainPlayer.Fold();
     }
     public void OnBidButton()
     {
         Debug.Log("Bid");
+        MyGameManager.Instance.MainPlayer.Raise(Convert.ToInt32(this.betFieldText));
     }
 }
