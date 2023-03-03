@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Table.unity
     guid: 8c31d4d8e0a374a41b616fa8e1b5908e
   - enabled: 1
-    path: Assets/Scenes/CreatePlayerMenu.unity
+    path: Assets/Scenes/LoginPlayer.unity
     guid: 129f675d92203a04984925ab38417367
+  - enabled: 1
+    path: Assets/Scenes/LoginMenu.unity
+    guid: 2eb9c5b2abac4d040bded7ec61a85295
   m_configObjects: {}

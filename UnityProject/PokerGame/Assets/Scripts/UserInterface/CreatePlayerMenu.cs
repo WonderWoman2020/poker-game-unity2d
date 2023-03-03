@@ -17,8 +17,9 @@ public class CreatePlayerMenu : MonoBehaviour
     public GameObject PopupWindow;
 
     private string playerNick;
-    private string chips;
-    private string xp;
+    private string password1;
+    private string password2;
+    private string login;
 
     public void OnBackToMenuButton()
     {
@@ -62,28 +63,27 @@ public class CreatePlayerMenu : MonoBehaviour
         Debug.Log(this.playerNick);
     }
 
-    public void ReadChips(string chips)
+    public void ReadLogin(string login)
     {
-        if (chips.Length == 0)
+        if (login.Length == 0)
         {
-            this.chips = null;
+            this.login = null;
             return;
         }
 
-        this.chips = chips;
-        Debug.Log(this.chips);
+        this.login = login;
+        Debug.Log(this.login);
     }
-
-    public void ReadXP(string xp)
+    public void ReadPassword(string password)
     {
-        if (xp.Length == 0)
+        if (password.Length == 0)
         {
-            this.xp = null;
+            this.password1 = null;
             return;
         }
 
-        this.xp = xp;
-        Debug.Log(this.xp);
+        this.password1 = password;
+        Debug.Log(this.password1);
     }
 
     private bool SetPlayerInputData(Player player)
@@ -92,11 +92,11 @@ public class CreatePlayerMenu : MonoBehaviour
         if (this.playerNick != null)
             player.ChangeNick(this.playerNick);
 
-        if (this.chips != null)
-            player.TokensCount = Convert.ToInt32(this.chips);
+      //  if (this.chips != null)
+        //    player.TokensCount = Convert.ToInt32(this.chips);
 
-        if (this.xp != null)
-            player.XP = Convert.ToInt32(this.xp);
+      //  if (this.xp != null)
+        //    player.XP = Convert.ToInt32(this.xp);
 
         return true;
     }
@@ -105,8 +105,9 @@ public class CreatePlayerMenu : MonoBehaviour
     void Start()
     {
         this.playerNick = null;
-        this.chips = null;
-        this.xp = null;
+        this.password1 = null;
+        this.password2 = null;
+        this.login = null;
     }
     
     // Update is called once per frame
@@ -114,7 +115,7 @@ public class CreatePlayerMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (this.playerNick != null && this.chips != null && this.xp != null)
+            if (this.playerNick != null && this.password1 != null && this.password2 != null && this.login != null)
                 this.OnCreateButton();
         }
     }
