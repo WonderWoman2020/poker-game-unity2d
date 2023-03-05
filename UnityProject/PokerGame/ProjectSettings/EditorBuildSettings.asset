@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LoginMenu.unity
     guid: 2eb9c5b2abac4d040bded7ec61a85295
+  - enabled: 1
+    path: Assets/Scenes/CreatePlayerMenu.unity
+    guid: 40de24593eaa8b24bbe1e8ec692687dd
   m_configObjects: {}

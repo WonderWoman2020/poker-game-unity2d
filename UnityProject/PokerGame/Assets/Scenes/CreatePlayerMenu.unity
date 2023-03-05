@@ -1646,7 +1646,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 994241599}
         m_TargetAssemblyTypeName: CreatePlayerMenu, Assembly-CSharp
-        m_MethodName: ReadXP
+        m_MethodName: ReadLogin
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2551,7 +2551,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 42.25
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3203,7 +3203,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 42.25
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3731,7 +3731,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 994241599}
         m_TargetAssemblyTypeName: CreatePlayerMenu, Assembly-CSharp
-        m_MethodName: ReadChips
+        m_MethodName: ReadPassword1
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3919,7 +3919,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 994241599}
         m_TargetAssemblyTypeName: CreatePlayerMenu, Assembly-CSharp
-        m_MethodName: ReadXP
+        m_MethodName: ReadPassword2
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
