@@ -1,4 +1,5 @@
 ﻿using System;
+using PokerGameClasses;
 
 namespace pGrServer
 {
@@ -6,11 +7,8 @@ namespace pGrServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
-            Console.WriteLine("Hello World!");
-            Console.WriteLine("Hello World!");
-            Console.WriteLine("Hello World!");
+            Card card = new Card(CardSign.Heart, CardValue.Ace);
+            Console.WriteLine(card.Name);
         }
     }
 }

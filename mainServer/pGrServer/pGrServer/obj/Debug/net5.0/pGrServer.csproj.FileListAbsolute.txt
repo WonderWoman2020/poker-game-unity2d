@@ -1,0 +1,16 @@
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.csproj.AssemblyReference.cache
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.AssemblyInfoInputs.cache
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.AssemblyInfo.cs
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.csproj.CoreCompileInputs.cache
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\pGrServer.exe
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\pGrServer.deps.json
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\pGrServer.runtimeconfig.json
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\pGrServer.runtimeconfig.dev.json
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\pGrServer.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\ref\pGrServer.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\bin\Debug\net5.0\pGrServer.pdb
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\ref\pGrServer.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.pdb
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\mainServer\pGrServer\pGrServer\obj\Debug\net5.0\pGrServer.genruntimeconfig.cache
