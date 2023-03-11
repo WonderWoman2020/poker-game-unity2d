@@ -151,9 +151,9 @@ namespace PokerGameClasses
             return true;
         }
 
-        public void makeTurn(int startingPlayerNr) 
+        public void makeTurn(int startingPlayerNr, int roundParticipantsNr) 
         {
-            for(int i=0; i<this.Players.Count; i++)
+            for(int i=0; i<roundParticipantsNr; i++)
             {
                 int currentPlayer = (startingPlayerNr + i) % this.Players.Count;
                 Player player = this.Players[currentPlayer];

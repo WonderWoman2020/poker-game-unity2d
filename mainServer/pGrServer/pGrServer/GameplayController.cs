@@ -98,32 +98,41 @@ namespace PokerGameClasses
             bool equalBets = false;
             while (!equalBets)
             {
-                gameTable.makeTurn(startingPlayerNr);
+                gameTable.makeTurn(startingPlayerNr, this.gameTable.Players.Count);
                 if (gameTable.checkIfEveryoneFolded())
                     return false;
 
-                int currentBet = (gameTable.Players.Find(p => p.folded == false)).PlayersCurrentBet;
-                for (int i = 0; i < gameTable.Players.Count; i++)
-                {
-                    Player p = gameTable.Players[i];
-                    if (!p.folded)
-                    {
-                        if (p.PlayersCurrentBet != currentBet)
-                        {
-                            equalBets = false;
-                            break;
-                        }
-                        else
-                            equalBets = true;
-                    }
-                }
+                equalBets = this.CheckIfEqualBets();
             }
             return true;
         }
 
+        public bool CheckIfEqualBets()
+        {
+            bool equalBets = false;
+            int currentBet = (gameTable.Players.Find(p => p.folded == false)).PlayersCurrentBet;
+            for (int i = 0; i < gameTable.Players.Count; i++)
+            {
+                Player p = gameTable.Players[i];
+                if (!p.folded)
+                {
+                    if (p.PlayersCurrentBet != currentBet)
+                    {
+                        equalBets = false;
+                        break;
+                    }
+                    else
+                        equalBets = true;
+                }
+            }
+            return equalBets;
+        }
         public void PreFlopRound()
         {
-            this.MakeTurnTillEquallBets((this.BigBlindNr + 1) % this.gameTable.Players.Count);
+            this.gameTable.makeTurn((this.BigBlindNr + 1) % this.gameTable.Players.Count, this.gameTable.Players.Count - 2);
+            if (this.CheckIfEqualBets())
+                return;
+            this.MakeTurnTillEquallBets(this.SmallBlindNr);
         }
 
         public void FlopRound()
