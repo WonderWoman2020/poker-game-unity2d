@@ -12,6 +12,13 @@ namespace PokerGameClasses
         public CardsCollection deck;
         public CardsCollection helpingCards; //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
 
+        public int SmallBlindNr
+        { get; set; }
+        public int BigBlindNr
+        { get; set; }
+
+        public int CurrentRound
+        { get; set; }
         public GameplayController()
         {
         }
@@ -20,6 +27,10 @@ namespace PokerGameClasses
             this.gameTable = gameTable;
             this.deck = CardsCollection.CreateStandardDeck();
             this.helpingCards = new CardsCollection();
+
+            this.SmallBlindNr = 0;
+            this.BigBlindNr = this.SmallBlindNr+1;
+            this.CurrentRound = 0;
         }
 
 
@@ -42,31 +53,97 @@ namespace PokerGameClasses
 
         public void playTheGame()
         {
-            for (int i = 0; i < 4; i++)
-            {
-                if (i == 0)
-                {
-                    gameTable.shownHelpingCards.AddCard(helpingCards.Cards[0]);
-                    gameTable.shownHelpingCards.AddCard(helpingCards.Cards[1]);
-                    gameTable.shownHelpingCards.AddCard(helpingCards.Cards[2]);
-                }
-                else if (i == 1)
-                {
-                    gameTable.shownHelpingCards.AddCard(helpingCards.Cards[3]);
-                }
-                else if (i == 3)
-                {
-                    gameTable.shownHelpingCards.AddCard(helpingCards.Cards[4]);
-                }
+            Player smallBlind = this.gameTable.Players[this.SmallBlindNr];
+            Player bigBlind = this.gameTable.Players[this.BigBlindNr];
+            Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):\n");
+            smallBlind.makeMove();
+            Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):\n");
+            bigBlind.makeMove();
 
-                Console.WriteLine("------- Time for round nr " + i + ": -------");
-                gameTable.makeTurn();
+            this.dealCards();
+
+            while (CurrentRound != 4)
+            {
+                this.MakeNextRound();
                 if (gameTable.checkIfEveryoneFolded())
-                {
                     break;
+            }
+        }
+
+        public void MakeNextRound()
+        {
+            Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n");
+            switch(this.CurrentRound)
+            {
+                case 0:
+                    this.PreFlopRound();
+                    break;
+                case 1:
+                    this.FlopRound();
+                    break;
+                case 2:
+                    this.TurnRound();
+                    break;
+                case 3:
+                    this.RiverRound();
+                    break;
+                default:
+                    break;
+            }
+            this.CurrentRound++;
+        }
+
+        public bool MakeTurnTillEquallBets(int startingPlayerNr)
+        {
+            bool equalBets = false;
+            while (!equalBets)
+            {
+                gameTable.makeTurn(startingPlayerNr);
+                if (gameTable.checkIfEveryoneFolded())
+                    return false;
+
+                int currentBet = (gameTable.Players.Find(p => p.folded == false)).PlayersCurrentBet;
+                for (int i = 0; i < gameTable.Players.Count; i++)
+                {
+                    Player p = gameTable.Players[i];
+                    if (!p.folded)
+                    {
+                        if (p.PlayersCurrentBet != currentBet)
+                        {
+                            equalBets = false;
+                            break;
+                        }
+                        else
+                            equalBets = true;
+                    }
                 }
             }
-            
+            return true;
+        }
+
+        public void PreFlopRound()
+        {
+            this.MakeTurnTillEquallBets((this.BigBlindNr + 1) % this.gameTable.Players.Count);
+        }
+
+        public void FlopRound()
+        {
+            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[0]);
+            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[1]);
+            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[2]);
+            this.MakeTurnTillEquallBets(this.SmallBlindNr);
+        }
+
+        public void TurnRound()
+        {
+            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[3]);
+            this.MakeTurnTillEquallBets(this.SmallBlindNr);
+        }
+
+        public void RiverRound()
+        {
+            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[4]);
+            this.MakeTurnTillEquallBets(this.SmallBlindNr);
         }
 
         public void ConcludeGame()
@@ -103,6 +180,15 @@ namespace PokerGameClasses
             this.helpingCards = new CardsCollection();
             this.deck = CardsCollection.CreateStandardDeck();
             this.gameTable.ResetGameState();
+            this.ChangeBlindsPositions();
+        }
+
+        public void ChangeBlindsPositions()
+        {
+            this.SmallBlindNr++;
+            this.SmallBlindNr = this.SmallBlindNr % this.gameTable.Players.Count;
+            this.BigBlindNr = this.SmallBlindNr + 1;
+            this.BigBlindNr = this.BigBlindNr % this.gameTable.Players.Count;
         }
 
         //kazda funkcja musi dostac posortowane 7 kart od najwyzszej - As do najnizszej

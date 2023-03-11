@@ -22,7 +22,7 @@ namespace pGrServer
 
             GameplayController controller = new GameplayController(gameTable);
 
-            controller.dealCards();
+            //controller.dealCards();
             controller.playTheGame();
             controller.ConcludeGame();
         }

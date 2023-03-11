@@ -151,10 +151,12 @@ namespace PokerGameClasses
             return true;
         }
 
-        public void makeTurn() 
+        public void makeTurn(int startingPlayerNr) 
         {
-            foreach(Player player in Players) 
+            for(int i=0; i<this.Players.Count; i++)
             {
+                int currentPlayer = (startingPlayerNr + i) % this.Players.Count;
+                Player player = this.Players[currentPlayer];
                 if (!player.AllInMade && !player.folded)
                 {
                     Console.WriteLine();
@@ -187,9 +189,7 @@ namespace PokerGameClasses
             this.TokensInGame = 0;
             this.CurrentBid = 0;
             this.shownHelpingCards = new CardsCollection();
-            this.Players.ForEach(p => p.PlayerHand = new CardsCollection());
-            this.Players.ForEach(p => p.folded = false);
-            this.Players.ForEach(p => p.AllInMade = false);
+            this.Players.ForEach(p => p.ResetPlayerGameState());
         }
 
         public string TableGameState()

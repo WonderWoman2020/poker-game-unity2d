@@ -32,6 +32,9 @@ namespace PokerGameClasses
         public bool AllInMade
         { get; set; }
 
+        public int PlayersCurrentBet
+        { get; set; }
+
         public Player(string nick, PlayerType type)
         {
             this.ChangeNick(nick);
@@ -43,6 +46,7 @@ namespace PokerGameClasses
             this.Table = null;
             this.folded = false;
             this.AllInMade = false;
+            this.PlayersCurrentBet = 0;
         }
 
         override public string ToString()
@@ -63,6 +67,7 @@ namespace PokerGameClasses
             }
 
             bool moveDone = false;
+            int playersCurrentTokensCount = this.TokensCount;
             while (!moveDone)
             {
                 //potem zamienić na pobieranie inputu z przycisków
@@ -91,6 +96,8 @@ namespace PokerGameClasses
                 }
             }
 
+            this.PlayersCurrentBet += playersCurrentTokensCount - this.TokensCount;
+
             return moveDone;
         }
 
@@ -102,35 +109,35 @@ namespace PokerGameClasses
 
         public bool Check()
         {
-            if(this.TokensCount < this.Table.CurrentBid)
+            if(this.TokensCount < (this.Table.CurrentBid - this.PlayersCurrentBet))
             {
                 Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
                 return false;
             }
 
             
-            this.Table.TokensInGame = this.Table.TokensInGame + this.Table.CurrentBid;
-            this.TokensCount = this.TokensCount - this.Table.CurrentBid;
+            this.Table.TokensInGame = this.Table.TokensInGame + (this.Table.CurrentBid - this.PlayersCurrentBet);
+            this.TokensCount = this.TokensCount - (this.Table.CurrentBid - this.PlayersCurrentBet);
             return true;
         }
 
         public bool Raise(int amount)
         {
-            if(this.TokensCount < amount + this.Table.CurrentBid)
+            if(this.TokensCount < amount + (this.Table.CurrentBid - this.PlayersCurrentBet))
             {
                 Console.WriteLine("You have not enough tokens to make this move. Make other choice or decrease raise value.");
                 return false;
             }
 
-            this.Table.TokensInGame = this.Table.TokensInGame + this.Table.CurrentBid + amount;
-            this.TokensCount = this.TokensCount - (this.Table.CurrentBid + amount);
+            this.Table.TokensInGame = this.Table.TokensInGame + (this.Table.CurrentBid - this.PlayersCurrentBet) + amount;
+            this.TokensCount = this.TokensCount - ((this.Table.CurrentBid - this.PlayersCurrentBet) + amount);
             this.Table.CurrentBid = this.Table.CurrentBid + amount;
             return true;
         }
 
         public bool AllIn()
         {
-            if(this.TokensCount < this.Table.CurrentBid)
+            if(this.TokensCount < (this.Table.CurrentBid - this.PlayersCurrentBet))
             {
                 Console.WriteLine("Amount smaller than current bid in the game. Input bigger value or make different move.");
                 return false;
@@ -175,11 +182,20 @@ namespace PokerGameClasses
             return true;
         }
 
+        public void ResetPlayerGameState()
+        {
+            this.PlayerHand = new CardsCollection();
+            this.folded = false;
+            this.AllInMade = false;
+            this.PlayersCurrentBet = 0;
+        }
+
         public string PlayerGameState()
         {
             return "Player's '"+this.Nick+ "' game state:\n" 
                 + "Hand: " + String.Join(", ", this.PlayerHand.Cards)
                 + "\nTokens: " + this.TokensCount
+                + "\nCurrent bet: "+this.PlayersCurrentBet
                 + "\nXP: " + this.XP;
         }
     }
