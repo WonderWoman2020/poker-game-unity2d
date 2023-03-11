@@ -168,16 +168,21 @@ namespace PokerGameClasses
         }
         public Player determineWinner()
         {
-            int biggest_score = 11;//gorzej niz najwyzsza karta
+            int biggestScore = 11;//gorzej niz najwyzsza karta
             Player winner = (this.gameTable.Players.Count > 0) ? this.gameTable.Players[0] : null;
             foreach (Player player in gameTable.Players)
             {
+                if (player.folded)
+                    continue;
                 // Karty gracza i 5 wspolnych lezacych na stole
                 CardsCollection PlayerCards = CardsCollection.MergeTwoDecks(player.PlayerHand, gameTable.shownHelpingCards);
                 CardsCollection SortedPlayerCards = CardsCollection.SortDesc(PlayerCards);
-                if (valueOfCards(PlayerCards) <= biggest_score)
+                int playerScore = valueOfCards(SortedPlayerCards);
+                if (playerScore <= biggestScore)
                 {
                     winner = player;
+                    biggestScore = playerScore;
+                    
                 }
             }
 
