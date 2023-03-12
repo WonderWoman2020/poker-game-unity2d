@@ -35,12 +35,12 @@ namespace pGrServer
             //TODO
             //zamknac wszystkie polaczenia
             //iteracja po tablicy asocjacyjnej
+            //nie wiem jeszcze jak XD
 
             Environment.Exit(0);
         }
         public static void ListenLogin()
         {
-            Int32 port = 6937;
             
             loginListener.Start();
             try
@@ -65,8 +65,10 @@ namespace pGrServer
                         //Nalezy ten token wysłać użytkownikowi
 
                         loggedClientsAccess.WaitOne();
-                        loggedClients[token] = client;
+                            loggedClients[token] = client;
                         loggedClientsAccess.ReleaseMutex();
+
+                        
 
                     }
                     else
@@ -81,6 +83,9 @@ namespace pGrServer
             }
             catch(SocketException ex)
             {
+                //To musi być złapane, bo inaczej wywala błąd unhandled exception
+                //Po co taka logika, nie kumam, ale tu nic dziac sie nie musi XD
+                Console.WriteLine(ex);
 
             }
             
@@ -90,7 +95,7 @@ namespace pGrServer
             running = true;
             loggedClients = new Dictionary<string, TcpClient>();
             loggedClientsAccess = new Mutex();
-            loginListener = new TcpListener(IPAddress.Any, 6937);
+            loginListener = new TcpListener(IPAddress.Any, (Int32)6937);
         }
         public static string GenerateToken()
         {
