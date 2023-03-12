@@ -1034,9 +1034,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CreatePlayerMenu, Assembly-CSharp
-        m_MethodName: ReadXP
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: LoginPlayer, Assembly-CSharp
+        m_MethodName: ReadLogin
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1842,7 +1842,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 47.35
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2008,6 +2008,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loginButton: {fileID: 260972091}
   backToMenuButton: {fileID: 716606195}
+  PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1275187814
 GameObject:
   m_ObjectHideFlags: 0
@@ -2619,9 +2620,9 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CreatePlayerMenu, Assembly-CSharp
-        m_MethodName: ReadChips
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: LoginPlayer, Assembly-CSharp
+        m_MethodName: ReadPassword
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -32,13 +32,13 @@ namespace PokerGameClasses
         public bool AllInMade
         { get; set; }
 
-        public Player(string nick, PlayerType type)
+        public Player(string nick, PlayerType type, int xp, int tokens)
         {
             this.ChangeNick(nick);
             this.Type = type;
             this.PlayerHand = new CardsCollection();
-            this.XP = 0;
-            this.TokensCount = 1000;
+            this.XP = xp;
+            this.TokensCount = tokens;
             this.Rank = "Newbie";
             this.Table = null;
             this.folded = false;
