@@ -1,0 +1,5 @@
+import "oaidl.idl";
+[object, uuid(AFEAC528-6033-4E9B-85D7-36EBE56A4A81)]
+interface IKlasa2 : IUnknown {
+	HRESULT Test([in]int i);
+};
