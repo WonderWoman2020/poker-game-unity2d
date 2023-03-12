@@ -1,4 +1,0 @@
-LIBRARY <nazwa_biblioteki>.dll
-
-EXPORTS
-// tutaj podaj nazwy funkcji eksportowanych przez bibliotekę
