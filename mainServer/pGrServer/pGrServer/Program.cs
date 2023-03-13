@@ -26,7 +26,6 @@ namespace pGrServer
             autoLogoutThread.Start();
 
             Console.ReadKey();
-            //zamykanie
             running = false;
             loginListener.Stop();
             loginThread.Join();
@@ -48,7 +47,7 @@ namespace pGrServer
                 while (running)
                 {
                     TcpClient client = loginListener.AcceptTcpClient();
-
+                    NetworkStream clientStream = client.GetStream();
                     //TODO
                     //odebrać username i hasło
                     string username;
@@ -61,24 +60,23 @@ namespace pGrServer
                     {
                         string token = GenerateToken();
 
-                        //TODO
-                        //Nalezy ten token wysłać użytkownikowi
+                        byte[] message = System.Text.Encoding.ASCII.GetBytes(token);
+                        clientStream.Write(message, 0, message.Length);
 
                         loggedClientsAccess.WaitOne();
                             loggedClients[token] = client;
                         loggedClientsAccess.ReleaseMutex();
 
-                        
-
                     }
                     else
                     {
-                        //TODO
-                        //Odpowiedz, ze sie nie udalo
-                        //chyba tyle
+                        byte[] message = System.Text.Encoding.ASCII.GetBytes("0000000000");
+                        clientStream.Write(message, 0, message.Length);
 
-                        //Ewentualnie, rejestrowac próby logowania na uzytkownika by zablokować próby odgadnięcia
+                        //TODO
+                        //rejestrowac próby logowania na uzytkownika by zablokować próby odgadnięcia
                     }
+                    clientStream.Dispose();
                 }
             }
             catch(SocketException ex)
@@ -117,6 +115,9 @@ namespace pGrServer
         }
         public static void AutoLogout()
         {
+            //TODO
+            //Co jakis czas np. minute przesledzic jakis dziennik aktywnosci
+            //np wylogować osoby co nie miały jakichś akcji od 30min
             while (running)
             {
                 Console.WriteLine('x');
