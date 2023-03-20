@@ -8,7 +8,7 @@ namespace pGrServer
         static void Main(string[] args)
         {
             Card card = new Card(CardSign.Heart, CardValue.Ace);
-            Console.WriteLine(card.Name);
+            Console.WriteLine(card);
 
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);

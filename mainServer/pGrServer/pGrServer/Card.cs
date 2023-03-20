@@ -44,14 +44,11 @@ namespace PokerGameClasses
         { get; set; }
         public CardValue Value
         { get; set; }
-        public string Name
-        { get; set; }
         
         public Card(CardSign sign, CardValue val)
         {
             this.Sign = sign;
             this.Value = val;
-            this.Name = this.CreateCardName();
         }
 
         public CardColor GetCardColor()
@@ -62,59 +59,50 @@ namespace PokerGameClasses
                 return CardColor.Black;
         }
 
-        private string CreateCardName()
+        public string GetShortSign()
         {
-            return this.CardValueToString() + " " + this.CardSignToString();
-        }
-
-        public string CardValueToString()
-        {
-            if ((int)this.Value <= 10)
-                return this.Value.ToString();
-
-            switch (this.Value)
-            {
-                case CardValue.Jack:
-                    return "Jack";
-                case CardValue.Queen:
-                    return "Queen";
-                case CardValue.King:
-                    return "King";
-                case CardValue.Ace:
-                    return "Ace";
-                default:
-                    return "Undef. Value";
-            }
-        }
-
-        public string CardSignToString()
-        {
-            switch(this.Sign)
+            switch (this.Sign)
             {
                 case CardSign.Heart:
-                    return "Heart";
+                    return "♥";
                 case CardSign.Spade:
-                    return "Spade";
+                    return "♠";
                 case CardSign.Diamond:
-                    return "Diamond";
+                    return "♦";
                 case CardSign.Club:
-                    return "Club";
+                    return "♣";
                 default:
-                    return "Undef. Sign";
+                    return "X";                
             }
         }
 
-        public string CardColorToString()
+        public string GetShortValue()
         {
-            if (this.GetCardColor() == CardColor.Black)
-                return "Black";
-            else
-                return "Red";
+            if (this.Value >= CardValue.Two && this.Value <= CardValue.Ten)
+                return ((int)this.Value).ToString();
+
+            if (this.Value >= CardValue.Jack && this.Value <= CardValue.Ace)
+            {
+                string val = this.Value.ToString();
+                return val[0].ToString();
+            }
+
+            return "Y";
+        }
+
+        public string GetShortName()
+        {
+            return this.GetShortValue() + this.GetShortSign();
+        }
+
+        public string GetName()
+        {
+            return this.Value.ToString() + " " + this.Sign.ToString();
         }
 
         override public string ToString()
         {
-            return this.Name;
+            return this.GetShortName();
         }
     }
 }
