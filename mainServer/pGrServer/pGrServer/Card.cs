@@ -8,10 +8,10 @@ namespace PokerGameClasses
 {
    public enum CardSign
     {
-        Heart, //Serce
-        Spade, // Pik
-        Diamond, //Kier
-        Club //Trefl
+        Club, //Trefl
+        Diamond, //Karo
+        Heart, //Kier
+        Spade // Pik
     }
 
     public enum CardValue
@@ -38,7 +38,7 @@ namespace PokerGameClasses
     }
  
 
-    public class Card
+    public class Card : IComparable<Card>
     {
         public CardSign Sign
         { get; set; }
@@ -63,10 +63,10 @@ namespace PokerGameClasses
         {
             switch (this.Sign)
             {
-                case CardSign.Heart:
-                    return "♥";
                 case CardSign.Spade:
                     return "♠";
+                case CardSign.Heart:
+                    return "♥";
                 case CardSign.Diamond:
                     return "♦";
                 case CardSign.Club:
@@ -103,6 +103,51 @@ namespace PokerGameClasses
         override public string ToString()
         {
             return this.GetShortName();
+        }
+
+        public int CompareTo(Card other)
+        {
+            if ((int)this.Value == (int)other.Value)
+            {
+                if ((int)this.Sign == (int)other.Sign)
+                    return 0; //równe karty, w sumie niemożliwa sytuacja w grze
+
+                return (int)this.Sign - (int)other.Sign; //jeśli karta ma wyższy znak, zwraca liczbę dodatnią
+            }
+
+            return (int)this.Value - (int)other.Value;
+        }
+
+        public static bool operator ==(Card first, Card second)
+        {
+            if (first.CompareTo(second) == 0)
+                return true;
+
+            return false;
+        }
+
+        public static bool operator !=(Card first, Card second)
+        {
+            if (first.CompareTo(second) != 0)
+                return true;
+
+            return false;
+        }
+
+        public static bool operator >(Card first, Card second)
+        {
+            if (first.CompareTo(second) > 0)
+                return true;
+
+            return false;
+        }
+
+        public static bool operator <(Card first, Card second)
+        {
+            if (first.CompareTo(second) < 0)
+                return true;
+
+            return false;
         }
     }
 }

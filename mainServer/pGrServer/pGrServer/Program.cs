@@ -22,6 +22,16 @@ namespace pGrServer
 
             GameplayController controller = new GameplayController(gameTable);
 
+            Console.WriteLine(new Card(CardSign.Heart, CardValue.King) > new Card(CardSign.Heart, CardValue.Jack) ? 
+                "(Test) First Card is worth more":"(Test) Second Card is worth more");
+
+            CardsCollection cards = CardsCollection.CreateStandardDeck();
+            cards.ShuffleCards();
+            cards.Cards.ForEach(c => Console.WriteLine(c));
+            Console.WriteLine();
+            cards.Cards.Sort();
+            cards.Cards.ForEach(c => Console.WriteLine(c));
+
             //controller.dealCards();
             controller.playTheGame();
             controller.ConcludeGame();
