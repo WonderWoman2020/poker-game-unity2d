@@ -30,16 +30,27 @@ namespace PokerGameClasses
             }
             this.Deck = new CardsCollection(deck);
         }
-
-        public void DealCards(GameTable gameTable, int roundNr)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ShuffleCards()
         {
             System.Random random = new System.Random();
             this.Deck.Cards = this.Deck.Cards.OrderBy(c => random.Next()).ToList();
+        }
+        public void DealCards(GameTable gameTable, int roundNr, CardsCollection helpingCards)
+        {
+            this.CreateDeck();
+            this.ShuffleCards();
+            int cardNumber = 0;
+            foreach (Player player in gameTable.Players)
+            {
+                player.PlayerHand.AddCard(this.Deck.Cards[cardNumber]);
+                player.PlayerHand.AddCard(this.Deck.Cards[cardNumber + 1]);
+                cardNumber += 2;
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                helpingCards.AddCard(this.Deck.Cards[cardNumber + i]);
+            }
         }
     }
 }

@@ -33,28 +33,6 @@ namespace PokerGameClasses
             this.CurrentRound = 0;
         }
 
-
-        public void dealCards()
-        {
-            TexasHoldemDealer dealer = new TexasHoldemDealer();
-            dealer.CreateDeck();
-            dealer.ShuffleCards();
-            //deck.ShuffleCards();
-            this.deck = dealer.Deck;
-            int cardNumber = 0;
-            foreach (Player player in gameTable.Players)
-            {
-                player.PlayerHand.AddCard(deck.Cards[cardNumber]);
-                player.PlayerHand.AddCard(deck.Cards[cardNumber + 1]);
-                cardNumber += 2;
-            }
-
-            for(int i = 0; i< 7; i++)
-            {
-                helpingCards.AddCard(deck.Cards[cardNumber+i]);
-            }
-        }
-
         public void playTheGame()
         {
             Player smallBlind = this.gameTable.Players[this.SmallBlindNr];
@@ -64,7 +42,8 @@ namespace PokerGameClasses
             Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):\n");
             bigBlind.makeMove();
 
-            this.dealCards();
+            ICardsDealer dealer = new TexasHoldemDealer();
+            dealer.DealCards(this.gameTable, 0, this.helpingCards);
 
             while (CurrentRound != 4)
             {

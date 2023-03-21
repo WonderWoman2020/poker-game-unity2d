@@ -23,6 +23,7 @@ namespace PokerGameClasses
 
         public bool AddCard(Card card)
         {
+            //if Cards == null
             this.Cards.Add(card);
             return true;
         }
