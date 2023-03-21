@@ -165,6 +165,8 @@ namespace PokerGameClasses
                     
                 }
             }
+            Dealer.Deck.SortDesc();
+            Console.WriteLine(Dealer.Deck.ToString());
 
             return winner;
         }

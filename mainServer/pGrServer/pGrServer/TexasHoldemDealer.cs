@@ -61,33 +61,28 @@ namespace PokerGameClasses
             this.CreateDeck();
             this.ShuffleCards();
 
-            int cardNumber = 0;
             foreach (Player player in gameTable.Players)
             {
-                player.PlayerHand.AddCard(this.Deck.Cards[cardNumber]);
-                player.PlayerHand.AddCard(this.Deck.Cards[cardNumber + 1]);
-                cardNumber += 2;
+                player.PlayerHand.AddCard(this.Deck.TakeOutCard(0));
+                player.PlayerHand.AddCard(this.Deck.TakeOutCard(0));
             }
         }
 
         private void DealFlop(GameTable gameTable)
         {
-            int cardNumber = gameTable.Players.Count * 2;
             for (int i = 0; i < 3; i++)
             {
-                gameTable.shownHelpingCards.AddCard(this.Deck.Cards[cardNumber + i]);
+                gameTable.shownHelpingCards.AddCard(this.Deck.TakeOutCard(0));
             }
         }
 
         private void DealTurn(GameTable gameTable)
         {
-            int cardNumber = gameTable.Players.Count * 2 + 3;
-            gameTable.shownHelpingCards.AddCard(this.Deck.Cards[cardNumber]);
+            gameTable.shownHelpingCards.AddCard(this.Deck.TakeOutCard(0));
         }
         private void DealRiver(GameTable gameTable)
         {
-            int cardNumber = gameTable.Players.Count * 2 + 4;
-            gameTable.shownHelpingCards.AddCard(this.Deck.Cards[cardNumber]);
+            gameTable.shownHelpingCards.AddCard(this.Deck.TakeOutCard(0));
         }
     }
 }

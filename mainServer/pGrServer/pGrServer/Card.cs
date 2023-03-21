@@ -79,7 +79,8 @@ namespace PokerGameClasses
         public string GetShortValue()
         {
             if (this.Value >= CardValue.Two && this.Value <= CardValue.Ten)
-                return ((int)this.Value).ToString();
+                //return ((int)this.Value).ToString();
+                return Convert.ToString((int)this.Value);
 
             if (this.Value >= CardValue.Jack && this.Value <= CardValue.Ace)
             {
