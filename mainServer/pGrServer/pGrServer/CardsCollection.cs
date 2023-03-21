@@ -23,12 +23,17 @@ namespace PokerGameClasses
 
         public bool AddCard(Card card)
         {
-            //if Cards == null
+            if (this.Cards == null)
+                this.Cards = new List<Card>();
+
             this.Cards.Add(card);
             return true;
         }
         public Card TakeOutCard(CardSign sign, CardValue val)
         {
+            if (this.Cards == null)
+                return null;
+
             Card takenCard = this.Cards.Find(c => c.Sign == sign && c.Value == val);
             this.Cards.Remove(takenCard);
             return takenCard;
@@ -36,6 +41,9 @@ namespace PokerGameClasses
 
         public Card TakeOutCard(int cardNr)
         {
+            if (this.Cards == null)
+                return null;
+
             Card takenCard = this.Cards.ElementAt(cardNr);
             this.Cards.Remove(takenCard);
             return takenCard;
@@ -49,11 +57,17 @@ namespace PokerGameClasses
         }
         public void SortDesc()
         {
+            if (this.Cards == null)
+                return;
+
             this.Cards.Sort((x,y)=>y.CompareTo(x));
         }
 
         public void SortAsc()
         {
+            if (this.Cards == null)
+                return;
+
             this.Cards.Sort();
         }
 
