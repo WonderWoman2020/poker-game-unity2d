@@ -21,33 +21,39 @@ namespace PokerGameClasses
             this.Cards = cards;
         }
 
-        public void ShowCards()
-        {
-            
-        }
-
         public bool AddCard(Card card)
         {
             this.Cards.Add(card);
             return true;
-        }
-        public static CardsCollection MergeTwoDecks(CardsCollection firstCardsCollection, CardsCollection secondCardsCollection)
-        {
-            CardsCollection cardsCollection = new CardsCollection();
-            cardsCollection.Cards = firstCardsCollection.Cards;
-            cardsCollection.Cards.AddRange(secondCardsCollection.Cards);
-            return cardsCollection;
-        }
-        public static CardsCollection SortDesc(CardsCollection cards)
-        {
-            cards.Cards.Sort((x,y)=>y.Value-x.Value);
-            return cards;
         }
         public Card TakeOutCard(CardSign sign, CardValue val)
         {
             Card takenCard = this.Cards.Find(c => c.Sign == sign && c.Value == val);
             this.Cards.Remove(takenCard);
             return takenCard;
+        }
+
+        public Card TakeOutCard(int cardNr)
+        {
+            Card takenCard = this.Cards.ElementAt(cardNr);
+            this.Cards.Remove(takenCard);
+            return takenCard;
+        }
+        static public CardsCollection operator +(CardsCollection first, CardsCollection second)
+        {
+            CardsCollection cardsCollection = new CardsCollection();
+            cardsCollection.Cards.AddRange(first.Cards);
+            cardsCollection.Cards.AddRange(second.Cards);
+            return cardsCollection;
+        }
+        public void SortDesc()
+        {
+            this.Cards.Sort((x,y)=>y.CompareTo(x));
+        }
+
+        public void SortAsc()
+        {
+            this.Cards.Sort();
         }
         public bool ShuffleCards()
         {
@@ -70,6 +76,11 @@ namespace PokerGameClasses
                 }
             }
             return new CardsCollection(deck);
+        }
+
+        override public string ToString()
+        {
+            return string.Join(", ", this.Cards);
         }
     }
 }

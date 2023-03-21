@@ -175,9 +175,10 @@ namespace PokerGameClasses
                 if (player.folded)
                     continue;
                 // Karty gracza i 5 wspolnych lezacych na stole
-                CardsCollection PlayerCards = CardsCollection.MergeTwoDecks(player.PlayerHand, gameTable.shownHelpingCards);
-                CardsCollection SortedPlayerCards = CardsCollection.SortDesc(PlayerCards);
-                int playerScore = valueOfCards(SortedPlayerCards);
+                CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
+                PlayerCards.SortDesc();
+                Console.WriteLine(PlayerCards);
+                int playerScore = valueOfCards(PlayerCards);
                 if (playerScore <= biggestScore)
                 {
                     winner = player;
