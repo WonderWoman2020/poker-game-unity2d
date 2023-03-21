@@ -56,6 +56,15 @@ namespace PokerGameClasses
             }
         }
 
+        public void TakeBackCards(GameTable gameTable)
+        {
+            foreach (Player player in gameTable.Players)
+                player.PlayerHand = new CardsCollection();
+
+            gameTable.shownHelpingCards = new CardsCollection();
+            this.Deck = null;
+        }
+
         private void DealPreflop(GameTable gameTable)
         {
             this.CreateDeck();

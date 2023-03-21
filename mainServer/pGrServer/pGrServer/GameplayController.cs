@@ -173,6 +173,7 @@ namespace PokerGameClasses
 
         public void ResetGame()
         {
+            this.Dealer.TakeBackCards(gameTable);
             this.gameTable.ResetGameState();
             this.ChangeBlindsPositions();
         }
