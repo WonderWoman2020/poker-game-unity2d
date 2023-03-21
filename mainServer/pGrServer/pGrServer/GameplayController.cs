@@ -9,8 +9,8 @@ namespace PokerGameClasses
     {
         public GameTable gameTable
         { get; set; }
-        public CardsCollection deck;
-        public CardsCollection helpingCards; //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
+        public ICardsDealer Dealer
+        { get; set; }
 
         public int SmallBlindNr
         { get; set; }
@@ -25,8 +25,7 @@ namespace PokerGameClasses
         public GameplayController(GameTable gameTable)
         {
             this.gameTable = gameTable;
-            this.deck = null;//CardsCollection.CreateStandardDeck();
-            this.helpingCards = new CardsCollection();
+            this.Dealer = new TexasHoldemDealer();
 
             this.SmallBlindNr = 0;
             this.BigBlindNr = this.SmallBlindNr+1;
@@ -41,9 +40,6 @@ namespace PokerGameClasses
             smallBlind.makeMove();
             Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):\n");
             bigBlind.makeMove();
-
-            ICardsDealer dealer = new TexasHoldemDealer();
-            dealer.DealCards(this.gameTable, 0, this.helpingCards);
 
             while (CurrentRound != 4)
             {
@@ -112,6 +108,8 @@ namespace PokerGameClasses
         }
         public void PreFlopRound()
         {
+            this.Dealer.DealCards(this.gameTable, 0);
+
             this.gameTable.makeTurn((this.BigBlindNr + 1) % this.gameTable.Players.Count, this.gameTable.Players.Count - 2);
             if (this.CheckIfEqualBets())
                 return;
@@ -120,21 +118,19 @@ namespace PokerGameClasses
 
         public void FlopRound()
         {
-            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[0]);
-            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[1]);
-            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[2]);
+            this.Dealer.DealCards(gameTable, 1);
             this.MakeTurnTillEquallBets(this.SmallBlindNr);
         }
 
         public void TurnRound()
         {
-            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[3]);
+            this.Dealer.DealCards(gameTable, 2);
             this.MakeTurnTillEquallBets(this.SmallBlindNr);
         }
 
         public void RiverRound()
         {
-            gameTable.shownHelpingCards.AddCard(helpingCards.Cards[4]);
+            this.Dealer.DealCards(gameTable, 3);
             this.MakeTurnTillEquallBets(this.SmallBlindNr);
         }
 
@@ -175,8 +171,6 @@ namespace PokerGameClasses
 
         public void ResetGame()
         {
-            this.helpingCards = new CardsCollection();
-            this.deck = null;//CardsCollection.CreateStandardDeck();
             this.gameTable.ResetGameState();
             this.ChangeBlindsPositions();
         }

@@ -35,10 +35,32 @@ namespace PokerGameClasses
             System.Random random = new System.Random();
             this.Deck.Cards = this.Deck.Cards.OrderBy(c => random.Next()).ToList();
         }
-        public void DealCards(GameTable gameTable, int roundNr, CardsCollection helpingCards)
+        public void DealCards(GameTable gameTable, int roundNr)
+        {
+            switch(roundNr)
+            {
+                case 0:
+                    this.DealPreflop(gameTable);
+                    break;
+                case 1:
+                    this.DealFlop(gameTable);
+                    break;
+                case 2:
+                    this.DealTurn(gameTable);
+                    break;
+                case 3:
+                    this.DealRiver(gameTable);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void DealPreflop(GameTable gameTable)
         {
             this.CreateDeck();
             this.ShuffleCards();
+
             int cardNumber = 0;
             foreach (Player player in gameTable.Players)
             {
@@ -46,11 +68,26 @@ namespace PokerGameClasses
                 player.PlayerHand.AddCard(this.Deck.Cards[cardNumber + 1]);
                 cardNumber += 2;
             }
+        }
 
-            for (int i = 0; i < 5; i++)
+        private void DealFlop(GameTable gameTable)
+        {
+            int cardNumber = gameTable.Players.Count * 2;
+            for (int i = 0; i < 3; i++)
             {
-                helpingCards.AddCard(this.Deck.Cards[cardNumber + i]);
+                gameTable.shownHelpingCards.AddCard(this.Deck.Cards[cardNumber + i]);
             }
+        }
+
+        private void DealTurn(GameTable gameTable)
+        {
+            int cardNumber = gameTable.Players.Count * 2 + 3;
+            gameTable.shownHelpingCards.AddCard(this.Deck.Cards[cardNumber]);
+        }
+        private void DealRiver(GameTable gameTable)
+        {
+            int cardNumber = gameTable.Players.Count * 2 + 4;
+            gameTable.shownHelpingCards.AddCard(this.Deck.Cards[cardNumber]);
         }
     }
 }

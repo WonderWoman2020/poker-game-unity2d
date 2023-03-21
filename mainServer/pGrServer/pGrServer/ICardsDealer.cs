@@ -12,6 +12,6 @@ namespace PokerGameClasses
         { set; get; }
         public void CreateDeck();
         public void ShuffleCards();
-        public void DealCards(GameTable gameTable, int roundNr, CardsCollection helpingCards);
+        public void DealCards(GameTable gameTable, int roundNr);
     }
 }
