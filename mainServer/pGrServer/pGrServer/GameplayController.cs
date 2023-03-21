@@ -25,7 +25,7 @@ namespace PokerGameClasses
         public GameplayController(GameTable gameTable)
         {
             this.gameTable = gameTable;
-            this.deck = CardsCollection.CreateStandardDeck();
+            this.deck = null;//CardsCollection.CreateStandardDeck();
             this.helpingCards = new CardsCollection();
 
             this.SmallBlindNr = 0;
@@ -36,7 +36,11 @@ namespace PokerGameClasses
 
         public void dealCards()
         {
-            deck.ShuffleCards();
+            TexasHoldemDealer dealer = new TexasHoldemDealer();
+            dealer.CreateDeck();
+            dealer.ShuffleCards();
+            //deck.ShuffleCards();
+            this.deck = dealer.Deck;
             int cardNumber = 0;
             foreach (Player player in gameTable.Players)
             {
@@ -193,7 +197,7 @@ namespace PokerGameClasses
         public void ResetGame()
         {
             this.helpingCards = new CardsCollection();
-            this.deck = CardsCollection.CreateStandardDeck();
+            this.deck = null;//CardsCollection.CreateStandardDeck();
             this.gameTable.ResetGameState();
             this.ChangeBlindsPositions();
         }

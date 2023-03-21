@@ -25,12 +25,14 @@ namespace pGrServer
             Console.WriteLine(new Card(CardSign.Heart, CardValue.King) > new Card(CardSign.Heart, CardValue.Jack) ? 
                 "(Test) First Card is worth more":"(Test) Second Card is worth more");
 
-            CardsCollection cards = CardsCollection.CreateStandardDeck();
-            cards.ShuffleCards();
-            cards.Cards.ForEach(c => Console.WriteLine(c));
+
+            TexasHoldemDealer dealer = new TexasHoldemDealer();
+            dealer.CreateDeck();
+            dealer.ShuffleCards();
+            Console.WriteLine(dealer.Deck);
             Console.WriteLine();
-            cards.Cards.Sort();
-            cards.Cards.ForEach(c => Console.WriteLine(c));
+            dealer.Deck.SortAsc();
+            Console.WriteLine(dealer.Deck);
 
             //controller.dealCards();
             controller.playTheGame();

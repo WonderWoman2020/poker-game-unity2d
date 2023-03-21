@@ -55,28 +55,6 @@ namespace PokerGameClasses
         {
             this.Cards.Sort();
         }
-        public bool ShuffleCards()
-        {
-            System.Random random = new System.Random();
-            this.Cards = this.Cards.OrderBy(c => random.Next()).ToList();
-            return true;
-        }
-
-        public static CardsCollection CreateStandardDeck()
-        {
-            List<Card> deck = new List<Card>(52);
-
-            int index = 0;
-            foreach(CardValue cardVal in Enum.GetValues(typeof(CardValue)))
-            {
-                foreach(CardSign cardSign in Enum.GetValues(typeof(CardSign)))
-                {
-                    deck.Add(new Card(cardSign, cardVal));
-                    index++;
-                }
-            }
-            return new CardsCollection(deck);
-        }
 
         override public string ToString()
         {
