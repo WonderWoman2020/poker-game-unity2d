@@ -10,10 +10,13 @@ namespace PokerGameClasses
     {
         public CardsCollection Deck 
         { get; set; }
+        public int Position 
+        { get; set; }
 
         public TexasHoldemDealer()
         {
             this.Deck = null;
+            this.Position = 0;
         }
         public void CreateDeck()
         {
@@ -92,6 +95,12 @@ namespace PokerGameClasses
         private void DealRiver(GameTable gameTable)
         {
             gameTable.shownHelpingCards.AddCard(this.Deck.TakeOutCard(0));
+        }
+
+        public void ChangePosition(GameTable gameTable)
+        {
+            this.Position++;
+            this.Position = this.Position % gameTable.Players.Count;
         }
     }
 }

@@ -10,10 +10,13 @@ namespace PokerGameClasses
     {
         public CardsCollection Deck
         { set; get; }
+
+        public int Position
+        { set; get; }
         public void CreateDeck();
         public void ShuffleCards();
         public void DealCards(GameTable gameTable, int roundNr);
-
         public void TakeBackCards(GameTable gameTable);
+        public void ChangePosition(GameTable gameTable);
     }
 }
