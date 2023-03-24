@@ -20,7 +20,7 @@ namespace pGrServer
 
             Console.WriteLine(gameTable);
 
-            GameplayController controller = new GameplayController(gameTable);
+            GameplayController controller = new GameplayController(gameTable, new TexasHoldemDealer());
 
             Console.WriteLine(new Card(CardSign.Heart, CardValue.King) > new Card(CardSign.Heart, CardValue.Jack) ? 
                 "(Test) First Card is worth more":"(Test) Second Card is worth more");

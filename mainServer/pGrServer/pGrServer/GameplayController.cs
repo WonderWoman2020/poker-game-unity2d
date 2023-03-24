@@ -17,10 +17,10 @@ namespace PokerGameClasses
         public GameplayController()
         {
         }
-        public GameplayController(GameTable gameTable)
+        public GameplayController(GameTable gameTable, ICardsDealer cardsDealer)
         {
             this.gameTable = gameTable;
-            this.Dealer = new TexasHoldemDealer();
+            this.Dealer = cardsDealer;
 
             this.CurrentRound = 0;
         }
