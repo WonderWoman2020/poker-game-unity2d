@@ -35,6 +35,9 @@ namespace PokerGameClasses
         public int PlayersCurrentBet
         { get; set; }
 
+        public int SeatNr
+        { get; set; }
+
         public Player(string nick, PlayerType type)
         {
             this.ChangeNick(nick);
@@ -47,6 +50,7 @@ namespace PokerGameClasses
             this.folded = false;
             this.AllInMade = false;
             this.PlayersCurrentBet = 0;
+            this.SeatNr = 0;
         }
 
         override public string ToString()

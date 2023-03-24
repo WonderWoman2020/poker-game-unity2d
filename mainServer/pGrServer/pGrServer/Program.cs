@@ -34,6 +34,9 @@ namespace pGrServer
             dealer.Deck.SortAsc();
             Console.WriteLine(dealer.Deck);
 
+            gameTable.SortPlayersBySeats();
+            gameTable.Players.ForEach(p => Console.WriteLine(p.SeatNr));
+
             //controller.dealCards();
             controller.playTheGame();
             controller.ConcludeGame();

@@ -12,11 +12,6 @@ namespace PokerGameClasses
         public ICardsDealer Dealer
         { get; set; }
 
-        public int SmallBlindNr
-        { get; set; }
-        public int BigBlindNr
-        { get; set; }
-
         public int CurrentRound
         { get; set; }
         public GameplayController()
@@ -27,15 +22,15 @@ namespace PokerGameClasses
             this.gameTable = gameTable;
             this.Dealer = new TexasHoldemDealer();
 
-            this.SmallBlindNr = 0;
-            this.BigBlindNr = this.SmallBlindNr+1;
             this.CurrentRound = 0;
         }
 
         public void playTheGame()
         {
-            Player smallBlind = this.gameTable.Players[this.SmallBlindNr];
-            Player bigBlind = this.gameTable.Players[this.BigBlindNr];
+            this.gameTable.SortPlayersBySeats();
+
+            Player smallBlind = this.gameTable.Players[this.GetSmallBlindPosition()];
+            Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
             Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):\n");
             smallBlind.makeMove();
             Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):\n");
@@ -49,6 +44,20 @@ namespace PokerGameClasses
             }
         }
 
+        private int GetSmallBlindPosition()
+        {
+            return this.GetPositionOfPlayerOffBy(this.Dealer.Position, 1);
+        }
+
+        private int GetBigBlindPosition()
+        {
+            return this.GetPositionOfPlayerOffBy(this.Dealer.Position, 2);
+        }
+
+        private int GetPositionOfPlayerOffBy(int basePlayerPosition, int otherPlayerRelativePosition)
+        {
+            return (basePlayerPosition + otherPlayerRelativePosition) % this.gameTable.Players.Count;
+        }
         public void MakeNextRound()
         {
             Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n");
@@ -110,28 +119,28 @@ namespace PokerGameClasses
         {
             this.Dealer.DealCards(this.gameTable, 0);
 
-            this.gameTable.makeTurn((this.BigBlindNr + 1) % this.gameTable.Players.Count, this.gameTable.Players.Count - 2);
+            this.gameTable.makeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count - 2);
             if (this.CheckIfEqualBets())
                 return;
-            this.MakeTurnTillEquallBets(this.SmallBlindNr);
+            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
         }
 
         public void FlopRound()
         {
             this.Dealer.DealCards(gameTable, 1);
-            this.MakeTurnTillEquallBets(this.SmallBlindNr);
+            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
         }
 
         public void TurnRound()
         {
             this.Dealer.DealCards(gameTable, 2);
-            this.MakeTurnTillEquallBets(this.SmallBlindNr);
+            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
         }
 
         public void RiverRound()
         {
             this.Dealer.DealCards(gameTable, 3);
-            this.MakeTurnTillEquallBets(this.SmallBlindNr);
+            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
         }
 
         public void ConcludeGame()
@@ -173,17 +182,9 @@ namespace PokerGameClasses
 
         public void ResetGame()
         {
-            this.Dealer.TakeBackCards(gameTable);
+            this.Dealer.TakeBackCards(this.gameTable);
+            this.Dealer.ChangePosition(this.gameTable);
             this.gameTable.ResetGameState();
-            this.ChangeBlindsPositions();
-        }
-
-        public void ChangeBlindsPositions()
-        {
-            this.SmallBlindNr++;
-            this.SmallBlindNr = this.SmallBlindNr % this.gameTable.Players.Count;
-            this.BigBlindNr = this.SmallBlindNr + 1;
-            this.BigBlindNr = this.BigBlindNr % this.gameTable.Players.Count;
         }
 
         //kazda funkcja musi dostac posortowane 7 kart od najwyzszej - As do najnizszej

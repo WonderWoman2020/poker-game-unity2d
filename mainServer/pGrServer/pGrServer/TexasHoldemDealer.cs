@@ -16,7 +16,7 @@ namespace PokerGameClasses
         public TexasHoldemDealer()
         {
             this.Deck = null;
-            this.Position = 0;
+            this.Position = -1;
         }
         public void CreateDeck()
         {

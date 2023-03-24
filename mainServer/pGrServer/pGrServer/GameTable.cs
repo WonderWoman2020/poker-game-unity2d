@@ -23,7 +23,6 @@ namespace PokerGameClasses
 
         public GameTableSettings Settings
         { get; set; }
-
         public GameTable(string name, HumanPlayer owner)
         {
             this.ChangeName(name);
@@ -75,6 +74,9 @@ namespace PokerGameClasses
                 }
             }
 
+            //nadanie numeru krzesła przy stole
+            int freeSeatIndex = this.GetFirstFreeSeat();
+            player.SeatNr = freeSeatIndex;
             this.Players.Add(player);
 
             if (player != null)
@@ -86,6 +88,25 @@ namespace PokerGameClasses
             return true;
         }
 
+        public List<int> GetFreeSeatsList()
+        {
+            List<int> allSeats = Enumerable.Range(0, this.Settings.MaxPlayersCountInGame).ToList();
+            List<int> takenSeats = this.Players.Select(p => p.SeatNr).ToList();
+
+            List<int> freeSeats = allSeats.Except(takenSeats).ToList();
+            return freeSeats;
+        }
+
+        public int GetFirstFreeSeat()
+        {
+            List<int> freeSeats = this.GetFreeSeatsList();
+            return freeSeats.First();
+        }
+
+        public void SortPlayersBySeats()
+        {
+            this.Players.Sort(Comparer<Player>.Create((p1, p2) => p1.SeatNr - p2.SeatNr));
+        }
         public bool KickOutPlayer(string playerNick)
         {
             Player player = this.Players.Find(p => p.Nick == playerNick);
@@ -199,6 +220,5 @@ namespace PokerGameClasses
                 + "\nTokens in game: " + this.TokensInGame 
                 + "\nCurrent bid: " + this.CurrentBid;
         }
-
     }
 }
