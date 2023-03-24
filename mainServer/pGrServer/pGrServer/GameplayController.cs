@@ -39,7 +39,7 @@ namespace PokerGameClasses
             while (CurrentRound != 4)
             {
                 this.MakeNextRound();
-                if (gameTable.checkIfEveryoneFolded())
+                if (this.CheckIfEveryoneFolded())
                     break;
             }
         }
@@ -57,6 +57,39 @@ namespace PokerGameClasses
         private int GetPositionOfPlayerOffBy(int basePlayerPosition, int otherPlayerRelativePosition)
         {
             return (basePlayerPosition + otherPlayerRelativePosition) % this.gameTable.Players.Count;
+        }
+        // from table
+        public void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
+        {
+            for (int i = 0; i < roundParticipantsNr; i++)
+            {
+                int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
+                Player player = this.gameTable.Players[currentPlayer];
+                if (!player.AllInMade && !player.Folded)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(this.gameTable.TableGameState());
+                    Console.WriteLine();
+                    Console.WriteLine(player.PlayerGameState());
+                    Console.WriteLine();
+                    Console.WriteLine("Player's '" + player.Nick + "' move: ");
+                    player.MakeMove();
+                }
+            }
+        }
+        // from table
+        public bool CheckIfEveryoneFolded()
+        {
+            bool everyoneFolded = true;
+            foreach (Player player in this.gameTable.Players)
+            {
+                if (player.Folded == false)
+                {
+                    everyoneFolded = false;
+                    break;
+                }
+            }
+            return everyoneFolded;
         }
         public void MakeNextRound()
         {
@@ -86,8 +119,8 @@ namespace PokerGameClasses
             bool equalBets = false;
             while (!equalBets)
             {
-                gameTable.makeTurn(startingPlayerNr, this.gameTable.Players.Count);
-                if (gameTable.checkIfEveryoneFolded())
+                this.MakeTurn(startingPlayerNr, this.gameTable.Players.Count);
+                if (this.CheckIfEveryoneFolded())
                     return false;
 
                 equalBets = this.CheckIfEqualBets();
@@ -119,7 +152,7 @@ namespace PokerGameClasses
         {
             this.Dealer.DealCards(this.gameTable, 0);
 
-            this.gameTable.makeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count - 2);
+            this.MakeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count - 2);
             if (this.CheckIfEqualBets())
                 return;
             this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());

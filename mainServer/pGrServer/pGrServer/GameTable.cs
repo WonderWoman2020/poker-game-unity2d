@@ -172,39 +172,6 @@ namespace PokerGameClasses
             return true;
         }
 
-        public void makeTurn(int startingPlayerNr, int roundParticipantsNr) 
-        {
-            for(int i=0; i<roundParticipantsNr; i++)
-            {
-                int currentPlayer = (startingPlayerNr + i) % this.Players.Count;
-                Player player = this.Players[currentPlayer];
-                if (!player.AllInMade && !player.Folded)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(this.TableGameState());
-                    Console.WriteLine();
-                    Console.WriteLine(player.PlayerGameState());
-                    Console.WriteLine();
-                    Console.WriteLine("Player's '" + player.Nick + "' move: ");
-                    player.MakeMove();
-                }
-            }
-        }
-
-        public bool checkIfEveryoneFolded()
-        {
-            bool everyoneFolded = true;
-            foreach (Player player in Players) 
-            {
-                if(player.Folded == false) 
-                {
-                    everyoneFolded = false;
-                    break;
-                }
-            }
-            return everyoneFolded;
-        }
-
         public void ResetGameState()
         {
             this.TokensInGame = 0;
