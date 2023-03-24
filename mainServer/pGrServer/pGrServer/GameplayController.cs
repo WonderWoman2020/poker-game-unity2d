@@ -24,15 +24,17 @@ namespace PokerGameClasses
         public void playTheGame()
         {
             this.gameTable.SortPlayersBySeats();
+            this.gameTable.Settings.changeMinTokens(10);
 
             Player smallBlind = this.gameTable.Players[this.GetSmallBlindPosition()];
             Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
-            Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):\n");
-            //
-            smallBlind.MakeMove();
-            Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):\n");
-            //
-            bigBlind.MakeMove();
+            Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):");
+            smallBlind.SmallBlindFirstMove();
+            Console.WriteLine("Small blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+
+            Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):");
+            bigBlind.BigBlindFirstMove();
+            Console.WriteLine("Big blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
 
             while (CurrentRound != 4)
             {
