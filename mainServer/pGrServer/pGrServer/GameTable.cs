@@ -178,7 +178,7 @@ namespace PokerGameClasses
             {
                 int currentPlayer = (startingPlayerNr + i) % this.Players.Count;
                 Player player = this.Players[currentPlayer];
-                if (!player.AllInMade && !player.folded)
+                if (!player.AllInMade && !player.Folded)
                 {
                     Console.WriteLine();
                     Console.WriteLine(this.TableGameState());
@@ -186,7 +186,7 @@ namespace PokerGameClasses
                     Console.WriteLine(player.PlayerGameState());
                     Console.WriteLine();
                     Console.WriteLine("Player's '" + player.Nick + "' move: ");
-                    player.makeMove();
+                    player.MakeMove();
                 }
             }
         }
@@ -196,7 +196,7 @@ namespace PokerGameClasses
             bool everyoneFolded = true;
             foreach (Player player in Players) 
             {
-                if(player.folded == false) 
+                if(player.Folded == false) 
                 {
                     everyoneFolded = false;
                     break;

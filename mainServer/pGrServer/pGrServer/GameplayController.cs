@@ -14,14 +14,10 @@ namespace PokerGameClasses
 
         public int CurrentRound
         { get; set; }
-        public GameplayController()
-        {
-        }
         public GameplayController(GameTable gameTable, ICardsDealer cardsDealer)
         {
             this.gameTable = gameTable;
             this.Dealer = cardsDealer;
-
             this.CurrentRound = 0;
         }
 
@@ -32,9 +28,11 @@ namespace PokerGameClasses
             Player smallBlind = this.gameTable.Players[this.GetSmallBlindPosition()];
             Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
             Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):\n");
-            smallBlind.makeMove();
+            //
+            smallBlind.MakeMove();
             Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):\n");
-            bigBlind.makeMove();
+            //
+            bigBlind.MakeMove();
 
             while (CurrentRound != 4)
             {
@@ -98,11 +96,11 @@ namespace PokerGameClasses
         public bool CheckIfEqualBets()
         {
             bool equalBets = false;
-            int currentBet = (gameTable.Players.Find(p => p.folded == false)).PlayersCurrentBet;
+            int currentBet = (gameTable.Players.Find(p => p.Folded == false)).PlayersCurrentBet;
             for (int i = 0; i < gameTable.Players.Count; i++)
             {
                 Player p = gameTable.Players[i];
-                if (!p.folded)
+                if (!p.Folded)
                 {
                     if (p.PlayersCurrentBet != currentBet)
                     {
@@ -160,7 +158,7 @@ namespace PokerGameClasses
             Player winner = (this.gameTable.Players.Count > 0) ? this.gameTable.Players[0] : null;
             foreach (Player player in gameTable.Players)
             {
-                if (player.folded)
+                if (player.Folded)
                     continue;
                 // Karty gracza i 5 wspolnych lezacych na stole
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
