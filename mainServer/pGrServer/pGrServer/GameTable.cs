@@ -34,18 +34,6 @@ namespace PokerGameClasses
             this.AddPlayer(owner);
             this.ChangeOwner(owner);
         }
-
-        public int GetPlayerTypeCount(PlayerType type)
-        {
-            int count = 0;
-            foreach(Player player in Players)
-            {
-                if (player.Type == type)
-                    count++;
-            }
-            return count;
-        }
-
         public bool AddPlayer(Player player)
         {
             if (this.Players.Contains(player))
@@ -87,26 +75,6 @@ namespace PokerGameClasses
 
             return true;
         }
-
-        public List<int> GetFreeSeatsList()
-        {
-            List<int> allSeats = Enumerable.Range(0, this.Settings.MaxPlayersCountInGame).ToList();
-            List<int> takenSeats = this.Players.Select(p => p.SeatNr).ToList();
-
-            List<int> freeSeats = allSeats.Except(takenSeats).ToList();
-            return freeSeats;
-        }
-
-        public int GetFirstFreeSeat()
-        {
-            List<int> freeSeats = this.GetFreeSeatsList();
-            return freeSeats.First();
-        }
-
-        public void SortPlayersBySeats()
-        {
-            this.Players.Sort(Comparer<Player>.Create((p1, p2) => p1.SeatNr - p2.SeatNr));
-        }
         public bool KickOutPlayer(string playerNick)
         {
             Player player = this.Players.Find(p => p.Nick == playerNick);
@@ -128,7 +96,20 @@ namespace PokerGameClasses
 
             return true;
         }
+        public bool ChangeName(string newName)
+        {
+            this.Name = newName;
+            return true;
+        }
 
+        public bool ChangeOwner(HumanPlayer newOwner)
+        {
+            this.Owner = newOwner;
+            if (newOwner != null)
+                this.AddPlayer(newOwner);
+
+            return true;
+        }
         public bool ChangeSettings(Player player, GameTableSettings settings)
         {
             if (this.Owner == null)
@@ -146,32 +127,34 @@ namespace PokerGameClasses
             this.Settings = settings;
             return true;
         }
-
-        override public string ToString()
+        public int GetPlayerTypeCount(PlayerType type)
         {
-            return "Name: " + this.Name + "\n"
-                + "Owner: " + ((this.Owner == null) ? "No owner" : this.Owner.Nick) + "\n"
-                + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
-                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
-                + "Min XP: " + this.Settings.MinPlayersXP + "\n"
-                + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
+            int count = 0;
+            foreach (Player player in Players)
+            {
+                if (player.Type == type)
+                    count++;
+            }
+            return count;
+        }
+        public List<int> GetFreeSeatsList()
+        {
+            List<int> allSeats = Enumerable.Range(0, this.Settings.MaxPlayersCountInGame).ToList();
+            List<int> takenSeats = this.Players.Select(p => p.SeatNr).ToList();
+
+            List<int> freeSeats = allSeats.Except(takenSeats).ToList();
+            return freeSeats;
+        }
+        public int GetFirstFreeSeat()
+        {
+            List<int> freeSeats = this.GetFreeSeatsList();
+            return freeSeats.First();
         }
 
-        public bool ChangeName(string newName)
+        public void SortPlayersBySeats()
         {
-            this.Name = newName;
-            return true;
+            this.Players.Sort(Comparer<Player>.Create((p1, p2) => p1.SeatNr - p2.SeatNr));
         }
-
-        public bool ChangeOwner(HumanPlayer newOwner)
-        {
-            this.Owner = newOwner;
-            if (newOwner != null)
-                this.AddPlayer(newOwner);
-
-            return true;
-        }
-
         public void ResetGameState()
         {
             this.TokensInGame = 0;
@@ -186,6 +169,15 @@ namespace PokerGameClasses
                 + "Cards: " + String.Join(", ", this.shownHelpingCards.Cards)
                 + "\nTokens in game: " + this.TokensInGame 
                 + "\nCurrent bid: " + this.CurrentBid;
+        }
+        override public string ToString()
+        {
+            return "Name: " + this.Name + "\n"
+                + "Owner: " + ((this.Owner == null) ? "No owner" : this.Owner.Nick) + "\n"
+                + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
+                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
+                + "Min XP: " + this.Settings.MinPlayersXP + "\n"
+                + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
         }
     }
 }
