@@ -14,34 +14,63 @@ namespace PokerGameClasses
 
         public int CurrentRound
         { get; set; }
+
+        public int PositionOfPlayerWhoRaised
+        { get; set; }
         public GameplayController(GameTable gameTable, ICardsDealer cardsDealer)
         {
             this.gameTable = gameTable;
             this.Dealer = cardsDealer;
             this.CurrentRound = 0;
+            this.PositionOfPlayerWhoRaised = -1;
         }
 
         public void playTheGame()
         {
+            Console.WriteLine("\nDo you want to start the game? (Just press enter, it will start either way XD)\n");
+            Console.ReadKey();
+            Console.Clear();
+
             this.gameTable.SortPlayersBySeats();
             this.gameTable.Settings.changeMinTokens(10);
 
-            Player smallBlind = this.gameTable.Players[this.GetSmallBlindPosition()];
-            Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
-            Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):");
-            smallBlind.SmallBlindFirstMove();
-            Console.WriteLine("Small blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
-
-            Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):");
-            bigBlind.BigBlindFirstMove();
-            Console.WriteLine("Big blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+            this.MakeBlindsFirstMoves();
 
             while (CurrentRound != 4)
             {
                 this.MakeNextRound();
                 if (this.CheckIfEveryoneFolded())
                     break;
+
+                if(CurrentRound != 4)
+                    this.PositionOfPlayerWhoRaised = -1;
             }
+        }
+
+        private void MakeBlindsFirstMoves()
+        {
+            Player smallBlind = this.gameTable.Players[this.GetSmallBlindPosition()];
+            Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
+
+            Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):");
+            bool moveDoneS = smallBlind.SmallBlindFirstMove();
+            if (moveDoneS)
+            {
+                this.PositionOfPlayerWhoRaised = this.GetSmallBlindPosition();
+                this.gameTable.CurrentBid = smallBlind.PlayersCurrentBet;
+            }
+            Console.WriteLine("Small blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+            Console.ReadKey();
+
+            Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):");
+            bool moveDoneB = bigBlind.BigBlindFirstMove();
+            if (moveDoneB)
+            {
+                this.PositionOfPlayerWhoRaised = this.GetBigBlindPosition();
+                this.gameTable.CurrentBid = bigBlind.PlayersCurrentBet;
+            }
+            Console.WriteLine("Big blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+            Console.ReadKey();
         }
 
         private int GetSmallBlindPosition()
@@ -58,26 +87,38 @@ namespace PokerGameClasses
         {
             return (basePlayerPosition + otherPlayerRelativePosition) % this.gameTable.Players.Count;
         }
-        // from table
+        // ze stolika
         public void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
         {
             for (int i = 0; i < roundParticipantsNr; i++)
             {
                 int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
+                if (this.PositionOfPlayerWhoRaised == currentPlayer) // koiec tury, wróciliœmy do ostatniego gracza, który przebi³
+                    break;
+
                 Player player = this.gameTable.Players[currentPlayer];
-                if (!player.AllInMade && !player.Folded)
+
+                if (player.AllInMade || player.Folded) //Ci gracze ju¿ nie maj¹ ruchów
+                    continue;
+
+                Console.Clear();
+                Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
+                Console.WriteLine(this.gameTable.TableGameState()+"\n");
+                Console.WriteLine(player.PlayerGameState()+"\n");
+                Console.WriteLine("Player's '" + player.Nick + "' move: ");
+                bool moveDone = player.MakeMove();
+                if (!moveDone)
+                    continue;
+
+                //ostatni gracz, który przebi³ stawkê lub pierwszy, który czeka³ (jeœli nikt nie przebija³), jest kandydatem do sprawdzania
+                if (this.PositionOfPlayerWhoRaised == -1 || player.PlayersCurrentBet > this.gameTable.CurrentBid)
                 {
-                    Console.WriteLine();
-                    Console.WriteLine(this.gameTable.TableGameState());
-                    Console.WriteLine();
-                    Console.WriteLine(player.PlayerGameState());
-                    Console.WriteLine();
-                    Console.WriteLine("Player's '" + player.Nick + "' move: ");
-                    player.MakeMove();
+                    this.gameTable.CurrentBid = player.PlayersCurrentBet;
+                    this.PositionOfPlayerWhoRaised = player.SeatNr;
                 }
             }
         }
-        // from table
+        // ze stolika
         public bool CheckIfEveryoneFolded()
         {
             bool everyoneFolded = true;
@@ -93,7 +134,6 @@ namespace PokerGameClasses
         }
         public void MakeNextRound()
         {
-            Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n");
             switch(this.CurrentRound)
             {
                 case 0:

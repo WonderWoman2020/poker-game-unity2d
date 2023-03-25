@@ -127,8 +127,8 @@ namespace PokerGameClasses
             this.PlayersCurrentBet = this.PlayersCurrentBet + amount;
 
             this.Table.TokensInGame = this.Table.TokensInGame + amount;
-            if (this.PlayersCurrentBet > this.Table.CurrentBid)
-                this.Table.CurrentBid = this.PlayersCurrentBet;
+            //if (this.PlayersCurrentBet > this.Table.CurrentBid)
+            //    this.Table.CurrentBid = this.PlayersCurrentBet;
             //dodać to w kontrolerze i wskaźnik na gracza, który ostatni przebił
 
             return true;
