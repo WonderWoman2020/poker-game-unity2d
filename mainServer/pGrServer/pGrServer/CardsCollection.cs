@@ -20,7 +20,6 @@ namespace PokerGameClasses
         {
             this.Cards = cards;
         }
-
         public bool AddCard(Card card)
         {
             if (this.Cards == null)

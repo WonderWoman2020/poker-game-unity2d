@@ -23,6 +23,7 @@ namespace PokerGameClasses
 
         public GameTableSettings Settings
         { get; set; }
+
         public GameTable(string name, HumanPlayer owner)
         {
             this.ChangeName(name);
@@ -155,6 +156,7 @@ namespace PokerGameClasses
         {
             this.Players.Sort(Comparer<Player>.Create((p1, p2) => p1.SeatNr - p2.SeatNr));
         }
+
         public void ResetGameState()
         {
             this.TokensInGame = 0;
@@ -179,5 +181,6 @@ namespace PokerGameClasses
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
                 + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
         }
+
     }
 }

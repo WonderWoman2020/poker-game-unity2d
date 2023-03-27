@@ -37,7 +37,6 @@ namespace PokerGameClasses
         Red
     }
  
-
     public class Card : IComparable<Card>
     {
         public CardSign Sign
@@ -58,7 +57,6 @@ namespace PokerGameClasses
             else
                 return CardColor.Black;
         }
-
         public string GetShortSign()
         {
             switch (this.Sign)

@@ -18,12 +18,12 @@ namespace PokerGameClasses
         public PlayerType Type
         { get; set; }
         public string Rank
+
         { get; set; }
         public int XP
         { get; set; }
         public int TokensCount
         { get; set; }
-
         public GameTable Table
         { get; set; }
         public CardsCollection PlayerHand
@@ -34,6 +34,7 @@ namespace PokerGameClasses
         { get; set; }
         public bool Folded
         { get; set; }
+
         public bool AllInMade
         { get; set; }
 
@@ -122,7 +123,6 @@ namespace PokerGameClasses
                 Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
                 return false;
             }
-
             this.TokensCount = this.TokensCount - amount;
             this.PlayersCurrentBet = this.PlayersCurrentBet + amount;
 
@@ -158,6 +158,7 @@ namespace PokerGameClasses
             if (moveMade)
                 this.AllInMade = true;
             return moveMade;
+
         }
 
         public void BuyTokens(int amount)
@@ -205,5 +206,6 @@ namespace PokerGameClasses
                 + "\nCurrent bet: "+this.PlayersCurrentBet
                 + "\nXP: " + this.XP;
         }
+
     }
 }
