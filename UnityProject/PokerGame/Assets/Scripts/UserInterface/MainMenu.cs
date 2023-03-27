@@ -29,7 +29,7 @@ public class MainMenu : MonoBehaviour
     public void OnPlayButton()
     {
         if(MyGameManager.Instance.MainPlayer == null)
-            SceneManager.LoadScene("CreatePlayerMenu");
+            SceneManager.LoadScene("LoginMenu");
         else
             SceneManager.LoadScene("PlayMenu");
     }

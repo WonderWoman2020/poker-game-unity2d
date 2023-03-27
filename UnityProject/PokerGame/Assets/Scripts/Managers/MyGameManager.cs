@@ -56,11 +56,11 @@ public class MyGameManager : MonoBehaviour
 
     private bool CreateHotSeatPlayers()
     {
-        this.HotSeatPlayers.Add(new Player("Gamer#1", PlayerType.Human));
-        this.HotSeatPlayers.Add(new Player("PokerLover123", PlayerType.Human));
-        this.HotSeatPlayers.Add(new Player("Joker", PlayerType.Human));
-        this.HotSeatPlayers.Add(new Player("I'm Rich", PlayerType.Human));
-        this.HotSeatPlayers.Add(new Player("Card Games Enjoyer", PlayerType.Human));
+        this.HotSeatPlayers.Add(new Player("Gamer#1", PlayerType.Human,0,1000));
+        this.HotSeatPlayers.Add(new Player("PokerLover123", PlayerType.Human, 0, 1000));
+        this.HotSeatPlayers.Add(new Player("Joker", PlayerType.Human, 0, 1000));
+        this.HotSeatPlayers.Add(new Player("I'm Rich", PlayerType.Human, 0, 1000));
+        this.HotSeatPlayers.Add(new Player("Card Games Enjoyer", PlayerType.Human, 0, 1000));
         return true;
     }
 }
