@@ -36,11 +36,10 @@ namespace PokerGameClasses
 
             this.MakeBlindsFirstMoves();
 
-            while (CurrentRound != 4)
+            while (CurrentRound < 4)
             {
                 this.MakeNextRound();
-
-                if(CurrentRound != 4)
+                if(CurrentRound < 4)
                     this.PositionOfPlayerWhoRaised = -1;
             }
         }
