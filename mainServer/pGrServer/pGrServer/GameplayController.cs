@@ -39,8 +39,6 @@ namespace PokerGameClasses
             while (CurrentRound != 4)
             {
                 this.MakeNextRound();
-                if (this.CheckIfEveryoneFolded())
-                    break;
 
                 if(CurrentRound != 4)
                     this.PositionOfPlayerWhoRaised = -1;
@@ -90,47 +88,53 @@ namespace PokerGameClasses
         // ze stolika
         public void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
         {
-            for (int i = 0; i < roundParticipantsNr; i++)
+            bool equalBets = false;
+            while (!equalBets)
             {
-                int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
-                if (this.PositionOfPlayerWhoRaised == currentPlayer) // koiec tury, wróciliœmy do ostatniego gracza, który przebi³
-                    break;
-
-                Player player = this.gameTable.Players[currentPlayer];
-
-                if (player.AllInMade || player.Folded) //Ci gracze ju¿ nie maj¹ ruchów
-                    continue;
-
-                Console.Clear();
-                Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
-                Console.WriteLine(this.gameTable.TableGameState()+"\n");
-                Console.WriteLine(player.PlayerGameState()+"\n");
-                Console.WriteLine("Player's '" + player.Nick + "' move: ");
-                bool moveDone = player.MakeMove();
-                if (!moveDone)
-                    continue;
-
-                //ostatni gracz, który przebi³ stawkê lub pierwszy, który czeka³ (jeœli nikt nie przebija³), jest kandydatem do sprawdzania
-                if (this.PositionOfPlayerWhoRaised == -1 || player.PlayersCurrentBet > this.gameTable.CurrentBid)
+                for (int i = 0; i < roundParticipantsNr; i++)
                 {
-                    this.gameTable.CurrentBid = player.PlayersCurrentBet;
-                    this.PositionOfPlayerWhoRaised = player.SeatNr;
+                    int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
+                    if (this.PositionOfPlayerWhoRaised == currentPlayer) // koiec tury, wróciliœmy do ostatniego gracza, który przebi³
+                    {
+                        equalBets = true;
+                        break;
+                    }
+
+                    Player player = this.gameTable.Players[currentPlayer];
+
+                    if (player.AllInMade || player.Folded) //Ci gracze ju¿ nie maj¹ ruchów
+                        continue;
+
+                    Console.Clear();
+                    Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
+                    Console.WriteLine(this.gameTable.TableGameState() + "\n");
+                    Console.WriteLine(player.PlayerGameState() + "\n");
+                    Console.WriteLine("Player's '" + player.Nick + "' move: ");
+                    bool moveDone = player.MakeMove();
+                    if (!moveDone)
+                        continue;
+
+                    //ostatni gracz, który przebi³ stawkê lub pierwszy, który czeka³ (jeœli nikt nie przebija³), jest kandydatem do sprawdzania
+                    if (this.PositionOfPlayerWhoRaised == -1 || player.PlayersCurrentBet > this.gameTable.CurrentBid)
+                    {
+                        this.gameTable.CurrentBid = player.PlayersCurrentBet;
+                        this.PositionOfPlayerWhoRaised = player.SeatNr;
+                    }
                 }
+                if (this.CheckIfAllFolded())
+                    break;
             }
         }
-        // ze stolika
-        public bool CheckIfEveryoneFolded()
+
+        public bool CheckIfAllFolded()
         {
-            bool everyoneFolded = true;
-            foreach (Player player in this.gameTable.Players)
+            bool folded = true;
+            foreach(Player p in this.gameTable.Players)
             {
-                if (player.Folded == false)
-                {
-                    everyoneFolded = false;
-                    break;
-                }
+                if (!p.Folded)
+                    folded = false;
             }
-            return everyoneFolded;
+            return folded;
         }
         public void MakeNextRound()
         {
@@ -154,66 +158,28 @@ namespace PokerGameClasses
             this.CurrentRound++;
         }
 
-        public bool MakeTurnTillEquallBets(int startingPlayerNr)
-        {
-            bool equalBets = false;
-            while (!equalBets)
-            {
-                this.MakeTurn(startingPlayerNr, this.gameTable.Players.Count);
-                if (this.CheckIfEveryoneFolded())
-                    return false;
-
-                equalBets = this.CheckIfEqualBets();
-            }
-            return true;
-        }
-
-        public bool CheckIfEqualBets()
-        {
-            bool equalBets = false;
-            int currentBet = (gameTable.Players.Find(p => p.Folded == false)).PlayersCurrentBet;
-            for (int i = 0; i < gameTable.Players.Count; i++)
-            {
-                Player p = gameTable.Players[i];
-                if (!p.Folded)
-                {
-                    if (p.PlayersCurrentBet != currentBet)
-                    {
-                        equalBets = false;
-                        break;
-                    }
-                    else
-                        equalBets = true;
-                }
-            }
-            return equalBets;
-        }
         public void PreFlopRound()
         {
             this.Dealer.DealCards(this.gameTable, 0);
-
-            this.MakeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count - 2);
-            if (this.CheckIfEqualBets())
-                return;
-            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
+            this.MakeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count);
         }
 
         public void FlopRound()
         {
             this.Dealer.DealCards(gameTable, 1);
-            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
+            this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
         public void TurnRound()
         {
             this.Dealer.DealCards(gameTable, 2);
-            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
+            this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
         public void RiverRound()
         {
             this.Dealer.DealCards(gameTable, 3);
-            this.MakeTurnTillEquallBets(this.GetSmallBlindPosition());
+            this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
         public void ConcludeGame()
@@ -244,8 +210,7 @@ namespace PokerGameClasses
                 if (playerScore <= biggestScore)
                 {
                     winner = player;
-                    biggestScore = playerScore;
-                    
+                    biggestScore = playerScore;                    
                 }
             }
             Dealer.Deck.SortDesc();
@@ -260,6 +225,5 @@ namespace PokerGameClasses
             this.Dealer.ChangePosition(this.gameTable);
             this.gameTable.ResetGameState();
         }
-
-}
+    }
 }

@@ -20,8 +20,8 @@ namespace pGrServer
         static void Main()
         {
 
-            //PokerLogicTests pokerTester = new PokerLogicTests();
-            //pokerTester.RunExampleGame();
+            PokerLogicTests pokerTester = new PokerLogicTests();
+            pokerTester.RunExampleGame();
 
             Initialize();
             Thread loginThread = new Thread(ListenLogin);

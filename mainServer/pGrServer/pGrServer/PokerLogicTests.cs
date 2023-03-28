@@ -43,6 +43,7 @@ namespace PokerGameClasses
             //controller.dealCards();
             controller.playTheGame();
             controller.ConcludeGame();
+            Console.ReadKey();
         }
 
     }
