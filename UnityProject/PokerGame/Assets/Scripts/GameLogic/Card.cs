@@ -41,7 +41,9 @@ namespace PokerGameClasses
  
 
     public class Card : MonoBehaviour
-    {
+    {   [SerializeField]
+        CanvasRenderer Menu;
+
         public Sprite cardSprite;
         public CardSign Sign
         { get; set; }

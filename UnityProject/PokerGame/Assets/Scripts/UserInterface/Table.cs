@@ -21,6 +21,13 @@ public class Table : MonoBehaviour
     [SerializeField] private TMP_Text InfoMainPlayerChips;
     [SerializeField] private TMP_Text InfoMainPlayerBid;
 
+    [SerializeField]
+    private CanvasRenderer menuCanvas, playersCanvas;
+    [SerializeField]
+    private CanvasRenderer[] playerCanvas;
+
+
+
     private GameObject[] Players;
     private Component[] Components
     { get; set; }
@@ -28,8 +35,17 @@ public class Table : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        ShowMenu(false); //zakrycie MENU na start
+        playersCanvas.transform.localScale = Vector3.zero;
         if (MyGameManager.Instance.MainPlayer == null)
             return;
+
+
+
+
+
+
+
 
         this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
         this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
@@ -37,11 +53,29 @@ public class Table : MonoBehaviour
 
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.Components = Players[0].GetComponents(typeof(Component));
+        
         foreach (Component component in Components)
         {
+            //component.transform.localScale = Vector3.one;
             Debug.Log(component.ToString());
         }
 
+
+    }
+
+    public void ShowOnTable(int seatNumber, string Nick)
+    {
+        //playerCanvas[seatNumber].
+        playerCanvas[seatNumber].transform.localScale = Vector3.one;
+
+
+    }
+    public void ShowMenu(bool isMenuToShow)
+    {
+        if(isMenuToShow == true)
+            menuCanvas.transform.localScale = Vector3.one;
+        else
+            menuCanvas.transform.localScale = Vector3.zero;
     }
 
     // Update is called once per frame
