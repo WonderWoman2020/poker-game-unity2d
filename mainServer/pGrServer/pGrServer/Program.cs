@@ -168,12 +168,14 @@ namespace pGrServer
                             else if (request[1] == "2")//informacje o stołach
                             {
                                 StringBuilder completeMessage = new StringBuilder();
+                                openTablesAccess.WaitOne();
                                 foreach (GameTable table in openTables)
                                 {
                                     completeMessage.Append(table.toMessage());
                                 }
                                 byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
                                 loggedClients[token].MenuRequestsStream.Write(message, 0, message.Length);
+                                openTablesAccess.ReleaseMutex();
                             }
                             else if (request[1] == "4") //wylogowanie
                             {
