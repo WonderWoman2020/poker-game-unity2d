@@ -47,13 +47,15 @@ public class Table : MonoBehaviour
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         //this.Components = Players[0].GetComponents(typeof(Component));
 
-        HideAllPlayers(this.Players);
+        HideAllPlayers();
         ShowPlayerOnTable(0, "Player1");
+        ChangePlayerBet(100, 0);
+        ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
 
     }
 
-    void HideAllPlayers(GameObject[] Players)
+    void HideAllPlayers()
     { 
         foreach (GameObject player in Players)
         {
@@ -68,7 +70,7 @@ public class Table : MonoBehaviour
         if (nick != null)
         {
             nick.GetComponent<TMP_Text>().text = playerNick;
-            nick.GetComponent<TMP_Text>().fontSize = 21.75f;
+            nick.GetComponent<TMP_Text>().fontSize = 21.75f;    //nie dziala, bo autosize w unity
             Debug.Log(nick.GetComponent<TMP_Text>().text);
         }
         Players[seatNumber].transform.localScale = Vector3.one;
@@ -86,7 +88,23 @@ public class Table : MonoBehaviour
         else
             menuCanvas.transform.localScale = Vector3.zero;
     }
-
+    
+    public void ChangePlayerBet(int amount, int seatNumber)
+    {
+        GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
+        if (bet != null)
+        {
+            bet.GetComponent<TMP_Text>().text = "Bet\n"+amount.ToString()+" $";
+        }
+    }
+    public void ChangePlayerMoney(int amount, int seatNumber) 
+    {
+        GameObject money = Players[seatNumber].transform.Find("Informations/Name/Money/MoneyText").gameObject;
+        if (money != null)
+        {
+            money.GetComponent<TMP_Text>().text = amount.ToString() +" $";
+        }
+    }
     // Update is called once per frame
     void Update()
     {
