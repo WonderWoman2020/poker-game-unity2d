@@ -16,8 +16,10 @@ public class LoginPlayer : MonoBehaviour
 {
     private string playerLogin;
     private string playerPassword;
+    private string IP;
     [SerializeField] private Button loginButton;
     [SerializeField] private Button backToMenuButton;
+
     public GameObject PopupWindow;
 
     public void OnBackToMenuButton()
@@ -91,6 +93,16 @@ public class LoginPlayer : MonoBehaviour
         Debug.Log(this.playerLogin);
     }
 
+    public void ReadIP(string IP)
+    {
+        if(IP.Length == 0)
+        {
+            this.IP = null;
+            return;
+        }
+        this.IP = IP;
+        Debug.Log(this.IP);
+    }
     public void ReadPassword(string password)
     {
         if (password.Length == 0)
