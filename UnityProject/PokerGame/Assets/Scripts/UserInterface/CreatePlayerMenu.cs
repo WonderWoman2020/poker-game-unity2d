@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+//using SimpleJSON;
 
 using PokerGameClasses;
 
 using TMPro;
 using System;
+using System.Text.RegularExpressions;
 
 public class CreatePlayerMenu : MonoBehaviour
 {
@@ -17,8 +20,9 @@ public class CreatePlayerMenu : MonoBehaviour
     public GameObject PopupWindow;
 
     private string playerNick;
-    private string chips;
-    private string xp;
+    private string password1;
+    private string password2;
+    private string login;
 
     public void OnBackToMenuButton()
     {
@@ -26,28 +30,73 @@ public class CreatePlayerMenu : MonoBehaviour
     }
     public void OnCreateButton()
     {
-        if(this.playerNick == null)
+        Debug.Log("button was clicked.");
+        if (this.login != null)
         {
-            Debug.Log("You must set at least player's nick to create them.");
-            if (PopupWindow)
+            if (this.playerNick != null)
             {
-                ShowWrongInputPopup();
+                if (this.password1 == this.password2 && this.password1!=null)
+                {
+                    Debug.Log("Parameters are good.");
+                    StartCoroutine(SendNewUser());
+                }
+                else
+                    ShowWrongInputPopup("Passwords are different.");
             }
-            return;
+            else
+                ShowWrongInputPopup("Add your nick.");
         }
+        else
+            ShowWrongInputPopup("Add your login");
+        //if(this.playerNick == null)
+        //{
+        //    Debug.Log("You must set at least player's nick to create them.");
+        //    if (PopupWindow)
+        //    {
+        //        ShowWrongInputPopup();
+        //    }
+        //    return;
+        //}
+        //
+        //Player player = new HumanPlayer("I'm main player", PlayerType.Human);
+        //this.SetPlayerInputData(player);
+        //MyGameManager.Instance.AddPlayerToGame(player);
+        //Debug.Log("Created player "+player.Nick);
+        ////SceneManager.LoadScene("Table");
+        //SceneManager.LoadScene("PlayMenu");
+    }
+    IEnumerator SendNewUser()
+    {
+        var request = new UnityWebRequest("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/addAccount", "POST");
 
-        Player player = new HumanPlayer("I'm main player", PlayerType.Human);
-        this.SetPlayerInputData(player);
-        MyGameManager.Instance.AddPlayerToGame(player);
-        Debug.Log("Created player "+player.Nick);
-        //SceneManager.LoadScene("Table");
-        SceneManager.LoadScene("PlayMenu");
+        string str = "{\"login\":\"" + this.login + "\",\"nick\":\"" + this.playerNick + "\",\"password\":\"" + this.password1 + "\"}";
+
+        byte[] body = System.Text.Encoding.ASCII.GetBytes(str);
+
+        request.uploadHandler = new UploadHandlerRaw(body);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        yield return request.SendWebRequest();
+        Debug.Log(request.downloadHandler.text);
+        var responseCode = Regex.Match(request.downloadHandler.text, @"\d+").Value;
+        if (responseCode == "401") // login exist
+        {
+            ShowWrongInputPopup("Login exists.");
+        }
+        else if(responseCode == "205") // ok
+        {
+            SceneManager.LoadScene("LoginPlayer");
+        }
+        else //failed
+        {
+            ShowWrongInputPopup("Server error.");
+        }
     }
 
-    void ShowWrongInputPopup()
+    void ShowWrongInputPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        popup.GetComponent<TextMeshProUGUI>().text = "You must set at least player's nick to create them.";
+        popup.GetComponent<TextMeshProUGUI>().text = text;
     }
 
     public void ReadPlayerNick(string nick)
@@ -62,28 +111,38 @@ public class CreatePlayerMenu : MonoBehaviour
         Debug.Log(this.playerNick);
     }
 
-    public void ReadChips(string chips)
+    public void ReadLogin(string login)
     {
-        if (chips.Length == 0)
+        if (login.Length == 0)
         {
-            this.chips = null;
+            this.login = null;
             return;
         }
 
-        this.chips = chips;
-        Debug.Log(this.chips);
+        this.login = login;
+        Debug.Log(this.login);
     }
-
-    public void ReadXP(string xp)
+    public void ReadPassword1(string password)
     {
-        if (xp.Length == 0)
+        if (password.Length == 0)
         {
-            this.xp = null;
+            this.password1 = null;
             return;
         }
 
-        this.xp = xp;
-        Debug.Log(this.xp);
+        this.password1 = password;
+        Debug.Log(this.password1);
+    }
+    public void ReadPassword2(string password)
+    {
+        if (password.Length == 0)
+        {
+            this.password2 = null;
+            return;
+        }
+
+        this.password2 = password;
+        Debug.Log(this.password2);
     }
 
     private bool SetPlayerInputData(Player player)
@@ -92,11 +151,11 @@ public class CreatePlayerMenu : MonoBehaviour
         if (this.playerNick != null)
             player.ChangeNick(this.playerNick);
 
-        if (this.chips != null)
-            player.TokensCount = Convert.ToInt32(this.chips);
+      //  if (this.chips != null)
+        //    player.TokensCount = Convert.ToInt32(this.chips);
 
-        if (this.xp != null)
-            player.XP = Convert.ToInt32(this.xp);
+      //  if (this.xp != null)
+        //    player.XP = Convert.ToInt32(this.xp);
 
         return true;
     }
@@ -105,8 +164,9 @@ public class CreatePlayerMenu : MonoBehaviour
     void Start()
     {
         this.playerNick = null;
-        this.chips = null;
-        this.xp = null;
+        this.password1 = null;
+        this.password2 = null;
+        this.login = null;
     }
     
     // Update is called once per frame
@@ -114,7 +174,7 @@ public class CreatePlayerMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            if (this.playerNick != null && this.chips != null && this.xp != null)
+            if (this.playerNick != null && this.password1 != null && this.password2 != null && this.login != null)
                 this.OnCreateButton();
         }
     }

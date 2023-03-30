@@ -8,8 +8,8 @@ namespace PokerGameClasses
 {
     public class HumanPlayer : Player
     {
-        public HumanPlayer(string nick, PlayerType type, int xp, int coins)
-            : base(nick, type, xp, coins)
+        public HumanPlayer(string nick, PlayerType type)
+            : base(nick, type)
         {
 
         }
