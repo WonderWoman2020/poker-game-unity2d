@@ -22,13 +22,13 @@ public class Table : MonoBehaviour
     [SerializeField] private TMP_Text InfoMainPlayerBid;
 
     [SerializeField]
-    private CanvasRenderer menuCanvas, playersCanvas;
-    [SerializeField]
-    private CanvasRenderer[] playerCanvas;
+    private CanvasRenderer menuCanvas;
 
 
 
-    private GameObject[] Players;
+
+    private GameObject[] Players
+    {get; set;}
     private Component[] Components
     { get; set; }
     private string betFieldText;
@@ -36,40 +36,49 @@ public class Table : MonoBehaviour
     void Start()
     {
         ShowMenu(false); //zakrycie MENU na start
-        playersCanvas.transform.localScale = Vector3.zero;
+        ShowMenu(true);
         if (MyGameManager.Instance.MainPlayer == null)
             return;
 
-
-
-
-
-
-
-
         this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
         this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
-        this.InfoMainPlayerBid.text = "Bet\n"+Convert.ToString(0) + " $";
+        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
         this.Players = GameObject.FindGameObjectsWithTag("Player");
-        this.Components = Players[0].GetComponents(typeof(Component));
-        
-        foreach (Component component in Components)
+        //this.Components = Players[0].GetComponents(typeof(Component));
+
+        HideAllPlayers(this.Players);
+        ShowPlayerOnTable(0, "Player1");
+        //HidePlayerOnTable(2);
+
+    }
+
+    void HideAllPlayers(GameObject[] Players)
+    { 
+        foreach (GameObject player in Players)
         {
-            //component.transform.localScale = Vector3.one;
-            Debug.Log(component.ToString());
+            player.transform.localScale = Vector3.zero;
         }
 
-
     }
 
-    public void ShowOnTable(int seatNumber, string Nick)
+    public void ShowPlayerOnTable(int seatNumber, string playerNick)
     {
-        //playerCanvas[seatNumber].
-        playerCanvas[seatNumber].transform.localScale = Vector3.one;
-
-
+        GameObject nick = Players[seatNumber].transform.Find("Informations/Name/NickText").gameObject;
+        if (nick != null)
+        {
+            nick.GetComponent<TMP_Text>().text = playerNick;
+            nick.GetComponent<TMP_Text>().fontSize = 21.75f;
+            Debug.Log(nick.GetComponent<TMP_Text>().text);
+        }
+        Players[seatNumber].transform.localScale = Vector3.one;
     }
+
+    public void HidePlayerOnTable(int seatNumber)
+    {
+        Players[seatNumber].transform.localScale = Vector3.zero;
+    }
+
     public void ShowMenu(bool isMenuToShow)
     {
         if(isMenuToShow == true)

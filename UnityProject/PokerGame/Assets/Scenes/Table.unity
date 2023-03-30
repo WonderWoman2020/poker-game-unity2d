@@ -709,7 +709,7 @@ GameObject:
   - component: {fileID: 71306313}
   - component: {fileID: 71306312}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1391,7 +1391,7 @@ GameObject:
   - component: {fileID: 142579467}
   - component: {fileID: 142579466}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2973,7 +2973,7 @@ GameObject:
   - component: {fileID: 447861539}
   - component: {fileID: 447861538}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4677,7 +4677,7 @@ GameObject:
   - component: {fileID: 767183771}
   - component: {fileID: 767183770}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5248,7 +5248,7 @@ GameObject:
   - component: {fileID: 870324407}
   - component: {fileID: 870324406}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5322,7 +5322,7 @@ MonoBehaviour:
     serializedVersion: 2
     rgba: 4294967295
   m_fontSize: 21.75
-  m_fontSizeBase: 36
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
@@ -6657,7 +6657,7 @@ GameObject:
   - component: {fileID: 1252850782}
   - component: {fileID: 1252850781}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6980,8 +6980,6 @@ MonoBehaviour:
   InfoMainPlayerChips: {fileID: 801404600}
   InfoMainPlayerBid: {fileID: 304345412}
   menuCanvas: {fileID: 1036125299}
-  playersCanvas: {fileID: 1421189487}
-  playerCanvas: []
 --- !u!1 &1292243198
 GameObject:
   m_ObjectHideFlags: 0
@@ -8118,7 +8116,7 @@ GameObject:
   - component: {fileID: 1445035734}
   - component: {fileID: 1445035733}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8253,7 +8251,7 @@ GameObject:
   - component: {fileID: 1452431089}
   - component: {fileID: 1452431088}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10588,7 +10586,7 @@ GameObject:
   - component: {fileID: 1754744851}
   - component: {fileID: 1754744850}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: NickText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
