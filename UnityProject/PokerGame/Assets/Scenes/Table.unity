@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 3732216}
   - component: {fileID: 3732215}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 21450603}
   - component: {fileID: 21450602}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2047,7 +2047,7 @@ GameObject:
   - component: {fileID: 272619878}
   - component: {fileID: 272619877}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2259,7 +2259,7 @@ GameObject:
   - component: {fileID: 304345413}
   - component: {fileID: 304345412}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3340,7 +3340,7 @@ GameObject:
   - component: {fileID: 538693427}
   - component: {fileID: 538693426}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3553,7 +3553,7 @@ GameObject:
   - component: {fileID: 570827539}
   - component: {fileID: 570827538}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4463,7 +4463,7 @@ GameObject:
   - component: {fileID: 746276521}
   - component: {fileID: 746276520}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4967,7 +4967,7 @@ GameObject:
   - component: {fileID: 801404601}
   - component: {fileID: 801404600}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5586,7 +5586,7 @@ GameObject:
   - component: {fileID: 974573984}
   - component: {fileID: 974573983}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6366,7 +6366,7 @@ GameObject:
   - component: {fileID: 1116554775}
   - component: {fileID: 1116554774}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7226,7 +7226,7 @@ GameObject:
   - component: {fileID: 1322538624}
   - component: {fileID: 1322538623}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7591,7 +7591,7 @@ GameObject:
   - component: {fileID: 1382496879}
   - component: {fileID: 1382496878}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7981,7 +7981,7 @@ GameObject:
   - component: {fileID: 1432497417}
   - component: {fileID: 1432497416}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8386,7 +8386,7 @@ GameObject:
   - component: {fileID: 1453153914}
   - component: {fileID: 1453153913}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8757,7 +8757,7 @@ GameObject:
   - component: {fileID: 1506825464}
   - component: {fileID: 1506825463}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10077,7 +10077,7 @@ GameObject:
   - component: {fileID: 1661974841}
   - component: {fileID: 1661974840}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10797,7 +10797,7 @@ GameObject:
   - component: {fileID: 1798339463}
   - component: {fileID: 1798339462}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BetText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11540,7 +11540,7 @@ GameObject:
   - component: {fileID: 1921780514}
   - component: {fileID: 1921780513}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
