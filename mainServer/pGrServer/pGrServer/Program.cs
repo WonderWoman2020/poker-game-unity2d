@@ -16,10 +16,18 @@ namespace pGrServer
     class Program
     {
         public static bool running;
-        public static IDictionary<string, TcpClient> loggedClients;
+
+        public static IDictionary<string, Client> loggedClients;
         public static List<string> loggedTokens;
+        public static List<GameTable> openTables;
+
+        public static Mutex openTablesAccess;
         public static Mutex loggedClientsAccess;
+
         public static TcpListener loginListener;
+        public static TcpListener gameListener;
+
+        
         static void Main()
         {
             ConsoleKeyInfo cki;
@@ -52,23 +60,26 @@ namespace pGrServer
                 sb.AppendLine("--- Server status ---");
                 sb.Append("Login active: " + (loginListener.Server.IsBound ? "YES" : "NO") + emptySpace + '\n');
                 sb.Append("Logged clients: " + loggedClients.Count + emptySpace + '\n');
+                sb.Append("Open tables: " + openTables.Count + emptySpace + '\n');
                 DateTime now = DateTime.Now;
                 sb.Append("Working time: " + now.Subtract(startTime).ToString() + '\n');
                 Console.WriteLine(sb);
                 if (Console.KeyAvailable)
                 {
                     cki = Console.ReadKey();
-                    if(cki.Key == ConsoleKey.Escape)
+                    if (cki.Key == ConsoleKey.Escape)
                     {
                         running = false;
                     }
                 }
+                Console.WriteLine(emptySpace);
                 Thread.Sleep(500);
-                
+
             }
 
             //EXIT
             loginListener.Stop();
+            gameListener.Stop();
             loginThread.Join();
             autoLogoutThread.Join();
             requestsThread.Join();
@@ -76,24 +87,111 @@ namespace pGrServer
             loggedClientsAccess.WaitOne();
             foreach (string token in loggedTokens)
             {
-                loggedClients[token].Close();
+                loggedClients[token].MenuRequestsTcp.Close();
+                loggedClients[token].MenuRequestsStream.Dispose();
+                loggedClients[token].GameRequestsTcp.Close();
+                loggedClients[token].GameRequestsStream.Dispose();
+                loggedClients.Remove(token);
             }
             loggedClients.Clear();
             loggedClientsAccess.ReleaseMutex();
+
             Environment.Exit(0);
         }
         public static void ListenRequests()
         {
             while (running)
             {
+                loggedClientsAccess.WaitOne();
+                foreach(string token in loggedTokens)
+                {
+                    if (loggedClients[token].MenuRequestsStream.DataAvailable)
+                    {
+                        //TODO
+                        //Wziac komunikat
+                        byte[] readBuffer = new byte[256];
+                        StringBuilder menuRequestStrings = new StringBuilder();
+                        int bytesRead = loggedClients[token].MenuRequestsStream.Read(readBuffer, 0, readBuffer.Length);
+                        menuRequestStrings.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesRead));
+                        //Console.WriteLine(menuRequestStrings.ToString());
+                        string[] request = menuRequestStrings.ToString().Split(new char[] { ' ' });
+                        loggedClients[token].MenuRequestsStream.Flush();
+                        //'token' '1 literowy kod' 'argumenty'
+                        if(token == request[0])
+                        {
+                            if (request[1] == "0") //Utworzenie stołu
+                            {
+                                //nazwa, tryb, bots, min xp, min stawka
+                                string name      = request[2];
+                                string mode      = request[3];
+                                string nrOfBots  = request[4];
+                                string minXp     = request[5];
+                                string big_blind = request[6];
 
+                                bool found = false;
+                                openTablesAccess.WaitOne();
+                                if(loggedClients[token].gameTable == null)
+                                {
+                                    foreach(GameTable table in openTables)
+                                        if (table.Name == name)
+                                            found = true;
+
+                                    if (!found)
+                                    {
+                                        Player testPlayer = new HumanPlayer("testPlayer", PlayerType.Human);
+
+                                        GameTable gameTable = new GameTable(name, (HumanPlayer)testPlayer);
+                                        GameTableSettings gameTableSettings = new GameTableSettings();
+                                        if (mode == "0")
+                                            gameTableSettings.changeMode(GameMode.Mixed);
+                                        else if (mode == "1")
+                                            gameTableSettings.changeMode(GameMode.No_Bots);
+                                        else if (mode == "2")
+                                            gameTableSettings.changeMode(GameMode.You_And_Bots);
+
+                                        gameTableSettings.changeBotsNumber(int.Parse(nrOfBots));
+                                        gameTableSettings.changeMinXP(int.Parse(minXp));
+                                        gameTableSettings.changeMinTokens(int.Parse(big_blind));
+
+                                        gameTable.ChangeSettings(testPlayer, gameTableSettings);
+
+                                        openTables.Add(gameTable);
+                                    }
+                                }
+                                openTablesAccess.ReleaseMutex();
+
+                            }
+                            else if (request[1] == "1") //Dolaczenie do stolu
+                            {
+                                //Trzeba pilnowac czy dana osoba nie jest juz w stole
+                            }
+                            else if (request[1] == "2")//informacje o stołach
+                            {
+                                StringBuilder completeMessage = new StringBuilder();
+                                foreach (GameTable table in openTables)
+                                {
+                                    completeMessage.Append(table.toMessage());
+                                }
+                                byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
+                                loggedClients[token].MenuRequestsStream.Write(message, 0, message.Length);
+                            }
+                            else if (request[1] == "4") //wylogowanie
+                            {
+
+                            }
+                        }
+                    }
+                }
+                loggedClientsAccess.ReleaseMutex();
+                Thread.Sleep(250);
             }
-            Console.WriteLine("Requests closed");
+            Console.WriteLine("Menu requests listening stopped");
         }
         public static void ListenLogin()
         {
             
             loginListener.Start();
+            gameListener.Start();
             try
             {
                 while (running)
@@ -107,6 +205,7 @@ namespace pGrServer
                     numberOfBytesRead = clientStream.Read(readBuffer, 0, readBuffer.Length);
                     lognpass.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, numberOfBytesRead));
 
+                    clientStream.Flush();
                     string[] loginAndPassword = lognpass.ToString().Split(new char[] { ' ' }, 2);
 
                     string username = loginAndPassword[0];
@@ -147,17 +246,17 @@ namespace pGrServer
                             string toBeSearched = "xp\":";
                             var xpH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
                             var xp = Regex.Match(xpH, @"\d+").Value;
+                            var xpI = int.Parse(xp);
 
                             toBeSearched = "coins\":";
                             var coinsH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
                             var coins = Regex.Match(coinsH, @"\d+").Value;
+                            var coinsI = int.Parse(coins);
 
                             toBeSearched = "login\":\"";
                             var loginH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
                             var data = loginH.Split('\"');
                             var login = data[0];
-                            //message = System.Text.Encoding.ASCII.GetBytes(login + ' ');
-                            //clientStream.Write(message, 0, message.Length);
 
                             toBeSearched = "nick\":\"";
                             var nickH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
@@ -167,8 +266,15 @@ namespace pGrServer
                             byte[] message = System.Text.Encoding.ASCII.GetBytes(token + ' ' + xp + ' ' + coins + ' ' + nick);
                             clientStream.Write(message, 0, message.Length);
 
+                            
+                            TcpClient gameClient = gameListener.AcceptTcpClient();
+
                             loggedClientsAccess.WaitOne();
-                                loggedClients[token] = client;
+                                loggedClients[token] = new Client(nick, xpI, coinsI, login);
+                                loggedClients[token].MenuRequestsTcp = client;
+                                loggedClients[token].MenuRequestsStream = client.GetStream();
+                                loggedClients[token].GameRequestsTcp = gameClient;
+                                loggedClients[token].GameRequestsStream = gameClient.GetStream();
                                 loggedTokens.Add(token);
                             loggedClientsAccess.ReleaseMutex();
                         }
@@ -183,17 +289,20 @@ namespace pGrServer
             }
             catch(SocketException ex)
             {
-                Console.WriteLine("login listening closed\n"); //Wyskoczy zawsze podczas zamykania
+                Console.WriteLine("login listening stopped"); //Wyskoczy zawsze podczas zamykania
             }
             
         }
         public static void Initialize()
         {
             running = true;
-            loggedClients = new Dictionary<string, TcpClient>();
+            loggedClients = new Dictionary<string, Client>();
             loggedClientsAccess = new Mutex();
+            openTablesAccess = new Mutex();
             loginListener = new TcpListener(IPAddress.Any, (Int32)6937);
+            gameListener = new TcpListener(IPAddress.Any, (Int32)6938);
             loggedTokens = new List<string>();
+            openTables = new List<GameTable>();
         }
         public static string GenerateToken()
         {
@@ -217,12 +326,12 @@ namespace pGrServer
         {
             //TODO
             //Co jakis czas np. minute przesledzic jakis dziennik aktywnosci
-            //np wylogować osoby co nie miały jakichś akcji od 30min
+            //np wylogować osoby co nie miały jakichś akcji od 10min
             while (running)
             {
                 //Console.WriteLine('x');
             }
-            Console.WriteLine("Auto Logout closed");
+            Console.WriteLine("Auto Logout stopped");
         }
     }
 }
