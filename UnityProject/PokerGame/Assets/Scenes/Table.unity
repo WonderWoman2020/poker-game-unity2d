@@ -6979,6 +6979,9 @@ MonoBehaviour:
   InfoMainPlayerName: {fileID: 142579466}
   InfoMainPlayerChips: {fileID: 801404600}
   InfoMainPlayerBid: {fileID: 304345412}
+  menuCanvas: {fileID: 1036125299}
+  playersCanvas: {fileID: 1421189487}
+  playerCanvas: []
 --- !u!1 &1292243198
 GameObject:
   m_ObjectHideFlags: 0
