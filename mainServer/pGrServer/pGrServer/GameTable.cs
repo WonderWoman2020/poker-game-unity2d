@@ -181,6 +181,16 @@ namespace PokerGameClasses
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
                 + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
         }
-
+        public string toMessage()
+        {
+            return
+                ":T:" +
+                this.Name + ' ' +
+                this.Owner.Nick + ' ' +
+                this.GetPlayerTypeCount(PlayerType.Human) + ' ' +
+                this.GetPlayerTypeCount(PlayerType.Bot) + ' ' +
+                this.Settings.MinPlayersXP + ' ' +
+                this.Settings.MinPlayersTokenCount;
+        }
     }
 }
