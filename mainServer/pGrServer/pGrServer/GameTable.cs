@@ -35,9 +35,17 @@ namespace PokerGameClasses
             this.AddPlayer(owner);
             this.ChangeOwner(owner);
         }
-        public bool AddPlayer(Player player)
+
+        private bool CheckIfPlayerSitsAtTheTable(Player player)
         {
             if (this.Players.Contains(player))
+                return true;
+
+            return false;
+        }
+        public bool AddPlayer(Player player)
+        {
+            if (this.CheckIfPlayerSitsAtTheTable(player))
             {
                 Console.WriteLine("You already sit at that table, dude, wake up.");
                 return false;
@@ -106,7 +114,7 @@ namespace PokerGameClasses
         public bool ChangeOwner(HumanPlayer newOwner)
         {
             this.Owner = newOwner;
-            if (newOwner != null)
+            if (newOwner != null && !this.CheckIfPlayerSitsAtTheTable(newOwner))
                 this.AddPlayer(newOwner);
 
             return true;
