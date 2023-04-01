@@ -258,43 +258,59 @@ namespace pGrServer
                         }
                         else if (responseCode == "210") // ok
                         {
-
-                            string token = GenerateToken();
-
-                            string toBeSearched = "xp\":";
-                            var xpH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
-                            var xp = Regex.Match(xpH, @"\d+").Value;
-                            var xpI = int.Parse(xp);
-
-                            toBeSearched = "coins\":";
-                            var coinsH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
-                            var coins = Regex.Match(coinsH, @"\d+").Value;
-                            var coinsI = int.Parse(coins);
-
-                            toBeSearched = "login\":\"";
-                            var loginH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
-                            var data = loginH.Split('\"');
-                            var login = data[0];
-
-                            toBeSearched = "nick\":\"";
-                            var nickH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
-                            data = nickH.Split('\"');
-                            var nick = data[0];
-
-                            byte[] message = System.Text.Encoding.ASCII.GetBytes(token + ' ' + xp + ' ' + coins + ' ' + nick);
-                            clientStream.Write(message, 0, message.Length);
-
-                            
-                            TcpClient gameClient = gameListener.AcceptTcpClient();
-
+                            bool is_logged = false;
                             loggedClientsAccess.WaitOne();
+                            foreach(string tok in loggedTokens)
+                            {
+                                if (username == loggedClients[tok].Login)
+                                {
+                                    is_logged = true;
+                                    byte[] message = System.Text.Encoding.ASCII.GetBytes("##&&@@0003");
+                                    clientStream.Write(message, 0, message.Length);
+                                }
+                                    
+                            }
+                            loggedClientsAccess.ReleaseMutex();
+                            if(!is_logged)
+                            {
+                                string token = GenerateToken();
+
+                                string toBeSearched = "xp\":";
+                                var xpH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
+                                var xp = Regex.Match(xpH, @"\d+").Value;
+                                var xpI = int.Parse(xp);
+
+                                toBeSearched = "coins\":";
+                                var coinsH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
+                                var coins = Regex.Match(coinsH, @"\d+").Value;
+                                var coinsI = int.Parse(coins);
+
+                                toBeSearched = "login\":\"";
+                                var loginH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
+                                var data = loginH.Split('\"');
+                                var login = data[0];
+                                Console.WriteLine(login);
+
+                                toBeSearched = "nick\":\"";
+                                var nickH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
+                                data = nickH.Split('\"');
+                                var nick = data[0];
+
+                                byte[] message = System.Text.Encoding.ASCII.GetBytes(token + ' ' + xp + ' ' + coins + ' ' + nick);
+                                clientStream.Write(message, 0, message.Length);
+
+
+                                TcpClient gameClient = gameListener.AcceptTcpClient();
+
+                                loggedClientsAccess.WaitOne();
                                 loggedClients[token] = new Client(nick, xpI, coinsI, login);
                                 loggedClients[token].MenuRequestsTcp = client;
                                 loggedClients[token].MenuRequestsStream = client.GetStream();
                                 loggedClients[token].GameRequestsTcp = gameClient;
                                 loggedClients[token].GameRequestsStream = gameClient.GetStream();
                                 loggedTokens.Add(token);
-                            loggedClientsAccess.ReleaseMutex();
+                                loggedClientsAccess.ReleaseMutex();
+                            }
                         }
                         else //failed
                         {

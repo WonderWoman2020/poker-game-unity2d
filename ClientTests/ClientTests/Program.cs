@@ -29,10 +29,6 @@ namespace ClientTests
 
             TcpClient server = new TcpClient();
             server.Connect("127.0.0.1", 6937);
-
-            TcpClient serverGame = new TcpClient();
-            serverGame.Connect("127.0.0.1", 6938);
-
             NetworkStream ns = server.GetStream();
 
 
@@ -53,85 +49,111 @@ namespace ClientTests
             StringBuilder myCompleteMessage = new StringBuilder();
             numberOfBytesRead = ns.Read(myReadBuffer, 0, myReadBuffer.Length);
             myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-            Console.WriteLine(myCompleteMessage);
-            Console.WriteLine(myCompleteMessage.Length);
-            Console.ReadKey();
-            //JAk sie zle zaloguje to od tego miejsca bedzie juz zle ##########################################################
-            //####################################################################################################################
-
-
+            //Console.WriteLine(myCompleteMessage);
+            //Console.WriteLine(myCompleteMessage.Length);
             string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
-            ns.Flush();
             string token = request[0];
-            string login = request[3];
-            string tokens = request[2];
-
-            ConsoleKeyInfo cki;
-            Console.CursorVisible = false;
-            var sb = new StringBuilder();
-            var emptySpace = new StringBuilder();
-            emptySpace.Append(' ', 10);
-            bool running = true;
-
-            Console.Clear();
-            int nr = int.Parse(tokens);
-            while (running)
-            {
-                Console.SetCursorPosition(0, 0);
-                sb.Clear();
-
-                byte[] tosendtables = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "2");
-                ns.Write(tosendtables, 0, tosendtables.Length);
-                Thread.Sleep(1000);
-                if (ns.DataAvailable)
-                {
-                    byte[] readBuf = new byte[4096];
-                    StringBuilder menuRequestStr = new StringBuilder();
-                    int nrbyt = ns.Read(readBuf, 0, readBuf.Length);
-                    menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
-                    string[] tables = menuRequestStr.ToString().Split(new string(":T:")); //na poczatku tez dzieli i wykrywa 1 pusty string 
-
-                    //foreach (string table in tables)
-                    //{
-                    //    sb.AppendLine(table);
-                    //}
-                    for(int i=1; i<tables.Length; i++)
-                    {
-                        string[] mess = tables[i].Split(' ');
-                        sb.AppendLine("---Table---");
-                        sb.AppendLine("Name       : "+mess[0]);
-                        sb.AppendLine("Owner      : " + mess[1]);
-                        sb.AppendLine("Human count: " + mess[2]);
-                        sb.AppendLine("Bot count  : " + mess[3]);
-                        sb.AppendLine("min XP     : " + mess[4]);
-                        sb.AppendLine("min tokens : " + mess[5]);
-                    }
-                }
-
-
-                Console.WriteLine(sb);
-                if (Console.KeyAvailable)
-                {
-                    cki = Console.ReadKey();
-                    if (cki.Key == ConsoleKey.Escape)
-                    {
-                        running = false;
-                    }
-                    if (cki.Key == ConsoleKey.Spacebar)
-                    {
-                        byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "10" + ' ' + "16" + ' ');
-                        ns.Write(tosend, 0, tosend.Length);
-                        nr++;
-
-                    }
-                }
-                Console.WriteLine(emptySpace);
-            }
-            byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4");
-            ns.Write(tose, 0, tose.Length);
-            Thread.Sleep(1000);
             ns.Flush();
-            serverGame.Close();
+            //string[] wrongTokens = { "##&&@@0000", "##&&@@0001", "##&&@@0002", "##&&@@0003" };
+            bool error = false;
+
+                    
+            if (token == "##&&@@0000")
+            {
+                error = true;
+                Console.WriteLine("Server Error");
+            }        
+            else if (token == "##&&@@0001")
+            {
+                error = true;
+                Console.WriteLine("bad login");
+            }
+            else if (token == "##&&@@0002")
+            {
+                error = true;
+                Console.WriteLine("bad password");
+            }        
+            else if (token == "##&&@@0003")
+            {
+                error = true;
+                Console.WriteLine("already logged");
+            }          
+            Console.ReadKey();   
+            if(!error)
+            {
+                TcpClient serverGame = new TcpClient();
+                serverGame.Connect("127.0.0.1", 6938);
+                string login = request[3];
+                string tokens = request[2];
+
+                ConsoleKeyInfo cki;
+                Console.CursorVisible = false;
+                var sb = new StringBuilder();
+                var emptySpace = new StringBuilder();
+                emptySpace.Append(' ', 10);
+                bool running = true;
+
+                Console.Clear();
+                int nr = int.Parse(tokens);
+                while (running)
+                {
+                    Console.SetCursorPosition(0, 0);
+                    sb.Clear();
+
+                    byte[] tosendtables = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "2");
+                    ns.Write(tosendtables, 0, tosendtables.Length);
+                    Thread.Sleep(1000);
+                    if (ns.DataAvailable)
+                    {
+                        byte[] readBuf = new byte[4096];
+                        StringBuilder menuRequestStr = new StringBuilder();
+                        int nrbyt = ns.Read(readBuf, 0, readBuf.Length);
+                        menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+                        string[] tables = menuRequestStr.ToString().Split(new string(":T:")); //na poczatku tez dzieli i wykrywa 1 pusty string 
+
+                        //foreach (string table in tables)
+                        //{
+                        //    sb.AppendLine(table);
+                        //}
+                        for (int i = 1; i < tables.Length; i++)
+                        {
+                            string[] mess = tables[i].Split(' ');
+                            sb.AppendLine("---Table---");
+                            sb.AppendLine("Name       : " + mess[0]);
+                            sb.AppendLine("Owner      : " + mess[1]);
+                            sb.AppendLine("Human count: " + mess[2]);
+                            sb.AppendLine("Bot count  : " + mess[3]);
+                            sb.AppendLine("min XP     : " + mess[4]);
+                            sb.AppendLine("min tokens : " + mess[5]);
+                        }
+                    }
+
+
+                    Console.WriteLine(sb);
+                    if (Console.KeyAvailable)
+                    {
+                        cki = Console.ReadKey();
+                        if (cki.Key == ConsoleKey.Escape)
+                        {
+                            running = false;
+                        }
+                        if (cki.Key == ConsoleKey.Spacebar)
+                        {
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "10" + ' ' + "16" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                            nr++;
+
+                        }
+                    }
+                    Console.WriteLine(emptySpace);
+                }
+                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4");
+                ns.Write(tose, 0, tose.Length);
+                Thread.Sleep(1000);
+                ns.Flush();
+                serverGame.Close();
+            }
+            
         }
     }
 }
