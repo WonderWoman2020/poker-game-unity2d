@@ -28,5 +28,17 @@ namespace pGrServer
             this.Coins = coins;
             this.Login = login;
         }
+        public void CreateNewPlayer()
+        {
+            Player tmp = new HumanPlayer(Nick, PlayerType.Human);
+            tmp.XP = this.Xp;
+            tmp.TokensCount = this.Coins;
+            this.Player = tmp;
+        }
+        public void UpdateXpCoinsFromPlayer()
+        {
+            this.Xp = Player.XP;
+            this.Coins = Player.TokensCount;
+        }
     }
 }

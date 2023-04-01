@@ -12,13 +12,11 @@ namespace ClientTests
         {
             //SZYBKI PORADNIK
             /*
-             * W tym ulozeniu nalezy sie poprawnie zalogowac
-             * tzn można testowac złe zalogowanie ale wtedy po kliknieciu klawisza by przejsc dalej juz nie bedzie dzialac
-             * po zalogowaniu mozna kliknac dowolny przycisk by przejsc do etapu testowania funkcji
-             * co sekunde wysyła chec pobrania aktualnych stołów
-             * klikniecie spacji wysyła chęc zrobienia stołu o id nick+iloscTokenow+nr
-             * przy zalogowaniu dwa razy na to samo konto logicznym jest, ze jak ktorys klient zrobił nick+tokeny+0
-             * to kolejny bedzie chcial zrobic taki sam, dlatego nic sie nie stanie póki nr nie bedzie wiekszy
+             * W tym ulozeniu nalezy sie poprawnie zalogowac bo inaczej tam nizej bedzie wywalac
+             * ale jak sie zle zaloguje to do pierwszego Console.ReadKey() bedzie git
+             * po zalogowaniu klikniecie klawisza by przejsc dalej
+             * 
+             * 
              * 
              * 
              * 
@@ -31,10 +29,14 @@ namespace ClientTests
 
             TcpClient server = new TcpClient();
             server.Connect("127.0.0.1", 6937);
+
+            TcpClient serverGame = new TcpClient();
+            serverGame.Connect("127.0.0.1", 6938);
+
             NetworkStream ns = server.GetStream();
 
-            
-            
+
+
 
 
             Console.WriteLine("Login: ");
@@ -57,15 +59,6 @@ namespace ClientTests
             //JAk sie zle zaloguje to od tego miejsca bedzie juz zle ##########################################################
             //####################################################################################################################
 
-            TcpClient serverGame = new TcpClient();
-            serverGame.Connect("127.0.0.1", 6938);
-
-            
-
-            //byte[] readBuffer = new byte[256];
-            //StringBuilder menuRequestStrings = new StringBuilder();
-            //int bytesRead = ns.Read(readBuffer, 0, readBuffer.Length);
-            //menuRequestStrings.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesRead));
 
             string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
             ns.Flush();
@@ -98,12 +91,23 @@ namespace ClientTests
                     menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
                     string[] tables = menuRequestStr.ToString().Split(new string(":T:")); //na poczatku tez dzieli i wykrywa 1 pusty string 
 
-                    foreach (string table in tables)
+                    //foreach (string table in tables)
+                    //{
+                    //    sb.AppendLine(table);
+                    //}
+                    for(int i=1; i<tables.Length; i++)
                     {
-                        sb.AppendLine(table);
+                        string[] mess = tables[i].Split(' ');
+                        sb.AppendLine("---Table---");
+                        sb.AppendLine("Name       : "+mess[0]);
+                        sb.AppendLine("Owner      : " + mess[1]);
+                        sb.AppendLine("Human count: " + mess[2]);
+                        sb.AppendLine("Bot count  : " + mess[3]);
+                        sb.AppendLine("min XP     : " + mess[4]);
+                        sb.AppendLine("min tokens : " + mess[5]);
                     }
                 }
-                
+
 
                 Console.WriteLine(sb);
                 if (Console.KeyAvailable)
@@ -115,16 +119,19 @@ namespace ClientTests
                     }
                     if (cki.Key == ConsoleKey.Spacebar)
                     {
-                        byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login +nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "10" + ' ' + "16" + ' ');
+                        byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "10" + ' ' + "16" + ' ');
                         ns.Write(tosend, 0, tosend.Length);
                         nr++;
 
                     }
                 }
                 Console.WriteLine(emptySpace);
-                
-
             }
+            byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4");
+            ns.Write(tose, 0, tose.Length);
+            Thread.Sleep(1000);
+            ns.Flush();
+            serverGame.Close();
         }
     }
 }
