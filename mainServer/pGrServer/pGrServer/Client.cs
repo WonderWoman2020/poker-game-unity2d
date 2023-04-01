@@ -17,15 +17,28 @@ namespace pGrServer
         public NetworkStream GameRequestsStream { get; set; }
         public string Nick { get; }
         public int Xp { get; set; }
-        public int Coins {get;set;}
+        public int Coins { get; set; }
         public string Login { get; }
-        public GameTable gameTable { get; set; }
+        public GameTable GameTable { get; set; }
+        public Player Player { get; set; }
         public Client(string nick, int xp, int coins, string login)
         {
             this.Nick = nick;
             this.Xp = xp;
             this.Coins = coins;
             this.Login = login;
+        }
+        public void CreateNewPlayer()
+        {
+            Player tmp = new HumanPlayer(Nick, PlayerType.Human);
+            tmp.XP = this.Xp;
+            tmp.TokensCount = this.Coins;
+            this.Player = tmp;
+        }
+        public void UpdateXpCoinsFromPlayer()
+        {
+            this.Xp = Player.XP;
+            this.Coins = Player.TokensCount;
         }
     }
 }

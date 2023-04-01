@@ -103,12 +103,12 @@ namespace pGrServer
             while (running)
             {
                 loggedClientsAccess.WaitOne();
-                foreach(string token in loggedTokens)
+                for(int i=loggedTokens.Count-1; i >= 0; i--)
                 {
+                    string token = loggedTokens[i];
                     if (loggedClients[token].MenuRequestsStream.DataAvailable)
                     {
-                        //TODO
-                        //Wziac komunikat
+
                         byte[] readBuffer = new byte[256];
                         StringBuilder menuRequestStrings = new StringBuilder();
                         int bytesRead = loggedClients[token].MenuRequestsStream.Read(readBuffer, 0, readBuffer.Length);
@@ -130,7 +130,7 @@ namespace pGrServer
 
                                 bool found = false;
                                 openTablesAccess.WaitOne();
-                                if(loggedClients[token].gameTable == null)
+                                if(loggedClients[token].GameTable == null)
                                 {
                                     foreach(GameTable table in openTables)
                                         if (table.Name == name)
@@ -138,9 +138,9 @@ namespace pGrServer
 
                                     if (!found)
                                     {
-                                        Player testPlayer = new HumanPlayer("testPlayer", PlayerType.Human);
-
-                                        GameTable gameTable = new GameTable(name, (HumanPlayer)testPlayer);
+                                        loggedClients[token].CreateNewPlayer();
+                                        GameTable gameTable = new GameTable(name, (HumanPlayer)loggedClients[token].Player);
+                                        loggedClients[token].GameTable = gameTable;
                                         GameTableSettings gameTableSettings = new GameTableSettings();
                                         if (mode == "0")
                                             gameTableSettings.changeMode(GameMode.Mixed);
@@ -153,7 +153,7 @@ namespace pGrServer
                                         gameTableSettings.changeMinXP(int.Parse(minXp));
                                         gameTableSettings.changeMinTokens(int.Parse(big_blind));
 
-                                        gameTable.ChangeSettings(testPlayer, gameTableSettings);
+                                        gameTable.ChangeSettings(loggedClients[token].Player, gameTableSettings);
 
                                         openTables.Add(gameTable);
                                     }
@@ -163,7 +163,10 @@ namespace pGrServer
                             }
                             else if (request[1] == "1") //Dolaczenie do stolu
                             {
-                                //Trzeba pilnowac czy dana osoba nie jest juz w stole
+                                if (loggedClients[token].GameTable == null)
+                                {
+
+                                }
                             }
                             else if (request[1] == "2")//informacje o stołach
                             {
@@ -179,7 +182,20 @@ namespace pGrServer
                             }
                             else if (request[1] == "4") //wylogowanie
                             {
+                                //############################################################################
+                                //TODO
+                                //Wszelkie problemy ze stołami/grami itd 
+                                if(loggedClients[token].GameTable != null)
+                                {
 
+                                }
+
+                                loggedClients[token].MenuRequestsTcp.Close();
+                                loggedClients[token].MenuRequestsStream.Dispose();
+                                loggedClients[token].GameRequestsTcp.Close();
+                                loggedClients[token].GameRequestsStream.Dispose();
+                                loggedClients.Remove(token);
+                                loggedTokens.RemoveAt(i);
                             }
                         }
                     }
@@ -286,7 +302,6 @@ namespace pGrServer
                             clientStream.Write(message, 0, message.Length);
                         }
                     }
-                    //clientStream.Dispose();
                 }
             }
             catch(SocketException ex)
