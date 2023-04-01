@@ -341,12 +341,28 @@ namespace pGrServer
         }
         public static void AutoLogout()
         {
-            //TODO
-            //Co jakis czas np. minute przesledzic jakis dziennik aktywnosci
-            //np wylogować osoby co nie miały jakichś akcji od 10min
             while (running)
             {
-                //Console.WriteLine('x');
+                loggedClientsAccess.WaitOne();
+                for (int i = loggedTokens.Count - 1; i >= 0; i--)
+                {
+                    string token = loggedTokens[i];
+                    Socket s = loggedClients[token].MenuRequestsStream.Socket;
+                    bool pt1 = s.Poll(1000, SelectMode.SelectRead);
+                    bool pt2 = (s.Available == 0);
+                    if(pt1 && pt2)
+                    {
+                        loggedClients[token].MenuRequestsTcp.Close();
+                        loggedClients[token].MenuRequestsStream.Dispose();
+                        loggedClients[token].GameRequestsTcp.Close();
+                        loggedClients[token].GameRequestsStream.Dispose();
+                        loggedClients.Remove(token);
+                        loggedTokens.RemoveAt(i);
+                    }
+  
+                }
+                loggedClientsAccess.ReleaseMutex();
+                Thread.Sleep(10000);
             }
             Console.WriteLine("Auto Logout stopped");
         }
