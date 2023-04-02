@@ -21,7 +21,7 @@ namespace PokerGameClasses
         { get; set; }
         public int CurrentBid
         { get; set; }
-
+        
         public GameTableSettings Settings
         { get; set; }
 
@@ -85,7 +85,7 @@ namespace PokerGameClasses
 
             return true;
         }
-        public bool KickOutPlayer(string playerNick)
+        public bool Remove(string playerNick)
         {
             Player player = this.Players.Find(p => p.Nick == playerNick);
             this.Players.Remove(player);
@@ -201,5 +201,6 @@ namespace PokerGameClasses
                 this.Settings.MinPlayersXP + ' ' +
                 this.Settings.MinPlayersTokenCount;
         }
+
     }
 }

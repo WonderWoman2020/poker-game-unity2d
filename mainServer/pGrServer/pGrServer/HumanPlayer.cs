@@ -17,7 +17,7 @@ namespace PokerGameClasses
         public GameTable CreateYourTable(string name, GameTableSettings settings)
         {
             if (this.Table != null)
-                this.Table.KickOutPlayer(this.Nick);
+                this.Table.Remove(this.Nick);
 
             GameTable table = new GameTable(name, this);
             if (settings != null)

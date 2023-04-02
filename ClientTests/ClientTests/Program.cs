@@ -142,20 +142,27 @@ namespace ClientTests
                             string tableName = Console.ReadLine();
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "1" + ' ' + tableName + ' ');
                             ns.Write(tosend, 0, tosend.Length);
-                            nr++;
+                        }
+                        if (cki.Key == ConsoleKey.O)
+                        {
+
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
 
                         }
                         if (cki.Key == ConsoleKey.C)
                         {
-                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "7" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
-                            nr++;
-
+                        }
+                        if (cki.Key == ConsoleKey.R)
+                        {
+                            Console.Clear();
                         }
                     }
                     Console.WriteLine(emptySpace);
                 }
-                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4");
+                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3");
                 ns.Write(tose, 0, tose.Length);
                 Thread.Sleep(1000);
                 ns.Flush();
