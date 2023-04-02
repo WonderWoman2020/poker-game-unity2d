@@ -53,6 +53,7 @@ namespace ClientTests
             //Console.WriteLine(myCompleteMessage.Length);
             string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
             string token = request[0];
+            Console.WriteLine(token);
             ns.Flush();
             //string[] wrongTokens = { "##&&@@0000", "##&&@@0001", "##&&@@0002", "##&&@@0003" };
             bool error = false;

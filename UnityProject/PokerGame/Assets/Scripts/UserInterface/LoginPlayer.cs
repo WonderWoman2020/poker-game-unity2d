@@ -2,6 +2,9 @@ using PokerGameClasses;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Text;
 using System.Text.RegularExpressions;
 using TMPro;
 using Unity.VisualScripting;
@@ -10,6 +13,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
+//using System.Diagnostics;
+//Jesli ktos bedzie potrzebowal tej biblioteki, to bedzie potrzeba zamienic wszystkie Debug.Log(...) na UnityEngine.Debug.Log(...)
 
 
 public class LoginPlayer : MonoBehaviour
@@ -30,8 +36,33 @@ public class LoginPlayer : MonoBehaviour
     public void OnLoginButton()
     {
         Debug.Log("button clicked");
-        //SceneManager.LoadScene("PlayMenu");
-        StartCoroutine(SendNewUser());
+        Debug.Log(MyGameManager.Instance.mainServerConnection.port);
+
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+
+        byte[] message = System.Text.Encoding.ASCII.GetBytes(this.playerLogin + ' ' + this.playerPassword);
+        mainServer.stream.Write(message, 0, message.Length);
+        mainServer.stream.Flush();
+
+        byte[] myReadBuffer = new byte[1024];
+        int numberOfBytesRead = 0;
+        StringBuilder myCompleteMessage = new StringBuilder();
+        numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
+        myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
+        Debug.Log(myCompleteMessage);
+        Debug.Log(myCompleteMessage.Length);
+
+        string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
+        var xp = Int32.Parse(request[1]);
+        var coins = Int32.Parse(request[2]);
+        var nick = request[3];
+        Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
+        MyGameManager.Instance.AddPlayerToGame(player);
+        //StartCoroutine(SendNewUser());
+
+        SceneManager.LoadScene("PlayMenu");
+
+        
     }
     IEnumerator SendNewUser()
     {
