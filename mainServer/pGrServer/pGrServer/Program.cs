@@ -17,7 +17,7 @@ namespace pGrServer
     {
         public static bool running;
 
-        public static IDictionary<string, Client> loggedClients;
+        public static IDictionary<string, Player> loggedClients;
         public static List<string> loggedTokens;
         public static List<GameTable> openTables;
 
@@ -120,7 +120,8 @@ namespace pGrServer
                         //Test czy token wysłany odpowiada tokenowi clienta (zabezpieczenie)
                         if(token == request[0])
                         {
-                            if (request[1] == "0") //Utworzenie stołu
+                            //Utworzenie stołu
+                            if (request[1] == "0") 
                             {
                                 //nazwa, tryb, bots, min xp, min stawka
                                 string name      = request[2];
@@ -132,7 +133,7 @@ namespace pGrServer
                                 bool found = false;
                                 openTablesAccess.WaitOne();
                                 //Tylko dla clienta ktory nie jest przy stole
-                                if(loggedClients[token].GameTable == null)
+                                if(loggedClients[token].Table == null)
                                 {
                                     //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
                                     foreach(GameTable table in openTables)
@@ -142,11 +143,11 @@ namespace pGrServer
                                     if (!found)
                                     {
                                         //Utworzenie Playera clientowi
-                                        loggedClients[token].CreateNewPlayer();
+                                        //////loggedClients[token].CreateNewPlayer();
                                         //Utworzenie stołu z client jako owner tego stolu
-                                        GameTable gameTable = new GameTable(name, (HumanPlayer)loggedClients[token].Player);
+                                        GameTable gameTable = new GameTable(name, (HumanPlayer)loggedClients[token]);
                                         //Ustawienie przy jakim stole jest Client
-                                        loggedClients[token].GameTable = gameTable;
+                                        loggedClients[token].Table = gameTable;
                                         //Zmiana ustawien stołu
                                         GameTableSettings gameTableSettings = new GameTableSettings();
                                         if (mode == "0")
@@ -160,7 +161,7 @@ namespace pGrServer
                                         gameTableSettings.changeMinXP(int.Parse(minXp));
                                         gameTableSettings.changeMinTokens(int.Parse(big_blind));
 
-                                        gameTable.ChangeSettings(loggedClients[token].Player, gameTableSettings);
+                                        gameTable.ChangeSettings(loggedClients[token], gameTableSettings);
 
                                         openTables.Add(gameTable);
                                     }
@@ -168,11 +169,12 @@ namespace pGrServer
                                 openTablesAccess.ReleaseMutex();
 
                             }
-                            else if (request[1] == "1") //Dolaczenie do stolu
+                            //Dolaczenie do stolu
+                            else if (request[1] == "1") 
                             {
                                 openTablesAccess.WaitOne();
-                                Client client = loggedClients[token];
-                                if (client.GameTable == null)
+                                Player client = loggedClients[token];
+                                if (client.Table == null)
                                 {
                                     string name = request[2];
                                     bool found = false;
@@ -186,22 +188,23 @@ namespace pGrServer
                                         }      
                                     if (found)
                                     {
-                                        client.CreateNewPlayer();
-                                        bool git = table.AddPlayer(client.Player);
+                                        //client.CreateNewPlayer();
+                                        bool git = table.AddPlayer(client);
                                         if (git)
                                         {
-                                            client.GameTable = table;
+                                            client.Table = table;
                                         }
                                         else
                                         {
-                                            client.Player = null;
+                                            client.Table = null;
                                         }
                                     }
                                     
                                 }
                                 openTablesAccess.ReleaseMutex();
                             }
-                            else if (request[1] == "2")//informacje o stołach
+                            //informacje o stołach
+                            else if (request[1] == "2")
                             {
                                 StringBuilder completeMessage = new StringBuilder();
                                 openTablesAccess.WaitOne();
@@ -213,12 +216,13 @@ namespace pGrServer
                                 loggedClients[token].MenuRequestsStream.Write(message, 0, message.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
-                            else if (request[1] == "4") //wylogowanie
+                            //wylogowanie
+                            else if (request[1] == "4") 
                             {
                                 //############################################################################
                                 //TODO
                                 //Wszelkie problemy ze stołami/grami itd 
-                                if(loggedClients[token].GameTable != null)
+                                if(loggedClients[token].Table != null)
                                 {
 
                                 }
@@ -230,20 +234,27 @@ namespace pGrServer
                                 loggedClients.Remove(token);
                                 loggedTokens.RemoveAt(i);
                             }
-                            else if (request[1] == "5") //Odejscie od stołu
+                            //Odejscie od stołu
+                            else if (request[1] == "5") 
                             {
 
                             }
-                            else if (request[1] == "6") //Rozpoczecie rozgrywki
+                            //DO WYJEBANIA
+                            //Rozpoczecie rozgrywki
+                            else if (request[1] == "6") 
                             {
+                                //#################
+
+
 
                             }
-                            else if (request[1] == "7") //Zmiana ustawień
+                            //Zmiana ustawień
+                            else if (request[1] == "7") 
                             {
                                 openTablesAccess.WaitOne();
-                                Client client = loggedClients[token];
+                                Player client = loggedClients[token];
 
-                                if(client.GameTable != null)
+                                if(client.Table != null)
                                 {
                                     string mode = request[2];
                                     string nrOfBots = request[3];
@@ -262,7 +273,7 @@ namespace pGrServer
                                     gameTableSettings.changeMinXP(int.Parse(minXp));
                                     gameTableSettings.changeMinTokens(int.Parse(big_blind));
 
-                                    client.GameTable.ChangeSettings((HumanPlayer)client.Player, gameTableSettings);
+                                    client.Table.ChangeSettings((HumanPlayer)client, gameTableSettings);
                                 }
                                 openTablesAccess.ReleaseMutex();
                             }
@@ -336,8 +347,8 @@ namespace pGrServer
                                     is_logged = true;
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes("##&&@@0003");
                                     clientStream.Write(message, 0, message.Length);
-                                }
-                                    
+                                    break;
+                                }   
                             }
                             loggedClientsAccess.ReleaseMutex();
                             if(!is_logged)
@@ -371,7 +382,9 @@ namespace pGrServer
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
 
                                 loggedClientsAccess.WaitOne();
-                                loggedClients[token] = new Client(nick, xpI, coinsI, login);
+
+                                loggedClients[token] = new HumanPlayer(nick, PlayerType.Human);
+                                loggedClients[token].UpdateData(xpI, coinsI, login);
                                 loggedClients[token].MenuRequestsTcp = client;
                                 loggedClients[token].MenuRequestsStream = client.GetStream();
                                 loggedClients[token].GameRequestsTcp = gameClient;
@@ -397,7 +410,7 @@ namespace pGrServer
         public static void Initialize()
         {
             running = true;
-            loggedClients = new Dictionary<string, Client>();
+            loggedClients = new Dictionary<string, Player>();
             loggedClientsAccess = new Mutex();
             openTablesAccess = new Mutex();
             loginListener = new TcpListener(IPAddress.Any, (Int32)6937);
@@ -449,6 +462,11 @@ namespace pGrServer
                 Thread.Sleep(10000);
             }
             Console.WriteLine("Auto Logout stopped");
+        }
+
+        public static void Game(GameTable table)
+        {
+
         }
     }
 }

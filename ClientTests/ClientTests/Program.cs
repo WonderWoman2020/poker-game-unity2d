@@ -76,6 +76,7 @@ namespace ClientTests
             Console.ReadKey();   
             if(!error)
             {
+
                 TcpClient serverGame = new TcpClient();
                 serverGame.Connect("127.0.0.1", 6938);
                 string login = request[3];

@@ -8,6 +8,7 @@ namespace PokerGameClasses
 {
     public class GameTable
     {
+
         public string Name
         { get; set; }
         public HumanPlayer Owner

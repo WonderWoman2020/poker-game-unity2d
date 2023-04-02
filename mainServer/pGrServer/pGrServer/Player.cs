@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,12 @@ namespace PokerGameClasses
     }
     public class Player
     {
+        public string Token { get; set; }
+        public TcpClient MenuRequestsTcp { get; set; }
+        public NetworkStream MenuRequestsStream { get; set; }
+        public TcpClient GameRequestsTcp { get; set; }
+        public NetworkStream GameRequestsStream { get; set; }
+        public string Login { get; set; }
         public string Nick
         { get; set; }
         public PlayerType Type
@@ -37,7 +44,12 @@ namespace PokerGameClasses
 
         public bool AllInMade
         { get; set; }
-
+        public void UpdateData(int xp, int coins, string login)
+        {
+            this.XP = xp;
+            this.TokensCount = coins;
+            this.Login = login;
+        }
         public Player(string nick, PlayerType type)
         {
             this.ChangeNick(nick);
