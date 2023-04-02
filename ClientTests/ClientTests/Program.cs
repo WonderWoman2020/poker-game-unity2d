@@ -47,12 +47,9 @@ namespace ClientTests
             StringBuilder myCompleteMessage = new StringBuilder();
             numberOfBytesRead = ns.Read(myReadBuffer, 0, myReadBuffer.Length);
             myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-            //Console.WriteLine(myCompleteMessage);
-            //Console.WriteLine(myCompleteMessage.Length);
             string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
             string token = request[0];
             ns.Flush();
-            //string[] wrongTokens = { "##&&@@0000", "##&&@@0001", "##&&@@0002", "##&&@@0003" };
             bool error = false;
 
                     
@@ -108,11 +105,7 @@ namespace ClientTests
                         int nrbyt = ns.Read(readBuf, 0, readBuf.Length);
                         menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
                         string[] tables = menuRequestStr.ToString().Split(new string(":T:")); //na poczatku tez dzieli i wykrywa 1 pusty string 
-
-                        //foreach (string table in tables)
-                        //{
-                        //    sb.AppendLine(table);
-                        //}
+                        //dlatego tutaj i=1
                         for (int i = 1; i < tables.Length; i++)
                         {
                             string[] mess = tables[i].Split(' ');
@@ -135,9 +128,25 @@ namespace ClientTests
                         {
                             running = false;
                         }
-                        if (cki.Key == ConsoleKey.Spacebar)
+                        if (cki.Key == ConsoleKey.A)
                         {
-                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "10" + ' ' + "16" + ' ');
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "0" + ' ' + "16" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                            nr++;
+
+                        }
+                        if (cki.Key == ConsoleKey.J)
+                        {
+                            Console.WriteLine("Enter table name");
+                            string tableName = Console.ReadLine();
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "1" + ' ' + tableName + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                            nr++;
+
+                        }
+                        if (cki.Key == ConsoleKey.C)
+                        {
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "7" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                             nr++;
 

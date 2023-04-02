@@ -170,10 +170,36 @@ namespace pGrServer
                             }
                             else if (request[1] == "1") //Dolaczenie do stolu
                             {
-                                if (loggedClients[token].GameTable == null)
+                                openTablesAccess.WaitOne();
+                                Client client = loggedClients[token];
+                                if (client.GameTable == null)
                                 {
+                                    string name = request[2];
+                                    bool found = false;
+                                    GameTable table = null;
 
+                                    foreach (GameTable tab in openTables)
+                                        if (tab.Name == name)
+                                        {
+                                            found = true;
+                                            table = tab;
+                                        }      
+                                    if (found)
+                                    {
+                                        client.CreateNewPlayer();
+                                        bool git = table.AddPlayer(client.Player);
+                                        if (git)
+                                        {
+                                            client.GameTable = table;
+                                        }
+                                        else
+                                        {
+                                            client.Player = null;
+                                        }
+                                    }
+                                    
                                 }
+                                openTablesAccess.ReleaseMutex();
                             }
                             else if (request[1] == "2")//informacje o stołach
                             {
@@ -192,7 +218,6 @@ namespace pGrServer
                                 //############################################################################
                                 //TODO
                                 //Wszelkie problemy ze stołami/grami itd 
-                                loggedClientsAccess.WaitOne();
                                 if(loggedClients[token].GameTable != null)
                                 {
 
@@ -204,7 +229,6 @@ namespace pGrServer
                                 loggedClients[token].GameRequestsStream.Dispose();
                                 loggedClients.Remove(token);
                                 loggedTokens.RemoveAt(i);
-                                loggedClientsAccess.ReleaseMutex();
                             }
                             else if (request[1] == "5") //Odejscie od stołu
                             {
@@ -216,7 +240,31 @@ namespace pGrServer
                             }
                             else if (request[1] == "7") //Zmiana ustawień
                             {
-                                
+                                openTablesAccess.WaitOne();
+                                Client client = loggedClients[token];
+
+                                if(client.GameTable != null)
+                                {
+                                    string mode = request[2];
+                                    string nrOfBots = request[3];
+                                    string minXp = request[4];
+                                    string big_blind = request[5];
+
+                                    GameTableSettings gameTableSettings = new GameTableSettings();
+                                    if (mode == "0")
+                                        gameTableSettings.changeMode(GameMode.Mixed);
+                                    else if (mode == "1")
+                                        gameTableSettings.changeMode(GameMode.No_Bots);
+                                    else if (mode == "2")
+                                        gameTableSettings.changeMode(GameMode.You_And_Bots);
+
+                                    gameTableSettings.changeBotsNumber(int.Parse(nrOfBots));
+                                    gameTableSettings.changeMinXP(int.Parse(minXp));
+                                    gameTableSettings.changeMinTokens(int.Parse(big_blind));
+
+                                    client.GameTable.ChangeSettings((HumanPlayer)client.Player, gameTableSettings);
+                                }
+                                openTablesAccess.ReleaseMutex();
                             }
                         }
                     }
@@ -310,7 +358,6 @@ namespace pGrServer
                                 var loginH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
                                 var data = loginH.Split('\"');
                                 var login = data[0];
-                                Console.WriteLine(login);
 
                                 toBeSearched = "nick\":\"";
                                 var nickH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
