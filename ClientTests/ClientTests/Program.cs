@@ -12,11 +12,9 @@ namespace ClientTests
         {
             //SZYBKI PORADNIK
             /*
-             * W tym ulozeniu nalezy sie poprawnie zalogowac bo inaczej tam nizej bedzie wywalac
-             * ale jak sie zle zaloguje to do pierwszego Console.ReadKey() bedzie git
-             * po zalogowaniu klikniecie klawisza by przejsc dalej
              * 
              * 
+             * juz nie
              * 
              * 
              * 

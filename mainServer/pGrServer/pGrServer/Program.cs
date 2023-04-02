@@ -30,6 +30,7 @@ namespace pGrServer
         
         static void Main()
         {
+            //Zmienne potrzebne do wyswietlania stanu w //RUN
             ConsoleKeyInfo cki;
             Console.CursorVisible = false;
             var sb = new StringBuilder();
@@ -37,9 +38,6 @@ namespace pGrServer
             emptySpace.Append(' ', 10);
             DateTime startTime = DateTime.Now;
             
-
-            //PokerLogicTests pokerTester = new PokerLogicTests();
-            //pokerTester.RunExampleGame();
 
             //INITIALIZE
             Initialize();
@@ -103,20 +101,23 @@ namespace pGrServer
             while (running)
             {
                 loggedClientsAccess.WaitOne();
+                //Przejdz po wszystkich zalogowanych tokenach (od tyłu na potrzeby usuwania)
                 for(int i=loggedTokens.Count-1; i >= 0; i--)
                 {
                     string token = loggedTokens[i];
+                    //Jesli jest cos do przeczytania od danego clienta
                     if (loggedClients[token].MenuRequestsStream.DataAvailable)
                     {
-
+                        //Przeczytaj max 256 bajtów -> zamień na ascii -> słowa podzielone przez spacje -> usun WSZYSTKO co w streamie nadmiarowe
                         byte[] readBuffer = new byte[256];
                         StringBuilder menuRequestStrings = new StringBuilder();
                         int bytesRead = loggedClients[token].MenuRequestsStream.Read(readBuffer, 0, readBuffer.Length);
                         menuRequestStrings.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesRead));
-                        //Console.WriteLine(menuRequestStrings.ToString());
                         string[] request = menuRequestStrings.ToString().Split(new char[] { ' ' });
                         loggedClients[token].MenuRequestsStream.Flush();
+
                         //'token' '1 literowy kod' 'argumenty'
+                        //Test czy token wysłany odpowiada tokenowi clienta (zabezpieczenie)
                         if(token == request[0])
                         {
                             if (request[1] == "0") //Utworzenie stołu
@@ -130,17 +131,23 @@ namespace pGrServer
 
                                 bool found = false;
                                 openTablesAccess.WaitOne();
+                                //Tylko dla clienta ktory nie jest przy stole
                                 if(loggedClients[token].GameTable == null)
                                 {
+                                    //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
                                     foreach(GameTable table in openTables)
                                         if (table.Name == name)
                                             found = true;
 
                                     if (!found)
                                     {
+                                        //Utworzenie Playera clientowi
                                         loggedClients[token].CreateNewPlayer();
+                                        //Utworzenie stołu z client jako owner tego stolu
                                         GameTable gameTable = new GameTable(name, (HumanPlayer)loggedClients[token].Player);
+                                        //Ustawienie przy jakim stole jest Client
                                         loggedClients[token].GameTable = gameTable;
+                                        //Zmiana ustawien stołu
                                         GameTableSettings gameTableSettings = new GameTableSettings();
                                         if (mode == "0")
                                             gameTableSettings.changeMode(GameMode.Mixed);
@@ -185,6 +192,7 @@ namespace pGrServer
                                 //############################################################################
                                 //TODO
                                 //Wszelkie problemy ze stołami/grami itd 
+                                loggedClientsAccess.WaitOne();
                                 if(loggedClients[token].GameTable != null)
                                 {
 
@@ -196,6 +204,19 @@ namespace pGrServer
                                 loggedClients[token].GameRequestsStream.Dispose();
                                 loggedClients.Remove(token);
                                 loggedTokens.RemoveAt(i);
+                                loggedClientsAccess.ReleaseMutex();
+                            }
+                            else if (request[1] == "5") //Odejscie od stołu
+                            {
+
+                            }
+                            else if (request[1] == "6") //Rozpoczecie rozgrywki
+                            {
+
+                            }
+                            else if (request[1] == "7") //Zmiana ustawień
+                            {
+                                
                             }
                         }
                     }
