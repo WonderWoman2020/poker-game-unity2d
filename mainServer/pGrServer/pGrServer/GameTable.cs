@@ -8,6 +8,7 @@ namespace PokerGameClasses
 {
     public class GameTable
     {
+
         public string Name
         { get; set; }
         public HumanPlayer Owner
@@ -20,7 +21,7 @@ namespace PokerGameClasses
         { get; set; }
         public int CurrentBid
         { get; set; }
-
+        
         public GameTableSettings Settings
         { get; set; }
 
@@ -35,9 +36,17 @@ namespace PokerGameClasses
             this.AddPlayer(owner);
             this.ChangeOwner(owner);
         }
-        public bool AddPlayer(Player player)
+
+        private bool CheckIfPlayerSitsAtTheTable(Player player)
         {
             if (this.Players.Contains(player))
+                return true;
+
+            return false;
+        }
+        public bool AddPlayer(Player player)
+        {
+            if (this.CheckIfPlayerSitsAtTheTable(player))
             {
                 Console.WriteLine("You already sit at that table, dude, wake up.");
                 return false;
@@ -76,7 +85,7 @@ namespace PokerGameClasses
 
             return true;
         }
-        public bool KickOutPlayer(string playerNick)
+        public bool Remove(string playerNick)
         {
             Player player = this.Players.Find(p => p.Nick == playerNick);
             this.Players.Remove(player);
@@ -106,7 +115,7 @@ namespace PokerGameClasses
         public bool ChangeOwner(HumanPlayer newOwner)
         {
             this.Owner = newOwner;
-            if (newOwner != null)
+            if (newOwner != null && !this.CheckIfPlayerSitsAtTheTable(newOwner))
                 this.AddPlayer(newOwner);
 
             return true;
@@ -180,6 +189,17 @@ namespace PokerGameClasses
                 + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
                 + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
+        }
+        public string toMessage()
+        {
+            return
+                ":T:" +
+                this.Name + ' ' +
+                this.Owner.Nick + ' ' +
+                this.GetPlayerTypeCount(PlayerType.Human) + ' ' +
+                this.GetPlayerTypeCount(PlayerType.Bot) + ' ' +
+                this.Settings.MinPlayersXP + ' ' +
+                this.Settings.MinPlayersTokenCount;
         }
 
     }

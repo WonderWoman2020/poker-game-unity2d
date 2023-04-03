@@ -32,7 +32,6 @@ namespace PokerGameClasses
             Console.Clear();
 
             this.gameTable.SortPlayersBySeats();
-            this.gameTable.Settings.changeMinTokens(10);
 
             this.MakeBlindsFirstMoves();
 
@@ -109,6 +108,7 @@ namespace PokerGameClasses
                     Console.WriteLine(this.gameTable.TableGameState() + "\n");
                     Console.WriteLine(player.PlayerGameState() + "\n");
                     Console.WriteLine("Player's '" + player.Nick + "' move: ");
+
                     bool moveDone = player.MakeMove();
                     if (!moveDone)
                         continue;

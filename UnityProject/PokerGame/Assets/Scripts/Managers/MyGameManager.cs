@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using PokerGameClasses;
+using System.Net.NetworkInformation;
 
 public class MyGameManager : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class MyGameManager : MonoBehaviour
 
     public Player MainPlayer
     { get; set; }
+
+    public TcpConnection mainServerConnection;
+    public TcpConnection gameServerConnection;
 
     public List<Player> HotSeatPlayers
     { get; set; }
@@ -34,6 +38,13 @@ public class MyGameManager : MonoBehaviour
         //this.MainPlayer = new HumanPlayer("Test main player", PlayerType.Human);
         this.GameTables = new List<GameTable>();
         this.HotSeatPlayers = new List<Player>();
+
+        mainServerConnection = new TcpConnection();
+        mainServerConnection.port = 6937;
+        mainServerConnection.Start();
+
+        gameServerConnection = new TcpConnection();
+        gameServerConnection.port = 6938;
     }
 
     // Update is called once per frame
