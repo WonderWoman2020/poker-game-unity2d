@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Net.NetworkInformation;
+//using System.Diagnostics;
 
 public class MainMenu : MonoBehaviour
 {
@@ -14,7 +16,6 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         //SceneManager.LoadScene("MainMenu");
-       
     }
 
     public void OnExitButton()

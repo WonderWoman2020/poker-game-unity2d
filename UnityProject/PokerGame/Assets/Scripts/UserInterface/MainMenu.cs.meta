@@ -3,7 +3,11 @@ guid: 99d49ae0fd775e742b8112056c1c8b52
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - exitButton: {instanceID: 0}
+  - settingsButton: {instanceID: 0}
+  - playButton: {instanceID: 0}
+  - serverConnectionPrefab: {fileID: 6907553442931665579, guid: aadeea4d0495cf745ba3c3b54f693fc8, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

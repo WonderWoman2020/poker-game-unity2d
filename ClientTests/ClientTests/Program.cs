@@ -49,6 +49,7 @@ namespace ClientTests
             myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
             string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
             string token = request[0];
+            Console.WriteLine(token);
             ns.Flush();
             bool error = false;
 
