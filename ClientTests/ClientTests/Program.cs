@@ -73,13 +73,19 @@ namespace ClientTests
             {
                 error = true;
                 Console.WriteLine("already logged");
-            }          
+            }
+            Console.WriteLine("Press any key to open game connection client on port 6938 and finish logging in procedure...");
             Console.ReadKey();   
             if(!error)
             {
 
                 TcpClient serverGame = new TcpClient();
                 serverGame.Connect("127.0.0.1", 6938);
+
+                NetworkStream gameStream = serverGame.GetStream();
+
+                Console.WriteLine("Game connection accepted by server");
+
                 string login = request[3];
                 string tokens = request[2];
 
@@ -97,8 +103,9 @@ namespace ClientTests
                     Console.SetCursorPosition(0, 0);
                     sb.Clear();
 
-                    byte[] tosendtables = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "2");
+                    byte[] tosendtables = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "2"); //Poproś o informacje o stolikach
                     ns.Write(tosendtables, 0, tosendtables.Length);
+                    //ns.Flush();
                     Thread.Sleep(1000);
                     if (ns.DataAvailable)
                     {
@@ -130,44 +137,46 @@ namespace ClientTests
                         {
                             running = false;
                         }
-                        if (cki.Key == ConsoleKey.A)
+                        if (cki.Key == ConsoleKey.A) //Dodaj nowy stolik
                         {
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "0" + ' ' + "16" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                             nr++;
 
                         }
-                        if (cki.Key == ConsoleKey.J)
+                        if (cki.Key == ConsoleKey.J) //Dołącz do stolika
                         {
                             Console.WriteLine("Enter table name");
                             string tableName = Console.ReadLine();
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "1" + ' ' + tableName + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                         }
-                        if (cki.Key == ConsoleKey.O)
+                        if (cki.Key == ConsoleKey.O) //Odejdź od stolika
                         {
 
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
 
                         }
-                        if (cki.Key == ConsoleKey.C)
+                        if (cki.Key == ConsoleKey.C) //Zmień ustawienia stolika
                         {
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                         }
-                        if (cki.Key == ConsoleKey.R)
+                        if (cki.Key == ConsoleKey.R) //Wyczyść konsolę
                         {
                             Console.Clear();
                         }
                     }
                     Console.WriteLine(emptySpace);
                 }
-                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3");
+                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3"); //Wyloguj się
                 ns.Write(tose, 0, tose.Length);
                 Thread.Sleep(1000);
                 ns.Flush();
                 serverGame.Close();
+                server.Close();
+                gameStream.Dispose();
             }
             
         }

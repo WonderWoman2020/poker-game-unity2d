@@ -57,8 +57,12 @@ namespace pGrServer
                 sb.Clear();
                 sb.AppendLine("--- Server status ---");
                 sb.Append("Login active: " + (loginListener.Server.IsBound ? "YES" : "NO") + emptySpace + '\n');
+                loggedClientsAccess.WaitOne();
                 sb.Append("Logged clients: " + loggedClients.Count + emptySpace + '\n');
+                loggedClientsAccess.ReleaseMutex();
+                openTablesAccess.WaitOne();
                 sb.Append("Open tables: " + openTables.Count + emptySpace + '\n');
+                openTablesAccess.ReleaseMutex();
                 DateTime now = DateTime.Now;
                 sb.Append("Working time: " + now.Subtract(startTime).ToString() + '\n');
                 Console.WriteLine(sb);
@@ -155,7 +159,7 @@ namespace pGrServer
                             {
                                 openTablesAccess.WaitOne();
                                 Player client = player;
-                                if (client.Table == null)
+                                if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
                                 {
                                     string name = request[2];
                                     bool found = false;
@@ -187,7 +191,8 @@ namespace pGrServer
                             //informacje o stołach
                             else if (request[1] == "2")
                             {
-                                if(player.Table == null)
+                                //Uwaga! Nie wysyła informacji o stolikach, kiedy się przy jakimś siedzi --> dlatego pojedynczy klient nigdy nie dostaje listy stolików
+                                if (player.Table == null) 
                                 {
                                     StringBuilder completeMessage = new StringBuilder();
                                     openTablesAccess.WaitOne();
@@ -326,6 +331,7 @@ namespace pGrServer
 
 
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
+                                Console.WriteLine("Accepted game client");
 
                                 loggedClientsAccess.WaitOne();
 
@@ -338,6 +344,7 @@ namespace pGrServer
                                 loggedClients[token].GameRequestsStream = gameClient.GetStream();
                                 loggedTokens.Add(token);
                                 loggedClientsAccess.ReleaseMutex();
+                                Console.WriteLine("Added client to list");
                             }
                         }
                         else //failed

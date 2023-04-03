@@ -44,7 +44,7 @@ namespace PokerGameClasses
 
             return false;
         }
-        public bool AddPlayer(Player player)
+        public bool AddPlayer(Player player) //TODO Dodać tu usuwanie z poprzedniego stołu, jeśli przy jakimś siedział?
         {
             if (this.CheckIfPlayerSitsAtTheTable(player))
             {
