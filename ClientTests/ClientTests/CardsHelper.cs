@@ -12,6 +12,9 @@ namespace ClientTests
     {
         public static CardsCollection StringToCardsCollection(string cards)
         {
+            if (cards == "")
+                return null;
+
             CardsCollection cardsCollection = new CardsCollection();
 
             string[] splittedCards = cards.Split(new string(","));

@@ -125,16 +125,12 @@ namespace PokerGameClasses
                         continue;
 
                     StringBuilder sb = new StringBuilder();
-                    //sb.Append(":G:");
-                    //sb.Append("Info");
-                    //sb.Append("|");
 
                     sb.Append(":G:");
                     sb.Append("Round");
                     sb.Append("|");
                     sb.Append(this.CurrentRound);
 
-                    //sb.AppendLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
                     sb.Append(":G:");
                     sb.Append("Table state");
                     sb.Append("|");
@@ -145,12 +141,9 @@ namespace PokerGameClasses
                     sb.Append("|");
                     sb.Append(player.MessageGameState());
 
-                    //sb.AppendLine(this.gameTable.TableGameState() + "\n");
-                    //sb.AppendLine(player.PlayerGameState() + "\n");
                     sb.Append(":G:");
                     sb.Append("Which player turn");
                     sb.Append("|");
-                    //sb.Append("Player's '" + player.Nick + "' move: ");
                     sb.Append(player.Nick);
 
                     foreach (Player p in this.gameTable.Players)

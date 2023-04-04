@@ -163,6 +163,7 @@ namespace ClientTests
                             // 5 - Tokens Count, 6 - wartość Tokens Count, 7 - Current Bid, 8 - wartość Current Bid
                             else if(splitted[0] == "Table state")
                             {
+                                //Console.WriteLine(splitted[1]);
                                 string[] tableState = splitted[1].Split(new string(":"));
                                 string name = tableState[2];
                                 string cards = tableState[4];
@@ -174,6 +175,7 @@ namespace ClientTests
                             //podobnie jak w 'Table state'
                             else if(splitted[0] == "Player state")
                             {
+                                //Console.WriteLine(splitted[1]);
                                 string[] playerState = splitted[1].Split(new string(":"));
                                 string nick = playerState[2];
                                 string hand = playerState[4];
