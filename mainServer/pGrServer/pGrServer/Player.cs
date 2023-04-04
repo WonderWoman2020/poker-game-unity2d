@@ -85,12 +85,8 @@ namespace PokerGameClasses
             }
 
             bool moveDone = false;
-            //int playersTokensCountBeforeMove = this.TokensCount;
             while (!moveDone)
             {
-                //potem zamienić na pobieranie inputu z przycisków
-                //Console.WriteLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
-
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("--Player move request--");
                 sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");                
@@ -99,7 +95,6 @@ namespace PokerGameClasses
                 this.GameRequestsStream.Flush();
                 string moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
 
-                //int input = Convert.ToInt32(Console.ReadLine());
                 int input = Convert.ToInt32(moveResponse);
                 switch (input)
                 {
@@ -110,9 +105,6 @@ namespace PokerGameClasses
                         moveDone = Check();
                         break;
                     case 2:
-                        //tu też potem zamienić input
-                        //Console.WriteLine("Input how much you want to raise the bid");
-
                         sb.Clear();
                         sb.AppendLine("--Player move request--");
                         sb.AppendLine("Input how much you want to raise the bid");
@@ -121,7 +113,6 @@ namespace PokerGameClasses
                         this.GameRequestsStream.Flush();
                         moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
 
-                        //int amount = Convert.ToInt32(Console.ReadLine());
                         int amount = Convert.ToInt32(moveResponse);
                         moveDone = Raise(amount);
                         break;
@@ -133,8 +124,6 @@ namespace PokerGameClasses
                         break;
                 }
             }
-
-            //this.PlayersCurrentBet += playersTokensCountBeforeMove - this.TokensCount;
 
             return moveDone;
         }
@@ -156,16 +145,12 @@ namespace PokerGameClasses
             {
                 NetworkHelper.WriteNetworkStream(this.GameRequestsStream, "You have not enough tokens to make this move. Make other choice.\n");
                 this.GameRequestsStream.Flush();
-                //Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
                 return false;
             }
             this.TokensCount = this.TokensCount - amount;
             this.PlayersCurrentBet = this.PlayersCurrentBet + amount;
 
             this.Table.TokensInGame = this.Table.TokensInGame + amount;
-            //if (this.PlayersCurrentBet > this.Table.CurrentBid)
-            //    this.Table.CurrentBid = this.PlayersCurrentBet;
-            //dodać to w kontrolerze i wskaźnik na gracza, który ostatni przebił
 
             return true;
         }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using pGrServer;
+
 namespace PokerGameClasses
 {
     public class GameTable
@@ -48,13 +50,17 @@ namespace PokerGameClasses
         {
             if (this.CheckIfPlayerSitsAtTheTable(player))
             {
-                Console.WriteLine("You already sit at that table, dude, wake up.");
+                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "You already sit at that table, dude, wake up.");
+                player.GameRequestsStream.Flush();
+                //Console.WriteLine("You already sit at that table, dude, wake up.");
                 return false;
             }
 
             if (this.Players.Count == this.Settings.MaxPlayersCountInGame)
             {
-                Console.WriteLine("Too many players already at the table. You can't join this table now.");
+                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "Too many players already at the table. You can't join this table now.");
+                player.GameRequestsStream.Flush();
+                //Console.WriteLine("Too many players already at the table. You can't join this table now.");
                 return false;
             }
 
@@ -62,12 +68,16 @@ namespace PokerGameClasses
             {
                 if (this.Settings.MinPlayersXP > player.XP)
                 {
-                    Console.WriteLine("Not enought XP to join the game table");
+                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "Not enought XP to join the game table");
+                    player.GameRequestsStream.Flush();
+                    //Console.WriteLine("Not enought XP to join the game table");
                     return false;
                 }
                 if (this.Settings.MinPlayersTokenCount > player.TokensCount)
                 {
-                    Console.WriteLine("Not enought Tokens to join the game table");
+                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "Not enought Tokens to join the game table");
+                    player.GameRequestsStream.Flush();
+                    //Console.WriteLine("Not enought Tokens to join the game table");
                     return false;
                 }
             }
