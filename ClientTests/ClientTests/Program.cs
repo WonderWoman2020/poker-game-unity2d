@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 using pGrServer;
+using PokerGameClasses;
 
 namespace ClientTests
 {
@@ -152,6 +153,18 @@ namespace ClientTests
                                 Console.WriteLine(splitted[1]);
                                 int input = Convert.ToInt32(Console.ReadLine());
                                 NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
+                            }
+                            // 0 - pusty string, 1 - Name, 2 - wartość Name, 3 - Cards, 4 - wartość Cards (karty)
+                            // 5 - Tokens Count, 6 - wartość Tokens Count, 7 - Current Bid, 8 - wartość Current Bid
+                            else if(splitted[0] == "Table state")
+                            {
+                                string[] tableState = splitted[1].Split(new string(":"));
+                                string name = tableState[2];
+                                string cards = tableState[4];
+                                CardsCollection cardsCollection = CardsHelper.StringToCardsCollection(cards);
+                                int tokensInGame = Convert.ToInt32(tableState[6]);
+                                int currentBid = Convert.ToInt32(tableState[8]);
+                                Console.WriteLine("Table's '" + name+ "' game state:" + "\nCards: " + cardsCollection + "\nTokens in game: " + tokensInGame + "\nCurrent Bid: " + currentBid+"\n");
                             }
                             else
                                 if(splitted[0] != "")

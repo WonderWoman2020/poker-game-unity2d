@@ -125,12 +125,31 @@ namespace PokerGameClasses
                         continue;
 
                     StringBuilder sb = new StringBuilder();
+                    //sb.Append(":G:");
+                    //sb.Append("Info");
+                    //sb.Append("|");
+
                     sb.Append(":G:");
-                    sb.Append("Info");
+                    sb.Append("Round");
                     sb.Append("|");
-                    sb.AppendLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
-                    sb.AppendLine(this.gameTable.TableGameState() + "\n");
+                    sb.Append(this.CurrentRound);
+
+                    //sb.AppendLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
+                    sb.Append(":G:");
+                    sb.Append("Table state");
+                    sb.Append("|");
+                    sb.Append(this.gameTable.MessageGameState());
+
+                    sb.Append(":G:");
+                    sb.Append("Player state");
+                    sb.Append("|");
                     sb.AppendLine(player.PlayerGameState() + "\n");
+
+                    //sb.AppendLine(this.gameTable.TableGameState() + "\n");
+                    //sb.AppendLine(player.PlayerGameState() + "\n");
+                    sb.Append(":G:");
+                    sb.Append("Which player turn");
+                    sb.Append("|");
                     sb.AppendLine("Player's '" + player.Nick + "' move: ");
 
                     foreach (Player p in this.gameTable.Players)

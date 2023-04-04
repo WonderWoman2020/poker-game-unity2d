@@ -221,5 +221,13 @@ namespace PokerGameClasses
                 this.Settings.MinPlayersTokenCount;
         }
 
+        public string MessageGameState()
+        {
+            return ":Name:" + this.Name
+                + ":Cards:" +  this.shownHelpingCards.ToString()//String.Join(", ", this.shownHelpingCards.Cards)
+                + ":Tokens in game:" + this.TokensInGame
+                + ":Current bid:" + this.CurrentBid;
+        }
+
     }
 }

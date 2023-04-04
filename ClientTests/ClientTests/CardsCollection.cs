@@ -72,8 +72,8 @@ namespace PokerGameClasses
 
         override public string ToString()
         {
-            //return string.Join(", ", this.Cards);
-            return string.Join(",", this.Cards);
+            return string.Join(", ", this.Cards);
+            //return string.Join(",", this.Cards);
         }
     }
 }
