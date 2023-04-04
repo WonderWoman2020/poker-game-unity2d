@@ -27,6 +27,9 @@ namespace pGrServer
         public static TcpListener loginListener;
         public static TcpListener gameListener;
 
+        public static Thread oneGameThread;
+        public static GameTable tableToStartGame;
+
         
         static void Main()
         {
@@ -44,6 +47,9 @@ namespace pGrServer
             Thread loginThread = new Thread(ListenLogin);
             Thread autoLogoutThread = new Thread(AutoLogout);
             Thread requestsThread = new Thread(ListenRequests);
+
+            oneGameThread = null;
+            tableToStartGame = null;
 
             //RUN
             loginThread.Start();
@@ -85,6 +91,9 @@ namespace pGrServer
             loginThread.Join();
             autoLogoutThread.Join();
             requestsThread.Join();
+
+            if(oneGameThread != null)
+                oneGameThread.Join();
 
             loggedClientsAccess.WaitOne();
             foreach (string token in loggedTokens)
@@ -227,6 +236,21 @@ namespace pGrServer
                                     ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5]);
                                 }
                                 openTablesAccess.ReleaseMutex();
+                            }
+                            //Rozpocznij grę
+                            else if (request[1] == "6")
+                            {
+                                //openTablesAccess.WaitOne();
+                                Player client = loggedClients[token];
+                                if (client.Table != null)
+                                {
+                                    tableToStartGame = client.Table;
+                                    oneGameThread = new Thread(Game);
+                                    oneGameThread.Start();
+                                    //NetworkHelper.WriteNetworkStream(client.GameRequestsStream, "Game started on server");
+                                    //client.GameRequestsStream.Flush();
+                                }
+                                //openTablesAccess.ReleaseMutex();
                             }
                         }
                     }
@@ -465,9 +489,15 @@ namespace pGrServer
                 var dataFromDatabase = result.Split("\"");
             }
         }
-        public static void Game(GameTable table)
+        public static void Game()
         {
-
+            GameTable table = tableToStartGame;
+            //NetworkHelper.WriteNetworkStream(table.Players[0].GameRequestsStream, "We're on our best way to play the game!");
+            //table.Players[0].GameRequestsStream.Flush();            
+            GameplayController controller = new GameplayController(table, new TexasHoldemDealer());
+            tableToStartGame = null;
+            controller.playTheGame();
+            controller.ConcludeGame();
         }
         public static void ChangeTableSettings(GameTable table,Player player, string mode, string nrOfBots, string minXp, string big_blind)
         {

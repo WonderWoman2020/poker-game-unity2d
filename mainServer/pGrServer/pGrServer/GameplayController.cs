@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
+using pGrServer;
+
 namespace PokerGameClasses
 {
     public class GameplayController
@@ -27,9 +29,9 @@ namespace PokerGameClasses
 
         public void playTheGame()
         {
-            Console.WriteLine("\nDo you want to start the game? (Just press enter, it will start either way XD)\n");
-            Console.ReadKey();
-            Console.Clear();
+            //Console.WriteLine("\nDo you want to start the game? (Just press enter, it will start either way XD)\n");
+            //Console.ReadKey();
+            //Console.Clear();
 
             this.gameTable.SortPlayersBySeats();
 
@@ -48,25 +50,49 @@ namespace PokerGameClasses
             Player smallBlind = this.gameTable.Players[this.GetSmallBlindPosition()];
             Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
 
-            Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Player's '" + smallBlind.Nick + "' move (small blind):");
+            
+
+            //Console.WriteLine("Player's '" + smallBlind.Nick + "' move (small blind):");
             bool moveDoneS = smallBlind.SmallBlindFirstMove();
             if (moveDoneS)
             {
                 this.PositionOfPlayerWhoRaised = this.GetSmallBlindPosition();
                 this.gameTable.CurrentBid = smallBlind.PlayersCurrentBet;
             }
-            Console.WriteLine("Small blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
-            Console.ReadKey();
+            //Console.WriteLine("Small blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+            //Console.ReadKey();
 
-            Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):");
+            sb.AppendLine("Small blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+
+            foreach(Player p in this.gameTable.Players)
+            {
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                p.GameRequestsStream.Flush();
+            }
+
+            sb.Clear();
+            sb.AppendLine("Player's '" + bigBlind.Nick + "' move (big blind):");
+            
+
+            //Console.WriteLine("Player's '" + bigBlind.Nick + "' move (big blind):");
             bool moveDoneB = bigBlind.BigBlindFirstMove();
             if (moveDoneB)
             {
                 this.PositionOfPlayerWhoRaised = this.GetBigBlindPosition();
                 this.gameTable.CurrentBid = bigBlind.PlayersCurrentBet;
             }
-            Console.WriteLine("Big blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
-            Console.ReadKey();
+            //Console.WriteLine("Big blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+            //Console.ReadKey();
+
+            sb.AppendLine("Big blind set current bid to " + this.gameTable.CurrentBid + " tokens.\n");
+
+            foreach (Player p in this.gameTable.Players)
+            {
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                p.GameRequestsStream.Flush();
+            }
         }
 
         private int GetSmallBlindPosition()
@@ -103,11 +129,26 @@ namespace PokerGameClasses
                     if (player.AllInMade || player.Folded) //Ci gracze ju¿ nie maj¹ ruchów
                         continue;
 
-                    Console.Clear();
+                    /*Console.Clear();
                     Console.WriteLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
                     Console.WriteLine(this.gameTable.TableGameState() + "\n");
                     Console.WriteLine(player.PlayerGameState() + "\n");
-                    Console.WriteLine("Player's '" + player.Nick + "' move: ");
+                    Console.WriteLine("Player's '" + player.Nick + "' move: ");*/
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
+                    sb.AppendLine(this.gameTable.TableGameState() + "\n");
+                    sb.AppendLine(player.PlayerGameState() + "\n");
+                    sb.AppendLine("Player's '" + player.Nick + "' move: ");
+
+                    foreach (Player p in this.gameTable.Players)
+                    {
+                        NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                        p.GameRequestsStream.Flush();
+                    }
+
+                    //NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
+                    //player.GameRequestsStream.Flush();
 
                     bool moveDone = player.MakeMove();
                     if (!moveDone)
@@ -189,7 +230,17 @@ namespace PokerGameClasses
                 winner.TokensCount = winner.TokensCount + this.gameTable.TokensInGame;
                 winner.XP = winner.XP + 100; // ew. do zmiany
             }
-            Console.WriteLine("\nAnd the winner is:\n\n" + winner + "\nCongrats!\n");
+            //Console.WriteLine("\nAnd the winner is:\n\n" + winner + "\nCongrats!\n");
+
+            foreach (Player p in this.gameTable.Players)
+            {
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, "\nAnd the winner is:\n\n" + winner + "\nCongrats!\n");
+                p.GameRequestsStream.Flush();
+            }
+
+            //NetworkHelper.WriteNetworkStream(this.gameTable.Players[0].GameRequestsStream, "\nAnd the winner is:\n\n" + winner + "\nCongrats!\n");
+            //this.gameTable.Players[0].GameRequestsStream.Flush();
+
             this.ResetGame();
         }
         public Player determineWinner()
@@ -204,7 +255,17 @@ namespace PokerGameClasses
                 // Karty gracza i 5 wspolnych lezacych na stole
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
                 PlayerCards.SortDesc();
-                Console.WriteLine(PlayerCards);
+                //Console.WriteLine(PlayerCards);
+
+                //NetworkHelper.WriteNetworkStream(this.gameTable.Players[0].GameRequestsStream, PlayerCards.ToString());
+                //this.gameTable.Players[0].GameRequestsStream.Flush();
+
+                foreach (Player p in this.gameTable.Players)
+                {
+                    NetworkHelper.WriteNetworkStream(p.GameRequestsStream, PlayerCards.ToString()+"\n");
+                    p.GameRequestsStream.Flush();
+                }
+
                 int playerScore = handsComparer.valueOfCards(PlayerCards);
                 if (playerScore <= biggestScore)
                 {
@@ -212,8 +273,8 @@ namespace PokerGameClasses
                     biggestScore = playerScore;                    
                 }
             }
-            Dealer.Deck.SortDesc();
-            Console.WriteLine(Dealer.Deck.ToString());
+            //Dealer.Deck.SortDesc();
+            //Console.WriteLine(Dealer.Deck.ToString());
 
             return winner;
         }

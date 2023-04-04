@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+using pGrServer;
+
 namespace PokerGameClasses
 {
     public enum PlayerType
@@ -87,8 +89,18 @@ namespace PokerGameClasses
             while (!moveDone)
             {
                 //potem zamienić na pobieranie inputu z przycisków
-                Console.WriteLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
-                int input = Convert.ToInt32(Console.ReadLine());
+                //Console.WriteLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
+
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("--Player move request--");
+                sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");                
+
+                NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
+                this.GameRequestsStream.Flush();
+                string moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+
+                //int input = Convert.ToInt32(Console.ReadLine());
+                int input = Convert.ToInt32(moveResponse);
                 switch (input)
                 {
                     case 0:
@@ -99,8 +111,18 @@ namespace PokerGameClasses
                         break;
                     case 2:
                         //tu też potem zamienić input
-                        Console.WriteLine("Input how much you want to raise the bid");
-                        int amount = Convert.ToInt32(Console.ReadLine());
+                        //Console.WriteLine("Input how much you want to raise the bid");
+
+                        sb.Clear();
+                        sb.AppendLine("--Player move request--");
+                        sb.AppendLine("Input how much you want to raise the bid");
+
+                        NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
+                        this.GameRequestsStream.Flush();
+                        moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+
+                        //int amount = Convert.ToInt32(Console.ReadLine());
+                        int amount = Convert.ToInt32(moveResponse);
                         moveDone = Raise(amount);
                         break;
                     case 3:
@@ -132,7 +154,9 @@ namespace PokerGameClasses
         {
             if (this.TokensCount < amount)
             {
-                Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
+                NetworkHelper.WriteNetworkStream(this.GameRequestsStream, "You have not enough tokens to make this move. Make other choice.\n");
+                this.GameRequestsStream.Flush();
+                //Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
                 return false;
             }
             this.TokensCount = this.TokensCount - amount;

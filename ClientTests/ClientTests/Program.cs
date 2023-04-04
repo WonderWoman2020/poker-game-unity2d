@@ -4,6 +4,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
+using pGrServer;
+
 namespace ClientTests
 {
     class Program
@@ -128,8 +130,21 @@ namespace ClientTests
                         }
                     }
 
-
                     Console.WriteLine(sb);
+
+                    if (gameStream.DataAvailable)
+                    {
+                        string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
+                        gameStream.Flush();
+                        Console.Clear();
+                        Console.WriteLine(gameRequest);
+                        if(gameRequest.Contains("--Player move request--"))
+                        {
+                            int input = Convert.ToInt32(Console.ReadLine());
+                            NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
+                        }
+                    }
+
                     if (Console.KeyAvailable)
                     {
                         cki = Console.ReadKey();
@@ -161,6 +176,11 @@ namespace ClientTests
                         if (cki.Key == ConsoleKey.C) //Zmień ustawienia stolika
                         {
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                        }
+                        if (cki.Key == ConsoleKey.P) //Uruchom grę
+                        {
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                         }
                         if (cki.Key == ConsoleKey.R) //Wyczyść konsolę
