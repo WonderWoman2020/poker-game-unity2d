@@ -12,11 +12,9 @@ namespace ClientTests
         {
             //SZYBKI PORADNIK
             /*
-             * W tym ulozeniu nalezy sie poprawnie zalogowac bo inaczej tam nizej bedzie wywalac
-             * ale jak sie zle zaloguje to do pierwszego Console.ReadKey() bedzie git
-             * po zalogowaniu klikniecie klawisza by przejsc dalej
              * 
              * 
+             * juz nie
              * 
              * 
              * 
@@ -49,13 +47,10 @@ namespace ClientTests
             StringBuilder myCompleteMessage = new StringBuilder();
             numberOfBytesRead = ns.Read(myReadBuffer, 0, myReadBuffer.Length);
             myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-            //Console.WriteLine(myCompleteMessage);
-            //Console.WriteLine(myCompleteMessage.Length);
             string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
             string token = request[0];
             Console.WriteLine(token);
             ns.Flush();
-            //string[] wrongTokens = { "##&&@@0000", "##&&@@0001", "##&&@@0002", "##&&@@0003" };
             bool error = false;
 
                     
@@ -82,6 +77,7 @@ namespace ClientTests
             Console.ReadKey();   
             if(!error)
             {
+
                 TcpClient serverGame = new TcpClient();
                 serverGame.Connect("127.0.0.1", 6938);
                 string login = request[3];
@@ -111,11 +107,7 @@ namespace ClientTests
                         int nrbyt = ns.Read(readBuf, 0, readBuf.Length);
                         menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
                         string[] tables = menuRequestStr.ToString().Split(new string(":T:")); //na poczatku tez dzieli i wykrywa 1 pusty string 
-
-                        //foreach (string table in tables)
-                        //{
-                        //    sb.AppendLine(table);
-                        //}
+                        //dlatego tutaj i=1
                         for (int i = 1; i < tables.Length; i++)
                         {
                             string[] mess = tables[i].Split(' ');
@@ -138,17 +130,40 @@ namespace ClientTests
                         {
                             running = false;
                         }
-                        if (cki.Key == ConsoleKey.Spacebar)
+                        if (cki.Key == ConsoleKey.A)
                         {
-                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "10" + ' ' + "16" + ' ');
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "0" + ' ' + "16" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                             nr++;
 
                         }
+                        if (cki.Key == ConsoleKey.J)
+                        {
+                            Console.WriteLine("Enter table name");
+                            string tableName = Console.ReadLine();
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "1" + ' ' + tableName + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                        }
+                        if (cki.Key == ConsoleKey.O)
+                        {
+
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+
+                        }
+                        if (cki.Key == ConsoleKey.C)
+                        {
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                        }
+                        if (cki.Key == ConsoleKey.R)
+                        {
+                            Console.Clear();
+                        }
                     }
                     Console.WriteLine(emptySpace);
                 }
-                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4");
+                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3");
                 ns.Write(tose, 0, tose.Length);
                 Thread.Sleep(1000);
                 ns.Flush();

@@ -17,7 +17,7 @@ namespace pGrServer
     {
         public static bool running;
 
-        public static IDictionary<string, Client> loggedClients;
+        public static IDictionary<string, Player> loggedClients;
         public static List<string> loggedTokens;
         public static List<GameTable> openTables;
 
@@ -30,6 +30,7 @@ namespace pGrServer
         
         static void Main()
         {
+            //Zmienne potrzebne do wyswietlania stanu w //RUN
             ConsoleKeyInfo cki;
             Console.CursorVisible = false;
             var sb = new StringBuilder();
@@ -37,9 +38,6 @@ namespace pGrServer
             emptySpace.Append(' ', 10);
             DateTime startTime = DateTime.Now;
             
-
-            //PokerLogicTests pokerTester = new PokerLogicTests();
-            //pokerTester.RunExampleGame();
 
             //INITIALIZE
             Initialize();
@@ -103,99 +101,127 @@ namespace pGrServer
             while (running)
             {
                 loggedClientsAccess.WaitOne();
+                //Przejdz po wszystkich zalogowanych tokenach (od tyłu na potrzeby usuwania)
                 for(int i=loggedTokens.Count-1; i >= 0; i--)
                 {
                     string token = loggedTokens[i];
-                    if (loggedClients[token].MenuRequestsStream.DataAvailable)
+                    Player player = loggedClients[token];
+                    //Jesli jest cos do przeczytania od danego clienta
+                    if (player.MenuRequestsStream.DataAvailable)
                     {
-
+                        //Przeczytaj max 256 bajtów -> zamień na ascii -> słowa podzielone przez spacje -> usun WSZYSTKO co w streamie nadmiarowe
                         byte[] readBuffer = new byte[256];
                         StringBuilder menuRequestStrings = new StringBuilder();
-                        int bytesRead = loggedClients[token].MenuRequestsStream.Read(readBuffer, 0, readBuffer.Length);
+                        int bytesRead = player.MenuRequestsStream.Read(readBuffer, 0, readBuffer.Length);
                         menuRequestStrings.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesRead));
-                        //Console.WriteLine(menuRequestStrings.ToString());
                         string[] request = menuRequestStrings.ToString().Split(new char[] { ' ' });
-                        loggedClients[token].MenuRequestsStream.Flush();
+                        player.MenuRequestsStream.Flush();
+
                         //'token' '1 literowy kod' 'argumenty'
+                        //Test czy token wysłany odpowiada tokenowi clienta (zabezpieczenie)
                         if(token == request[0])
                         {
-                            if (request[1] == "0") //Utworzenie stołu
+                            //Utworzenie stołu
+                            if (request[1] == "0") 
                             {
+                                //  2      3    4      5        6
                                 //nazwa, tryb, bots, min xp, min stawka
-                                string name      = request[2];
-                                string mode      = request[3];
-                                string nrOfBots  = request[4];
-                                string minXp     = request[5];
-                                string big_blind = request[6];
+                                string name = request[2];
 
                                 bool found = false;
                                 openTablesAccess.WaitOne();
-                                if(loggedClients[token].GameTable == null)
+                                //Tylko dla clienta ktory nie jest przy stole
+                                if(player.Table == null)
                                 {
+                                    //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
                                     foreach(GameTable table in openTables)
                                         if (table.Name == name)
                                             found = true;
 
                                     if (!found)
                                     {
-                                        loggedClients[token].CreateNewPlayer();
-                                        GameTable gameTable = new GameTable(name, (HumanPlayer)loggedClients[token].Player);
-                                        loggedClients[token].GameTable = gameTable;
-                                        GameTableSettings gameTableSettings = new GameTableSettings();
-                                        if (mode == "0")
-                                            gameTableSettings.changeMode(GameMode.Mixed);
-                                        else if (mode == "1")
-                                            gameTableSettings.changeMode(GameMode.No_Bots);
-                                        else if (mode == "2")
-                                            gameTableSettings.changeMode(GameMode.You_And_Bots);
-
-                                        gameTableSettings.changeBotsNumber(int.Parse(nrOfBots));
-                                        gameTableSettings.changeMinXP(int.Parse(minXp));
-                                        gameTableSettings.changeMinTokens(int.Parse(big_blind));
-
-                                        gameTable.ChangeSettings(loggedClients[token].Player, gameTableSettings);
-
+                                        //Utworzenie stołu
+                                        GameTable gameTable = new GameTable(name, (HumanPlayer)player);
+                                        //Ustawienie przy jakim stole jest Client
+                                        loggedClients[token].Table = gameTable;
+                                        ChangeTableSettings(gameTable, player, request[3], request[4], request[5], request[6]);
                                         openTables.Add(gameTable);
                                     }
                                 }
                                 openTablesAccess.ReleaseMutex();
-
                             }
-                            else if (request[1] == "1") //Dolaczenie do stolu
+                            //Dolaczenie do stolu
+                            else if (request[1] == "1") 
                             {
-                                if (loggedClients[token].GameTable == null)
-                                {
-
-                                }
-                            }
-                            else if (request[1] == "2")//informacje o stołach
-                            {
-                                StringBuilder completeMessage = new StringBuilder();
                                 openTablesAccess.WaitOne();
-                                foreach (GameTable table in openTables)
+                                Player client = player;
+                                if (client.Table == null)
                                 {
-                                    completeMessage.Append(table.toMessage());
+                                    string name = request[2];
+                                    bool found = false;
+                                    GameTable table = null;
+                                    //Szukanie nazwy stołu do którego chce sie dolaczyc
+                                    foreach (GameTable tab in openTables)
+                                        if (tab.Name == name)
+                                        {
+                                            found = true;
+                                            table = tab;
+                                        }      
+                                    if (found)
+                                    {
+                                        //jesli udalo sie dodac gracza do stołu
+                                        bool git = table.AddPlayer(client);
+                                        if (git)
+                                        {
+                                            client.Table = table;
+                                        }
+                                        else
+                                        {
+                                            client.Table = null;
+                                        }
+                                    }
+                                    
                                 }
-                                byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
-                                loggedClients[token].MenuRequestsStream.Write(message, 0, message.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
-                            else if (request[1] == "4") //wylogowanie
+                            //informacje o stołach
+                            else if (request[1] == "2")
                             {
-                                //############################################################################
-                                //TODO
-                                //Wszelkie problemy ze stołami/grami itd 
-                                if(loggedClients[token].GameTable != null)
+                                if(player.Table == null)
                                 {
-
+                                    StringBuilder completeMessage = new StringBuilder();
+                                    openTablesAccess.WaitOne();
+                                    foreach (GameTable table in openTables)
+                                    {
+                                        completeMessage.Append(table.toMessage());
+                                    }
+                                    byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
+                                    player.MenuRequestsStream.Write(message, 0, message.Length);
+                                    openTablesAccess.ReleaseMutex();
                                 }
+                            }
+                            //wylogowanie
+                            else if (request[1] == "3") 
+                            {
+                                RemoveFromTable(player);
+                                LogOut(player, i);
+                            }
+                            //Odejscie od stołu
+                            else if (request[1] == "4") 
+                            {
+                                RemoveFromTable(player);
+                            }
+                            //Zmiana ustawień
+                            else if (request[1] == "5") 
+                            {
+                                openTablesAccess.WaitOne();
+                                Player client = loggedClients[token];
 
-                                loggedClients[token].MenuRequestsTcp.Close();
-                                loggedClients[token].MenuRequestsStream.Dispose();
-                                loggedClients[token].GameRequestsTcp.Close();
-                                loggedClients[token].GameRequestsStream.Dispose();
-                                loggedClients.Remove(token);
-                                loggedTokens.RemoveAt(i);
+                                if(client.Table != null)
+                                {
+                                    ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5]);
+                                }
+                                openTablesAccess.ReleaseMutex();
                             }
                         }
                     }
@@ -267,8 +293,8 @@ namespace pGrServer
                                     is_logged = true;
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes("##&&@@0003");
                                     clientStream.Write(message, 0, message.Length);
-                                }
-                                    
+                                    break;
+                                }   
                             }
                             loggedClientsAccess.ReleaseMutex();
                             if(!is_logged)
@@ -289,7 +315,6 @@ namespace pGrServer
                                 var loginH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
                                 var data = loginH.Split('\"');
                                 var login = data[0];
-                                Console.WriteLine(login);
 
                                 toBeSearched = "nick\":\"";
                                 var nickH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
@@ -303,7 +328,10 @@ namespace pGrServer
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
 
                                 loggedClientsAccess.WaitOne();
-                                loggedClients[token] = new Client(nick, xpI, coinsI, login);
+
+                                loggedClients[token] = new HumanPlayer(nick, PlayerType.Human);
+                                loggedClients[token].UpdateData(xpI, coinsI, login);
+                                loggedClients[token].Token = token;
                                 loggedClients[token].MenuRequestsTcp = client;
                                 loggedClients[token].MenuRequestsStream = client.GetStream();
                                 loggedClients[token].GameRequestsTcp = gameClient;
@@ -329,7 +357,7 @@ namespace pGrServer
         public static void Initialize()
         {
             running = true;
-            loggedClients = new Dictionary<string, Client>();
+            loggedClients = new Dictionary<string, Player>();
             loggedClientsAccess = new Mutex();
             openTablesAccess = new Mutex();
             loginListener = new TcpListener(IPAddress.Any, (Int32)6937);
@@ -363,24 +391,92 @@ namespace pGrServer
                 for (int i = loggedTokens.Count - 1; i >= 0; i--)
                 {
                     string token = loggedTokens[i];
+                    //Ogolnie to te warunki znalezione w necie, dokladnie czemu tak sie dzieje to nie pamietam
                     Socket s = loggedClients[token].MenuRequestsStream.Socket;
                     bool pt1 = s.Poll(1000, SelectMode.SelectRead);
                     bool pt2 = (s.Available == 0);
                     if(pt1 && pt2)
                     {
-                        loggedClients[token].MenuRequestsTcp.Close();
-                        loggedClients[token].MenuRequestsStream.Dispose();
-                        loggedClients[token].GameRequestsTcp.Close();
-                        loggedClients[token].GameRequestsStream.Dispose();
-                        loggedClients.Remove(token);
-                        loggedTokens.RemoveAt(i);
+                        RemoveFromTable(loggedClients[token]);
+                        LogOut(loggedClients[token], i);
                     }
-  
                 }
                 loggedClientsAccess.ReleaseMutex();
                 Thread.Sleep(10000);
             }
             Console.WriteLine("Auto Logout stopped");
+        }
+        public static void LogOut(Player player, int i)
+        {
+            player.MenuRequestsTcp.Close();
+            player.MenuRequestsStream.Dispose();
+            player.GameRequestsTcp.Close();
+            player.GameRequestsStream.Dispose();
+            loggedClients.Remove(player.Token);
+            loggedTokens.RemoveAt(i);
+            //@@@@@@@@@@@@ Działa i szkoda odpalac przy testowaniu obecnie
+            //UpdateBoth(player);
+        }
+        public static void RemoveFromTable(Player player)
+        {
+            openTablesAccess.WaitOne();
+            if (player.Table != null)
+            {
+                GameTable tmp = player.Table;
+                tmp.Remove(player.Nick);
+                player.Table = null;
+                if (tmp.GetPlayerTypeCount(PlayerType.Human) == 0)
+                {
+                    openTables.Remove(tmp);
+                }
+            }
+            openTablesAccess.ReleaseMutex();
+        }
+        public static void UpdateBoth(Player player)
+        {
+            UpdateUserCoinsOrXP(player.Login, "coins", player.TokensCount);
+            UpdateUserCoinsOrXP(player.Login, "xp", player.XP);
+        }
+        public static void UpdateUserCoinsOrXP(string playerLogin, string item, int value)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatevalues");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = "{\"login\":\"" + playerLogin + "\"," +
+                                "\"toUpdate\":\"" + item + "\"," +
+                                "\"updatedValue\":\"" + value + "\"}";
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                var dataFromDatabase = result.Split("\"");
+            }
+        }
+        public static void Game(GameTable table)
+        {
+
+        }
+        public static void ChangeTableSettings(GameTable table,Player player, string mode, string nrOfBots, string minXp, string big_blind)
+        {
+            GameTableSettings gameTableSettings = new GameTableSettings();
+            if (mode == "0")
+                gameTableSettings.changeMode(GameMode.Mixed);
+            else if (mode == "1")
+                gameTableSettings.changeMode(GameMode.No_Bots);
+            else if (mode == "2")
+                gameTableSettings.changeMode(GameMode.You_And_Bots);
+
+            gameTableSettings.changeBotsNumber(int.Parse(nrOfBots));
+            gameTableSettings.changeMinXP(int.Parse(minXp));
+            gameTableSettings.changeMinTokens(int.Parse(big_blind));
+
+            table.ChangeSettings((HumanPlayer)player, gameTableSettings);
         }
     }
 }
