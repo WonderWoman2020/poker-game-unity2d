@@ -244,18 +244,6 @@ namespace PokerGameClasses
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
                 PlayerCards.SortDesc();
 
-                /*StringBuilder sb = new StringBuilder();
-                sb.Append(":G:");
-                sb.Append("Info");
-                sb.Append("|");
-                sb.AppendLine(PlayerCards.ToString());
-
-                foreach (Player p in this.gameTable.Players)
-                {
-                    NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
-                    p.GameRequestsStream.Flush();
-                }*/
-
                 int playerScore = handsComparer.valueOfCards(PlayerCards);
                 if (playerScore <= biggestScore)
                 {

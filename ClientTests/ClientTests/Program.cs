@@ -133,6 +133,7 @@ namespace ClientTests
 
                     Console.WriteLine(sb);
 
+                    //odbieranie zapytań z gry od serwera, wysyłanie odpowiedzi od gracza (tak, na razie jest odwrotnie niż powinno być w przyszłości XD)
                     if (gameStream.DataAvailable)
                     {
                         string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
@@ -147,6 +148,9 @@ namespace ClientTests
                             string[] splitted = singleRequest.Split(new string("|"));
                             if (splitted[0] == "Info")
                                 Console.WriteLine(splitted[1]);
+                            //pobierz ruch od gracza - ruchem jest albo wybranie liczby od 0 do 3
+                            //oznaczające kolejno Fold, Check, Raise i AllIn
+                            //albo po wykonaniu ruchu Raise, nadejdzie drugi Move request z prośbą o podanie wartości o jaką przebijamy
                             else if (splitted[0] == "Move request")
                             {
                                 Console.WriteLine(splitted[0]);
@@ -154,6 +158,7 @@ namespace ClientTests
                                 int input = Convert.ToInt32(Console.ReadLine());
                                 NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
                             }
+                            //która runda się toczy
                             else if(splitted[0] == "Round")
                             {
                                 int round = Convert.ToInt32(splitted[1]);
@@ -185,11 +190,13 @@ namespace ClientTests
                                 int xp = Convert.ToInt32(playerState[10]);
                                 Console.WriteLine("Player's '" + nick + "' game state:" + "\nHand: " + cardsCollection + "\nTokens: " + tokensCount + "\nCurrent Bet: " + currentBet + "\nXP: "+xp+"\n");
                             }
+                            //którego gracza teraz kolej
                             else if(splitted[0] == "Which player turn")
                             {
                                 string nickOfThePlayer = splitted[1];
                                 Console.WriteLine("Player's '" + nickOfThePlayer + "' move: ");
                             }
+                            //inne jeszcze nie zdefiniowane wiadomości, o których zapomniałam XD jeśli takie jeszcze są
                             else
                                 if(splitted[0] != "")
                                     Console.WriteLine("Undefined message from server: " + singleRequest);
