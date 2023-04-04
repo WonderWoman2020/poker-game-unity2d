@@ -48,9 +48,15 @@ namespace PokerGameClasses
         }
         public bool AddPlayer(Player player) //TODO Dodać tu usuwanie z poprzedniego stołu, jeśli przy jakimś siedział?
         {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(":G:");
+            sb.Append("Info");
+            sb.Append("|");
+
             if (this.CheckIfPlayerSitsAtTheTable(player))
             {
-                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "You already sit at that table, dude, wake up.");
+                sb.AppendLine("You already sit at that table, dude, wake up.");
+                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
                 player.GameRequestsStream.Flush();
                 //Console.WriteLine("You already sit at that table, dude, wake up.");
                 return false;
@@ -58,7 +64,8 @@ namespace PokerGameClasses
 
             if (this.Players.Count == this.Settings.MaxPlayersCountInGame)
             {
-                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "Too many players already at the table. You can't join this table now.");
+                sb.AppendLine("Too many players already at the table. You can't join this table now.");
+                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
                 player.GameRequestsStream.Flush();
                 //Console.WriteLine("Too many players already at the table. You can't join this table now.");
                 return false;
@@ -68,14 +75,16 @@ namespace PokerGameClasses
             {
                 if (this.Settings.MinPlayersXP > player.XP)
                 {
-                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "Not enought XP to join the game table");
+                    sb.AppendLine("Not enought XP to join the game table");
+                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
                     player.GameRequestsStream.Flush();
                     //Console.WriteLine("Not enought XP to join the game table");
                     return false;
                 }
                 if (this.Settings.MinPlayersTokenCount > player.TokensCount)
                 {
-                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, "Not enought Tokens to join the game table");
+                    sb.AppendLine("Not enought Tokens to join the game table");
+                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
                     player.GameRequestsStream.Flush();
                     //Console.WriteLine("Not enought Tokens to join the game table");
                     return false;

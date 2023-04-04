@@ -88,7 +88,9 @@ namespace PokerGameClasses
             while (!moveDone)
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine("--Player move request--");
+                sb.Append(":G:");
+                sb.Append("Move request");
+                sb.Append("|");
                 sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");                
 
                 NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
@@ -106,8 +108,10 @@ namespace PokerGameClasses
                         break;
                     case 2:
                         sb.Clear();
-                        sb.AppendLine("--Player move request--");
-                        sb.AppendLine("Input how much you want to raise the bid");
+                        sb.Append(":G:");
+                        sb.Append("Move request");
+                        sb.Append("|");
+                        sb.AppendLine("Input how much you want to raise the bid:");
 
                         NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
                         this.GameRequestsStream.Flush();
@@ -143,7 +147,12 @@ namespace PokerGameClasses
         {
             if (this.TokensCount < amount)
             {
-                NetworkHelper.WriteNetworkStream(this.GameRequestsStream, "You have not enough tokens to make this move. Make other choice.\n");
+                StringBuilder sb = new StringBuilder();
+                sb.Append(":G:");
+                sb.Append("Info");
+                sb.Append("|");
+                sb.AppendLine("You have not enough tokens to make this move. Make other choice.");
+                NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
                 this.GameRequestsStream.Flush();
                 return false;
             }

@@ -47,6 +47,9 @@ namespace PokerGameClasses
             Player bigBlind = this.gameTable.Players[this.GetBigBlindPosition()];
 
             StringBuilder sb = new StringBuilder();
+            sb.Append(":G:");
+            sb.Append("Info");
+            sb.Append("|");
             sb.AppendLine("Player's '" + smallBlind.Nick + "' move (small blind):");
 
             bool moveDoneS = smallBlind.SmallBlindFirstMove();
@@ -65,6 +68,10 @@ namespace PokerGameClasses
             }
 
             sb.Clear();
+
+            sb.Append(":G:");
+            sb.Append("Info");
+            sb.Append("|");
             sb.AppendLine("Player's '" + bigBlind.Nick + "' move (big blind):");
             
             bool moveDoneB = bigBlind.BigBlindFirstMove();
@@ -118,6 +125,9 @@ namespace PokerGameClasses
                         continue;
 
                     StringBuilder sb = new StringBuilder();
+                    sb.Append(":G:");
+                    sb.Append("Info");
+                    sb.Append("|");
                     sb.AppendLine("------ Time for round nr " + this.CurrentRound + " -------\n\n");
                     sb.AppendLine(this.gameTable.TableGameState() + "\n");
                     sb.AppendLine(player.PlayerGameState() + "\n");
@@ -210,9 +220,15 @@ namespace PokerGameClasses
                 winner.XP = winner.XP + 100; // ew. do zmiany
             }
 
+            StringBuilder sb = new StringBuilder();
+            sb.Append(":G:");
+            sb.Append("Info");
+            sb.Append("|");
+            sb.AppendLine("\nAnd the winner is:\n\n" + winner + "\nCongrats!");
+
             foreach (Player p in this.gameTable.Players)
             {
-                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, "\nAnd the winner is:\n\n" + winner + "\nCongrats!\n");
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
                 p.GameRequestsStream.Flush();
             }
 
@@ -231,9 +247,15 @@ namespace PokerGameClasses
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
                 PlayerCards.SortDesc();
 
+                StringBuilder sb = new StringBuilder();
+                sb.Append(":G:");
+                sb.Append("Info");
+                sb.Append("|");
+                sb.AppendLine(PlayerCards.ToString());
+
                 foreach (Player p in this.gameTable.Players)
                 {
-                    NetworkHelper.WriteNetworkStream(p.GameRequestsStream, PlayerCards.ToString()+"\n");
+                    NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
                     p.GameRequestsStream.Flush();
                 }
 

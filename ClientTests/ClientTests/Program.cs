@@ -137,12 +137,27 @@ namespace ClientTests
                         string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
                         gameStream.Flush();
                         Console.Clear();
-                        Console.WriteLine(gameRequest);
-                        if(gameRequest.Contains("--Player move request--"))
+                        //Console.WriteLine(gameRequest);
+
+                        string[] splittedRequests = gameRequest.Split(new string(":G:"));
+
+                        foreach(string singleRequest in splittedRequests)
                         {
-                            int input = Convert.ToInt32(Console.ReadLine());
-                            NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
+                            string[] splitted = singleRequest.Split(new string("|"));
+                            if (splitted[0] == "Info")
+                                Console.WriteLine(splitted[1]);
+                            else if (splitted[0] == "Move request")
+                            {
+                                Console.WriteLine(splitted[0]);
+                                Console.WriteLine(splitted[1]);
+                                int input = Convert.ToInt32(Console.ReadLine());
+                                NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
+                            }
+                            else
+                                if(splitted[0] != "")
+                                    Console.WriteLine("Undefined message from server: " + singleRequest);
                         }
+                        
                     }
 
                     if (Console.KeyAvailable)
