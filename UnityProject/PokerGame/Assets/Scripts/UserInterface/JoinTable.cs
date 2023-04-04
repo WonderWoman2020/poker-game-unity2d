@@ -21,7 +21,7 @@ public class JoinTable : MonoBehaviour
 
     public GameObject PopupWindow;
 
-    private int choosenTable;
+    private int chosenTable;
 
     //TODO make this a table of tables later
     [SerializeField] private TMP_Text Table1;
@@ -37,23 +37,23 @@ public class JoinTable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (MyGameManager.Instance.GameTables == null)
+        if (MyGameManager.Instance.GameTableList == null)
             return;
 
-        this.choosenTable = -1;
+        this.chosenTable = -1;
 
-        int tablesToShow = MyGameManager.Instance.GameTables.Count;
+        int tablesToShow = MyGameManager.Instance.GameTableList.Count;
         if (tablesToShow > 4)
             tablesToShow = 4;
 
         if(tablesToShow >= 1)
-            this.Table1.text = MyGameManager.Instance.GameTables[0].Name;
+            this.Table1.text = MyGameManager.Instance.GameTableList[0].Name;
         if(tablesToShow >= 2)
-            this.Table2.text = MyGameManager.Instance.GameTables[1].Name;
+            this.Table2.text = MyGameManager.Instance.GameTableList[1].Name;
         if (tablesToShow >= 3)
-            this.Table3.text = MyGameManager.Instance.GameTables[2].Name;
+            this.Table3.text = MyGameManager.Instance.GameTableList[2].Name;
         if (tablesToShow >= 4)
-            this.Table4.text = MyGameManager.Instance.GameTables[3].Name;
+            this.Table4.text = MyGameManager.Instance.GameTableList[3].Name;
     }
 
     // Update is called once per frame
@@ -63,7 +63,7 @@ public class JoinTable : MonoBehaviour
     }
     public void OnJoinButton()
     {
-        if(MyGameManager.Instance.GameTables.Count == 0)
+        if(MyGameManager.Instance.GameTableList.Count == 0)
         {
             Debug.Log("There are no game tables to join. Create one first");
             if (PopupWindow)
@@ -74,7 +74,7 @@ public class JoinTable : MonoBehaviour
             return;
         }
 
-        if(this.choosenTable == -1)
+        if(this.chosenTable == -1)
         {
             Debug.Log("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
             if (PopupWindow)
@@ -84,23 +84,26 @@ public class JoinTable : MonoBehaviour
             return;
         }
 
-        GameTable gameTable = MyGameManager.Instance.GameTables[this.choosenTable];
-        Player player = MyGameManager.Instance.MainPlayer;
-        bool playerAdded = gameTable.AddPlayer(player);
-        if(!playerAdded)
-        {
-            if (!gameTable.Players.Contains(player))
-            {
-                Debug.Log("You can't join this table (" + gameTable.Name + "). It's full or you don't have enough xp or chips.");
-                if (PopupWindow)
-                {
-                    ShowCantJoinPopup(gameTable.Name);
-                }
-                return;
-            }
-        }
+        //ZNALEZC NOWY SPOSOB NA SPRAWDZANIE CZY GRACZ MOZE DOLACZYC
 
-        Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
+        //GameTableInfo gameTable = MyGameManager.Instance.GameTableList[this.chosenTable];
+        //Player player = MyGameManager.Instance.MainPlayer;
+        //bool playerAdded = gameTable.AddPlayer(player);
+        //if(!playerAdded)
+        //{
+
+        //    if (!gameTable.Players.Contains(player))
+        //    {
+        //        Debug.Log("You can't join this table (" + gameTable.Name + "). It's full or you don't have enough xp or chips.");
+        //        if (PopupWindow)
+        //        {
+        //            ShowCantJoinPopup(gameTable.Name);
+        //        }
+        //        return;
+        //    }
+        //}
+
+        //Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
         SceneManager.LoadScene("Table");
     }
 
@@ -126,49 +129,49 @@ public class JoinTable : MonoBehaviour
         SceneManager.LoadScene("PlayMenu");
     }
 
-    private bool UpdateGameTableInfo(GameTable gameTable)
+    private bool UpdateGameTableInfo(GameTableInfo gameTable)
     {
-        this.InfoPlayersCount.text = Convert.ToString(gameTable.Players.Count);
-        this.InfoBotsCount.text = Convert.ToString(gameTable.GetPlayerTypeCount(PlayerType.Bot));
-        this.InfoMinChips.text = Convert.ToString(gameTable.Settings.MinPlayersTokenCount);
-        this.InfoMinXP.text = Convert.ToString(gameTable.Settings.MinPlayersXP);
+        this.InfoPlayersCount.text = gameTable.HumanCount;
+        this.InfoBotsCount.text = gameTable.BotCount;
+        this.InfoMinChips.text = gameTable.minChips;
+        this.InfoMinXP.text = gameTable.minXp;
 
         return true;
     }
 
     public void OnTable1Button()
     {
-        if (MyGameManager.Instance.GameTables.Count >= 1)
+        if (MyGameManager.Instance.GameTableList.Count >= 1)
         {
-            this.choosenTable = 0;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTables[this.choosenTable]);
+            this.chosenTable = 0;
+            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
         }
     }
 
     public void OnTable2Button()
     {
-        if (MyGameManager.Instance.GameTables.Count >= 2)
+        if (MyGameManager.Instance.GameTableList.Count >= 2)
         {
-            this.choosenTable = 1;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTables[this.choosenTable]);
+            this.chosenTable = 1;
+            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
         }
     }
 
     public void OnTable3Button()
     {
-        if (MyGameManager.Instance.GameTables.Count >= 3)
+        if (MyGameManager.Instance.GameTableList.Count >= 3)
         {
-            this.choosenTable = 2;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTables[this.choosenTable]);
+            this.chosenTable = 2;
+            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
         }
     }
 
     public void OnTable4Button()
     {
-        if (MyGameManager.Instance.GameTables.Count >= 4)
+        if (MyGameManager.Instance.GameTableList.Count >= 4)
         {
-            this.choosenTable = 3;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTables[this.choosenTable]);
+            this.chosenTable = 3;
+            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
         }
     }
 }

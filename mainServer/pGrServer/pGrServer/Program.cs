@@ -187,8 +187,8 @@ namespace pGrServer
                             //informacje o stołach
                             else if (request[1] == "2")
                             {
-                                if(player.Table == null)
-                                {
+                                //if(player.Table == null)
+                                //{
                                     StringBuilder completeMessage = new StringBuilder();
                                     openTablesAccess.WaitOne();
                                     foreach (GameTable table in openTables)
@@ -198,7 +198,7 @@ namespace pGrServer
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
                                     player.MenuRequestsStream.Write(message, 0, message.Length);
                                     openTablesAccess.ReleaseMutex();
-                                }
+                                //}
                             }
                             //wylogowanie
                             else if (request[1] == "3") 

@@ -16,10 +16,12 @@ public class MyGameManager : MonoBehaviour
     public TcpConnection mainServerConnection;
     public TcpConnection gameServerConnection;
 
+    public string clientToken;
+
     public List<Player> HotSeatPlayers
     { get; set; }
 
-    public List<GameTable> GameTables
+    public List<GameTableInfo> GameTableList
     { get; set; }
 
     void Awake()
@@ -36,7 +38,7 @@ public class MyGameManager : MonoBehaviour
     {
         this.MainPlayer = null;
         //this.MainPlayer = new HumanPlayer("Test main player", PlayerType.Human);
-        this.GameTables = new List<GameTable>();
+        this.GameTableList = new List<GameTableInfo>();
         this.HotSeatPlayers = new List<Player>();
 
         mainServerConnection = new TcpConnection();
@@ -59,9 +61,9 @@ public class MyGameManager : MonoBehaviour
         return true;
     }
 
-    public bool AddTableToGame(GameTable gt)
+    public bool AddTableToListed(GameTableInfo gt)
     {
-        this.GameTables.Add(gt);
+        this.GameTableList.Add(gt);
         return true;
     }
 

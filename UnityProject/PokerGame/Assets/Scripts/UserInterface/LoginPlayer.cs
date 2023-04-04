@@ -2,6 +2,8 @@ using PokerGameClasses;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net.Cache;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
@@ -35,9 +37,6 @@ public class LoginPlayer : MonoBehaviour
 
     public void OnLoginButton()
     {
-        Debug.Log("button clicked");
-        Debug.Log(MyGameManager.Instance.mainServerConnection.port);
-
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         byte[] message = System.Text.Encoding.ASCII.GetBytes(this.playerLogin + ' ' + this.playerPassword);
@@ -49,17 +48,18 @@ public class LoginPlayer : MonoBehaviour
         StringBuilder myCompleteMessage = new StringBuilder();
         numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
         myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-        Debug.Log(myCompleteMessage);
-        Debug.Log(myCompleteMessage.Length);
 
         string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
+        MyGameManager.Instance.clientToken = request[0];
         var xp = Int32.Parse(request[1]);
         var coins = Int32.Parse(request[2]);
         var nick = request[3];
         Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
         MyGameManager.Instance.AddPlayerToGame(player);
+
         //StartCoroutine(SendNewUser());
 
+        MyGameManager.Instance.gameServerConnection.Start();
         SceneManager.LoadScene("PlayMenu");
 
         
@@ -76,7 +76,7 @@ public class LoginPlayer : MonoBehaviour
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
         yield return request.SendWebRequest();
-        Debug.Log(request.downloadHandler.text);
+        //Debug.Log(request.downloadHandler.text);
         var dataFromDatabase = request.downloadHandler.text.Split("\"");
         var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
 
@@ -121,7 +121,6 @@ public class LoginPlayer : MonoBehaviour
         }
 
         this.playerLogin = login;
-        Debug.Log(this.playerLogin);
     }
 
     public void ReadIP(string IP)
@@ -132,7 +131,6 @@ public class LoginPlayer : MonoBehaviour
             return;
         }
         this.IP = IP;
-        Debug.Log(this.IP);
     }
     public void ReadPassword(string password)
     {
@@ -143,7 +141,6 @@ public class LoginPlayer : MonoBehaviour
         }
 
         this.playerPassword = password;
-        Debug.Log(this.playerPassword);
     }
     // Start is called before the first frame update
     void Start()
