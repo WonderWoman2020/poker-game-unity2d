@@ -154,6 +154,11 @@ namespace ClientTests
                                 int input = Convert.ToInt32(Console.ReadLine());
                                 NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
                             }
+                            else if(splitted[0] == "Round")
+                            {
+                                int round = Convert.ToInt32(splitted[1]);
+                                Console.WriteLine("------ Time for round nr " + round + " -------\n\n");
+                            }
                             // 0 - pusty string, 1 - Name, 2 - wartość Name, 3 - Cards, 4 - wartość Cards (karty)
                             // 5 - Tokens Count, 6 - wartość Tokens Count, 7 - Current Bid, 8 - wartość Current Bid
                             else if(splitted[0] == "Table state")
@@ -165,6 +170,23 @@ namespace ClientTests
                                 int tokensInGame = Convert.ToInt32(tableState[6]);
                                 int currentBid = Convert.ToInt32(tableState[8]);
                                 Console.WriteLine("Table's '" + name+ "' game state:" + "\nCards: " + cardsCollection + "\nTokens in game: " + tokensInGame + "\nCurrent Bid: " + currentBid+"\n");
+                            }
+                            //podobnie jak w 'Table state'
+                            else if(splitted[0] == "Player state")
+                            {
+                                string[] playerState = splitted[1].Split(new string(":"));
+                                string nick = playerState[2];
+                                string hand = playerState[4];
+                                CardsCollection cardsCollection = CardsHelper.StringToCardsCollection(hand);
+                                int tokensCount = Convert.ToInt32(playerState[6]);
+                                int currentBet = Convert.ToInt32(playerState[8]);
+                                int xp = Convert.ToInt32(playerState[10]);
+                                Console.WriteLine("Player's '" + nick + "' game state:" + "\nHand: " + cardsCollection + "\nTokens: " + tokensCount + "\nCurrent Bet: " + currentBet + "\nXP: "+xp+"\n");
+                            }
+                            else if(splitted[0] == "Which player turn")
+                            {
+                                string nickOfThePlayer = splitted[1];
+                                Console.WriteLine("Player's '" + nickOfThePlayer + "' move: ");
                             }
                             else
                                 if(splitted[0] != "")

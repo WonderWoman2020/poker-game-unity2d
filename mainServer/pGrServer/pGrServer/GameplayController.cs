@@ -143,14 +143,15 @@ namespace PokerGameClasses
                     sb.Append(":G:");
                     sb.Append("Player state");
                     sb.Append("|");
-                    sb.AppendLine(player.PlayerGameState() + "\n");
+                    sb.Append(player.MessageGameState());
 
                     //sb.AppendLine(this.gameTable.TableGameState() + "\n");
                     //sb.AppendLine(player.PlayerGameState() + "\n");
                     sb.Append(":G:");
                     sb.Append("Which player turn");
                     sb.Append("|");
-                    sb.AppendLine("Player's '" + player.Nick + "' move: ");
+                    //sb.Append("Player's '" + player.Nick + "' move: ");
+                    sb.Append(player.Nick);
 
                     foreach (Player p in this.gameTable.Players)
                     {

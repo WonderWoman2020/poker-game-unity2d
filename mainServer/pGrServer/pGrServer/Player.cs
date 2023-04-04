@@ -237,5 +237,14 @@ namespace PokerGameClasses
                 + "\nXP: " + this.XP;
         }
 
+        public string MessageGameState()
+        {
+            return ":Nick:" + this.Nick
+                + ":Hand:" + this.PlayerHand.ToString()
+                + ":Tokens:" + this.TokensCount
+                + ":Current bet:" + this.PlayersCurrentBet
+                + ":XP: " + this.XP;
+        }
+
     }
 }
