@@ -124,31 +124,10 @@ namespace PokerGameClasses
                     if (player.AllInMade || player.Folded) //Ci gracze ju¿ nie maj¹ ruchów
                         continue;
 
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.Append(":G:");
-                    sb.Append("Round");
-                    sb.Append("|");
-                    sb.Append(this.CurrentRound);
-
-                    sb.Append(":G:");
-                    sb.Append("Table state");
-                    sb.Append("|");
-                    sb.Append(this.gameTable.MessageGameState());
-
-                    sb.Append(":G:");
-                    sb.Append("Player state");
-                    sb.Append("|");
-                    sb.Append(player.MessageGameState());
-
-                    sb.Append(":G:");
-                    sb.Append("Which player turn");
-                    sb.Append("|");
-                    sb.Append(player.Nick);
-
+                    //rozsy³anie stanu gry do wszystkich graczy przed ka¿dym ruchem
                     foreach (Player p in this.gameTable.Players)
                     {
-                        NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                        NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(player));
                         p.GameRequestsStream.Flush();
                     }
 
@@ -233,15 +212,20 @@ namespace PokerGameClasses
                 winner.XP = winner.XP + 100; // ew. do zmiany
             }
 
+            string winnerNick = null;
+            if (winner != null)
+                winnerNick = winner.Nick;
+
             StringBuilder sb = new StringBuilder();
             sb.Append(":G:");
             sb.Append("Info");
             sb.Append("|");
-            sb.AppendLine("\nAnd the winner is:\n\n" + winner + "\nCongrats!");
+            sb.AppendLine("And the winner is:\n" + winnerNick + "\nCongrats!");
 
+            //rozsy³anie do ka¿dego gracza informacji kto wygra³ i jeszcze raz stanu gry na koniec
             foreach (Player p in this.gameTable.Players)
             {
-                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(null) + sb.ToString());
                 p.GameRequestsStream.Flush();
             }
 
@@ -260,7 +244,7 @@ namespace PokerGameClasses
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
                 PlayerCards.SortDesc();
 
-                StringBuilder sb = new StringBuilder();
+                /*StringBuilder sb = new StringBuilder();
                 sb.Append(":G:");
                 sb.Append("Info");
                 sb.Append("|");
@@ -270,7 +254,7 @@ namespace PokerGameClasses
                 {
                     NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
                     p.GameRequestsStream.Flush();
-                }
+                }*/
 
                 int playerScore = handsComparer.valueOfCards(PlayerCards);
                 if (playerScore <= biggestScore)
@@ -288,6 +272,39 @@ namespace PokerGameClasses
             this.Dealer.TakeBackCards(this.gameTable);
             this.Dealer.ChangePosition(this.gameTable);
             this.gameTable.ResetGameState();
+        }
+
+        public string MessageGameState(Player currentPlayer)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(":G:");
+            sb.Append("Round");
+            sb.Append("|");
+            sb.Append(this.CurrentRound);
+
+            sb.Append(":G:");
+            sb.Append("Table state");
+            sb.Append("|");
+            sb.Append(this.gameTable.MessageGameState());
+
+            foreach (Player p in this.gameTable.Players)
+            {
+                sb.Append(":G:");
+                sb.Append("Player state");
+                sb.Append("|");
+                sb.Append(p.MessageGameState());
+            }
+
+            if (currentPlayer != null)
+            {
+                sb.Append(":G:");
+                sb.Append("Which player turn");
+                sb.Append("|");
+                sb.Append(currentPlayer.Nick);
+            }
+
+            return sb.ToString();
         }
     }
 }
