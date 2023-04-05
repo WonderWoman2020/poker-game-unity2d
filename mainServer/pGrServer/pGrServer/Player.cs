@@ -96,9 +96,9 @@ namespace PokerGameClasses
                 NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
                 this.GameRequestsStream.Flush();
                 string moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+                string[] splitted = moveResponse.Split(new string(" "));
 
-                int input = Convert.ToInt32(moveResponse);
-                switch (input)
+                switch (Convert.ToInt32(splitted[0]))
                 {
                     case 0:
                         moveDone = Fold();
@@ -113,11 +113,11 @@ namespace PokerGameClasses
                         sb.Append("|");
                         sb.AppendLine("Input how much you want to raise the bid:");
 
-                        NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
-                        this.GameRequestsStream.Flush();
-                        moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+                        //NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
+                        //this.GameRequestsStream.Flush();
+                        //moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
 
-                        int amount = Convert.ToInt32(moveResponse);
+                        int amount = Convert.ToInt32(splitted[1]);
                         moveDone = Raise(amount);
                         break;
                     case 3:

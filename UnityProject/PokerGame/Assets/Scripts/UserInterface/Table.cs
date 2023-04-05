@@ -109,8 +109,7 @@ public class Table : MonoBehaviour
         Debug.Log(splitted[0]);
         Debug.Log(splitted[1]);
         this.readyToSendMove = true;
-        //ShowMenu(true);
-        //Czekamy teraz na klikniecie ktoregos z przyciskow
+        //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
     void TableStateResponse(string[] splitted)
@@ -211,9 +210,8 @@ public class Table : MonoBehaviour
         if(this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
-            NetworkHelper.WriteNetworkStream(gameStream, "1");
+            NetworkHelper.WriteNetworkStream(gameStream, "1 ");
             this.readyToSendMove = false;
-            //ShowMenu(false);
         }
     }
     public void OnAllInButton()
@@ -224,9 +222,8 @@ public class Table : MonoBehaviour
         if (this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
-            NetworkHelper.WriteNetworkStream(gameStream, "3");
+            NetworkHelper.WriteNetworkStream(gameStream, "3 ");
             this.readyToSendMove = false;
-            //ShowMenu(false);
         }
     }
     public void OnPassButton()
@@ -237,9 +234,8 @@ public class Table : MonoBehaviour
         if (this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
-            NetworkHelper.WriteNetworkStream(gameStream, "0");
+            NetworkHelper.WriteNetworkStream(gameStream, "0 ");
             this.readyToSendMove = false;
-            //ShowMenu(false);
         }
     }
     public void OnBidButton()
@@ -247,13 +243,12 @@ public class Table : MonoBehaviour
         Debug.Log("Bid");
         //MyGameManager.Instance.MainPlayer.Raise(Convert.ToInt32(this.betFieldText));
 
-        //if (this.readyToSendMove)
-        //{
-        //    NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
-        //    int input = Convert.ToInt32(Console.ReadLine());
-        //    NetworkHelper.WriteNetworkStream(gameStream, "2");
-        //    this.readyToSendMove = false;
-        //    ShowMenu(false);
-        //}
+        if (this.readyToSendMove)
+        {
+            NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
+            int input = Convert.ToInt32(Console.ReadLine());
+            NetworkHelper.WriteNetworkStream(gameStream, "2 " + this.betFieldText.ToString());
+            this.readyToSendMove = false;
+        }
     }
 }
