@@ -31,7 +31,8 @@ public class Table : MonoBehaviour
     private CanvasRenderer menuCanvas;
 
     private bool readyToSendMove = false;
-
+    private GameTableState gameTableState;
+    private IDictionary<string, PlayerState> playersStates;
 
 
 
@@ -67,6 +68,9 @@ public class Table : MonoBehaviour
         MyGameManager.Instance.mainServerConnection.stream.Flush();
         Thread.Sleep(1000);
 
+        this.gameTableState = new GameTableState();
+        this.playersStates = new Dictionary<string, PlayerState>();
+
         new System.Threading.Thread(CommunicateWithServer).Start();
     }
 
@@ -93,11 +97,16 @@ public class Table : MonoBehaviour
                     }
                     else if (splitted[0] == "Table state")
                     {
-                        //TableStateResponse(splitted);
+                        this.gameTableState.UnpackGameState(splitted);
+                        Debug.Log(this.gameTableState);
                     }
                     else if (splitted[0] == "Player state")
                     {
-                        //PlayerStateResponse(splitted);
+                        PlayerState playerState = new PlayerState();
+                        playerState.UnpackGameState(splitted);
+                        Debug.Log(playerState);
+                        this.playersStates[playerState.Nick] = playerState;
+                        Debug.Log("Player state count: " + this.playersStates.Count);
                     }
                 }
             }
@@ -110,31 +119,6 @@ public class Table : MonoBehaviour
         Debug.Log(splitted[1]);
         this.readyToSendMove = true;
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
-    }
-
-    void TableStateResponse(string[] splitted)
-    {
-        //Console.WriteLine(splitted[1]);
-        string[] tableState = splitted[1].Split(new string(":"));
-        string name = tableState[2];
-        string cards = tableState[4];
-        ClientSideCardsHelper.CardsCollection cardsCollection = ClientSideCardsHelper.CardsHelper.StringToCardsCollection(cards);
-        int tokensInGame = Convert.ToInt32(tableState[6]);
-        int currentBid = Convert.ToInt32(tableState[8]);
-        Console.WriteLine("Table's '" + name + "' game state:" + "\nCards: " + cardsCollection + "\nTokens in game: " + tokensInGame + "\nCurrent Bid: " + currentBid + "\n");
-    }
-
-    void PlayerStateResponse(string[] splitted)
-    {
-        //Console.WriteLine(splitted[1]);
-        string[] playerState = splitted[1].Split(new string(":"));
-        string nick = playerState[2];
-        string hand = playerState[4];
-        ClientSideCardsHelper.CardsCollection cardsCollection = ClientSideCardsHelper.CardsHelper.StringToCardsCollection(hand);
-        int tokensCount = Convert.ToInt32(playerState[6]);
-        int currentBet = Convert.ToInt32(playerState[8]);
-        int xp = Convert.ToInt32(playerState[10]);
-        Console.WriteLine("Player's '" + nick + "' game state:" + "\nHand: " + cardsCollection + "\nTokens: " + tokensCount + "\nCurrent Bet: " + currentBet + "\nXP: " + xp + "\n");
     }
 
     void HideAllPlayers()
