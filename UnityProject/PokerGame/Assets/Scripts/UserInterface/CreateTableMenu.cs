@@ -48,6 +48,7 @@ public class CreateTableMenu : MonoBehaviour
     }
     public void OnCreateButton()
     {
+        UnityEngine.Debug.Log("OnCreateButton()1");
         HumanPlayer p = (HumanPlayer)MyGameManager.Instance.MainPlayer;
         if(p == null)
         {
@@ -73,21 +74,30 @@ public class CreateTableMenu : MonoBehaviour
         //this.SetGameTableInputData(gameTable);
         //MyGameManager.Instance.AddTableToGame(gameTable);
         //Debug.Log("Player "+p.Nick+ " created table "+gameTable);
-
+        UnityEngine.Debug.Log("OnCreateButton()2");
         SendTableToServer();
 
-        //SceneManager.LoadScene("Table");
-        SceneManager.LoadScene("PlayMenu");
+        SceneManager.LoadScene("Table");
+        //SceneManager.LoadScene("PlayMenu");
     }
 
 
     //NA CHWILE OBECNA, LICZBA BOTOW JEST HARDKODOWANA (patrz linijki 34, 163, 171, 178). DO POPRAWY POZNIEJ
     void SendTableToServer()
     {
+        UnityEngine.Debug.Log("SendTableToServer()");
         string token = MyGameManager.Instance.clientToken;
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + "1" + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ');
         MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
+
+        UnityEngine.Debug.Log("stworzenie stolu przeszlo, teraz wchodzimy do gry");
+
+        toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
+        MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
+
+        UnityEngine.Debug.Log("weszlismy do gry");
     }
 
     void ShowPlayerNullPopup()

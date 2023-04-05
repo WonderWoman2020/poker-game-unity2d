@@ -5,9 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using PokerGameClasses;
+using pGrServer;
 
 using TMPro;
 using System;
+using System.Net.Sockets;
 
 public class Table : MonoBehaviour
 {
@@ -48,10 +50,27 @@ public class Table : MonoBehaviour
         //this.Components = Players[0].GetComponents(typeof(Component));
 
         HideAllPlayers();
-        ShowPlayerOnTable(0, "Player1");
-        ChangePlayerBet(100, 0);
-        ChangePlayerMoney(200, 0);
+        //ShowPlayerOnTable(0, "Player1");
+        //ChangePlayerBet(100, 0);
+        //ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
+
+        NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
+        bool running = true;
+        while(running)
+        {
+            if (gameStream.DataAvailable)
+            {
+                string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
+                gameStream.Flush();
+                string[] splittedRequests = gameRequest.Split(new string(":G:"));
+
+                foreach (string singleRequest in splittedRequests)
+                {
+                    UnityEngine.Debug.Log(singleRequest);
+                }
+            }
+        }
 
     }
 

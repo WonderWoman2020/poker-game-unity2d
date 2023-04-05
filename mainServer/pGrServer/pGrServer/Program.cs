@@ -12,7 +12,7 @@ using System.Threading;
 using PokerGameClasses;
 
 namespace pGrServer
-{   
+{
     class Program
     {
         public static bool running;
@@ -28,7 +28,7 @@ namespace pGrServer
         public static TcpListener gameListener;
 
         public static List<Thread> allGameThreads;
-        
+
         static void Main()
         {
             //Zmienne potrzebne do wyswietlania stanu w //RUN
@@ -38,7 +38,7 @@ namespace pGrServer
             var emptySpace = new StringBuilder();
             emptySpace.Append(' ', 10);
             DateTime startTime = DateTime.Now;
-            
+
 
             //INITIALIZE
             Initialize();
@@ -89,7 +89,7 @@ namespace pGrServer
             autoLogoutThread.Join();
             requestsThread.Join();
 
-            foreach(Thread gameThread in allGameThreads)
+            foreach (Thread gameThread in allGameThreads)
                 gameThread.Join();
 
             loggedClientsAccess.WaitOne();
@@ -112,7 +112,7 @@ namespace pGrServer
             {
                 loggedClientsAccess.WaitOne();
                 //Przejdz po wszystkich zalogowanych tokenach (od tyłu na potrzeby usuwania)
-                for(int i=loggedTokens.Count-1; i >= 0; i--)
+                for (int i = loggedTokens.Count - 1; i >= 0; i--)
                 {
                     string token = loggedTokens[i];
                     Player player = loggedClients[token];
@@ -129,10 +129,10 @@ namespace pGrServer
 
                         //'token' '1 literowy kod' 'argumenty'
                         //Test czy token wysłany odpowiada tokenowi clienta (zabezpieczenie)
-                        if(token == request[0])
+                        if (token == request[0])
                         {
                             //Utworzenie stołu
-                            if (request[1] == "0") 
+                            if (request[1] == "0")
                             {
                                 //  2      3    4      5        6
                                 //nazwa, tryb, bots, min xp, min stawka
@@ -141,10 +141,10 @@ namespace pGrServer
                                 bool found = false;
                                 openTablesAccess.WaitOne();
                                 //Tylko dla clienta ktory nie jest przy stole
-                                if(player.Table == null)
+                                if (player.Table == null)
                                 {
                                     //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
-                                    foreach(GameTable table in openTables)
+                                    foreach (GameTable table in openTables)
                                         if (table.Name == name)
                                             found = true;
 
@@ -161,7 +161,7 @@ namespace pGrServer
                                 openTablesAccess.ReleaseMutex();
                             }
                             //Dolaczenie do stolu
-                            else if (request[1] == "1") 
+                            else if (request[1] == "1")
                             {
                                 openTablesAccess.WaitOne();
                                 Player client = player;
@@ -176,7 +176,7 @@ namespace pGrServer
                                         {
                                             found = true;
                                             table = tab;
-                                        }      
+                                        }
                                     if (found)
                                     {
                                         //jesli udalo sie dodac gracza do stołu
@@ -190,7 +190,7 @@ namespace pGrServer
                                             client.Table = null;
                                         }
                                     }
-                                    
+
                                 }
                                 openTablesAccess.ReleaseMutex();
                             }
@@ -198,7 +198,7 @@ namespace pGrServer
                             else if (request[1] == "2")
                             {
                                 //Uwaga! Nie wysyła informacji o stolikach, kiedy się przy jakimś siedzi --> dlatego pojedynczy klient nigdy nie dostaje listy stolików
-                                if (player.Table == null) 
+                                if (player.Table == null)
                                 {
                                     StringBuilder completeMessage = new StringBuilder();
                                     openTablesAccess.WaitOne();
@@ -209,26 +209,26 @@ namespace pGrServer
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
                                     player.MenuRequestsStream.Write(message, 0, message.Length);
                                     openTablesAccess.ReleaseMutex();
-                                //}
+                                }
                             }
                             //wylogowanie
-                            else if (request[1] == "3") 
+                            else if (request[1] == "3")
                             {
                                 RemoveFromTable(player);
                                 LogOut(player, i);
                             }
                             //Odejscie od stołu
-                            else if (request[1] == "4") 
+                            else if (request[1] == "4")
                             {
                                 RemoveFromTable(player);
                             }
                             //Zmiana ustawień
-                            else if (request[1] == "5") 
+                            else if (request[1] == "5")
                             {
                                 openTablesAccess.WaitOne();
                                 Player client = loggedClients[token];
 
-                                if(client.Table != null)
+                                if (client.Table != null)
                                 {
                                     ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5]);
                                 }
@@ -255,7 +255,7 @@ namespace pGrServer
         }
         public static void ListenLogin()
         {
-            
+
             loginListener.Start();
             gameListener.Start();
             try
@@ -308,7 +308,7 @@ namespace pGrServer
                         {
                             bool is_logged = false;
                             loggedClientsAccess.WaitOne();
-                            foreach(string tok in loggedTokens)
+                            foreach (string tok in loggedTokens)
                             {
                                 if (username == loggedClients[tok].Login)
                                 {
@@ -316,10 +316,10 @@ namespace pGrServer
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes("##&&@@0003");
                                     clientStream.Write(message, 0, message.Length);
                                     break;
-                                }   
+                                }
                             }
                             loggedClientsAccess.ReleaseMutex();
-                            if(!is_logged)
+                            if (!is_logged)
                             {
                                 string token = GenerateToken();
 
@@ -372,11 +372,11 @@ namespace pGrServer
                     }
                 }
             }
-            catch(SocketException ex)
+            catch (SocketException ex)
             {
                 Console.WriteLine("login listening stopped"); //Wyskoczy zawsze podczas zamykania
             }
-            
+
         }
         public static void Initialize()
         {
@@ -394,7 +394,7 @@ namespace pGrServer
             int length = 10;
             const string CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             StringBuilder res = new StringBuilder();
-            using(RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 byte[] uintBuffer = new byte[sizeof(uint)];
 
@@ -419,7 +419,7 @@ namespace pGrServer
                     Socket s = loggedClients[token].MenuRequestsStream.Socket;
                     bool pt1 = s.Poll(1000, SelectMode.SelectRead);
                     bool pt2 = (s.Available == 0);
-                    if(pt1 && pt2)
+                    if (pt1 && pt2)
                     {
                         RemoveFromTable(loggedClients[token]);
                         LogOut(loggedClients[token], i);
@@ -483,12 +483,12 @@ namespace pGrServer
             }
         }
         public static void Game(GameTable table)
-        {         
+        {
             GameplayController controller = new GameplayController(table, new TexasHoldemDealer());
             controller.playTheGame();
             controller.ConcludeGame();
         }
-        public static void ChangeTableSettings(GameTable table,Player player, string mode, string nrOfBots, string minXp, string big_blind)
+        public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string big_blind)
         {
             GameTableSettings gameTableSettings = new GameTableSettings();
             if (mode == "0")
