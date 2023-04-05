@@ -6,10 +6,14 @@ using UnityEngine.SceneManagement;
 
 using PokerGameClasses;
 using pGrServer;
+using System.Threading;
 
 using TMPro;
 using System;
 using System.Net.Sockets;
+//using System.Diagnostics;
+
+using ClientSideCardsHelper;
 
 public class Table : MonoBehaviour
 {
@@ -25,6 +29,8 @@ public class Table : MonoBehaviour
 
     [SerializeField]
     private CanvasRenderer menuCanvas;
+
+    private bool readyToSendMove = false;
 
 
 
@@ -49,29 +55,87 @@ public class Table : MonoBehaviour
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         //this.Components = Players[0].GetComponents(typeof(Component));
 
-        HideAllPlayers();
+        //HideAllPlayers();
         //ShowPlayerOnTable(0, "Player1");
         //ChangePlayerBet(100, 0);
         //ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
 
+        string token = MyGameManager.Instance.clientToken;
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
+        MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
+        Thread.Sleep(1000);
+
+        new System.Threading.Thread(CommunicateWithServer).Start();
+    }
+
+    public void CommunicateWithServer()
+    {
         NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
         bool running = true;
-        while(running)
+        while (running)
         {
             if (gameStream.DataAvailable)
             {
+                UnityEngine.Debug.Log("sa dane na strumieniu");
                 string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
                 gameStream.Flush();
                 string[] splittedRequests = gameRequest.Split(new string(":G:"));
 
                 foreach (string singleRequest in splittedRequests)
                 {
-                    UnityEngine.Debug.Log(singleRequest);
+                    Debug.Log(singleRequest);
+                    string[] splitted = singleRequest.Split(new string("|"));
+                    if (splitted[0] == "Move request")
+                    {
+                        MoveRequestResponse(splitted);
+                    }
+                    else if (splitted[0] == "Table state")
+                    {
+                        //TableStateResponse(splitted);
+                    }
+                    else if (splitted[0] == "Player state")
+                    {
+                        //PlayerStateResponse(splitted);
+                    }
                 }
             }
         }
+    }
 
+    void MoveRequestResponse(string[] splitted)
+    {
+        Debug.Log(splitted[0]);
+        Debug.Log(splitted[1]);
+        this.readyToSendMove = true;
+        //ShowMenu(true);
+        //Czekamy teraz na klikniecie ktoregos z przyciskow
+    }
+
+    void TableStateResponse(string[] splitted)
+    {
+        //Console.WriteLine(splitted[1]);
+        string[] tableState = splitted[1].Split(new string(":"));
+        string name = tableState[2];
+        string cards = tableState[4];
+        ClientSideCardsHelper.CardsCollection cardsCollection = ClientSideCardsHelper.CardsHelper.StringToCardsCollection(cards);
+        int tokensInGame = Convert.ToInt32(tableState[6]);
+        int currentBid = Convert.ToInt32(tableState[8]);
+        Console.WriteLine("Table's '" + name + "' game state:" + "\nCards: " + cardsCollection + "\nTokens in game: " + tokensInGame + "\nCurrent Bid: " + currentBid + "\n");
+    }
+
+    void PlayerStateResponse(string[] splitted)
+    {
+        //Console.WriteLine(splitted[1]);
+        string[] playerState = splitted[1].Split(new string(":"));
+        string nick = playerState[2];
+        string hand = playerState[4];
+        ClientSideCardsHelper.CardsCollection cardsCollection = ClientSideCardsHelper.CardsHelper.StringToCardsCollection(hand);
+        int tokensCount = Convert.ToInt32(playerState[6]);
+        int currentBet = Convert.ToInt32(playerState[8]);
+        int xp = Convert.ToInt32(playerState[10]);
+        Console.WriteLine("Player's '" + nick + "' game state:" + "\nHand: " + cardsCollection + "\nTokens: " + tokensCount + "\nCurrent Bet: " + currentBet + "\nXP: " + xp + "\n");
     }
 
     void HideAllPlayers()
@@ -142,21 +206,54 @@ public class Table : MonoBehaviour
     public void OnCheckButton()
     {
         Debug.Log("Check");
-        MyGameManager.Instance.MainPlayer.Check();
+        //MyGameManager.Instance.MainPlayer.Check();
+
+        if(this.readyToSendMove)
+        {
+            NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
+            NetworkHelper.WriteNetworkStream(gameStream, "1");
+            this.readyToSendMove = false;
+            //ShowMenu(false);
+        }
     }
     public void OnAllInButton()
     {
         Debug.Log("All in");
-        MyGameManager.Instance.MainPlayer.AllIn();
+        //MyGameManager.Instance.MainPlayer.AllIn();
+
+        if (this.readyToSendMove)
+        {
+            NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
+            NetworkHelper.WriteNetworkStream(gameStream, "3");
+            this.readyToSendMove = false;
+            //ShowMenu(false);
+        }
     }
     public void OnPassButton()
     {
         Debug.Log("Pass");
-        MyGameManager.Instance.MainPlayer.Fold();
+        //MyGameManager.Instance.MainPlayer.Fold();
+
+        if (this.readyToSendMove)
+        {
+            NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
+            NetworkHelper.WriteNetworkStream(gameStream, "0");
+            this.readyToSendMove = false;
+            //ShowMenu(false);
+        }
     }
     public void OnBidButton()
     {
         Debug.Log("Bid");
-        MyGameManager.Instance.MainPlayer.Raise(Convert.ToInt32(this.betFieldText));
+        //MyGameManager.Instance.MainPlayer.Raise(Convert.ToInt32(this.betFieldText));
+
+        //if (this.readyToSendMove)
+        //{
+        //    NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
+        //    int input = Convert.ToInt32(Console.ReadLine());
+        //    NetworkHelper.WriteNetworkStream(gameStream, "2");
+        //    this.readyToSendMove = false;
+        //    ShowMenu(false);
+        //}
     }
 }

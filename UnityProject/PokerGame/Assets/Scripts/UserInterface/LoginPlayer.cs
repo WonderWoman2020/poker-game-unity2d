@@ -59,7 +59,7 @@ public class LoginPlayer : MonoBehaviour
 
         //StartCoroutine(SendNewUser());
 
-        MyGameManager.Instance.gameServerConnection.Start();
+        
         SceneManager.LoadScene("PlayMenu");
 
         
