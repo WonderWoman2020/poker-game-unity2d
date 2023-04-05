@@ -4,6 +4,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
+using pGrServer;
+using PokerGameClasses;
+
 namespace ClientTests
 {
     class Program
@@ -73,13 +76,19 @@ namespace ClientTests
             {
                 error = true;
                 Console.WriteLine("already logged");
-            }          
+            }
+            Console.WriteLine("Press any key to open game connection client on port 6938 and finish logging in procedure...");
             Console.ReadKey();   
             if(!error)
             {
 
                 TcpClient serverGame = new TcpClient();
                 serverGame.Connect("127.0.0.1", 6938);
+
+                NetworkStream gameStream = serverGame.GetStream();
+
+                Console.WriteLine("Game connection accepted by server");
+
                 string login = request[3];
                 string tokens = request[2];
 
@@ -97,8 +106,9 @@ namespace ClientTests
                     Console.SetCursorPosition(0, 0);
                     sb.Clear();
 
-                    byte[] tosendtables = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "2");
+                    byte[] tosendtables = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "2"); //Poproś o informacje o stolikach
                     ns.Write(tosendtables, 0, tosendtables.Length);
+                    //ns.Flush();
                     Thread.Sleep(1000);
                     if (ns.DataAvailable)
                     {
@@ -121,8 +131,79 @@ namespace ClientTests
                         }
                     }
 
-
                     Console.WriteLine(sb);
+
+                    //odbieranie zapytań z gry od serwera, wysyłanie odpowiedzi od gracza (tak, na razie jest odwrotnie niż powinno być w przyszłości XD)
+                    if (gameStream.DataAvailable)
+                    {
+                        string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
+                        gameStream.Flush();
+                        Console.Clear();
+                        //Console.WriteLine(gameRequest);
+
+                        string[] splittedRequests = gameRequest.Split(new string(":G:"));
+
+                        foreach(string singleRequest in splittedRequests)
+                        {
+                            string[] splitted = singleRequest.Split(new string("|"));
+                            if (splitted[0] == "Info")
+                                Console.WriteLine(splitted[1]);
+                            //pobierz ruch od gracza - ruchem jest albo wybranie liczby od 0 do 3
+                            //oznaczające kolejno Fold, Check, Raise i AllIn
+                            //albo po wykonaniu ruchu Raise, nadejdzie drugi Move request z prośbą o podanie wartości o jaką przebijamy
+                            else if (splitted[0] == "Move request")
+                            {
+                                Console.WriteLine(splitted[0]);
+                                Console.WriteLine(splitted[1]);
+                                int input = Convert.ToInt32(Console.ReadLine());
+                                NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
+                            }
+                            //która runda się toczy
+                            else if(splitted[0] == "Round")
+                            {
+                                int round = Convert.ToInt32(splitted[1]);
+                                Console.WriteLine("------ Time for round nr " + round + " -------\n\n");
+                            }
+                            // 0 - pusty string, 1 - Name, 2 - wartość Name, 3 - Cards, 4 - wartość Cards (karty)
+                            // 5 - Tokens Count, 6 - wartość Tokens Count, 7 - Current Bid, 8 - wartość Current Bid
+                            else if(splitted[0] == "Table state")
+                            {
+                                //Console.WriteLine(splitted[1]);
+                                string[] tableState = splitted[1].Split(new string(":"));
+                                string name = tableState[2];
+                                string cards = tableState[4];
+                                CardsCollection cardsCollection = CardsHelper.StringToCardsCollection(cards);
+                                int tokensInGame = Convert.ToInt32(tableState[6]);
+                                int currentBid = Convert.ToInt32(tableState[8]);
+                                Console.WriteLine("Table's '" + name+ "' game state:" + "\nCards: " + cardsCollection + "\nTokens in game: " + tokensInGame + "\nCurrent Bid: " + currentBid+"\n");
+                            }
+                            //podobnie jak w 'Table state'
+                            else if(splitted[0] == "Player state")
+                            {
+                                //Console.WriteLine(splitted[1]);
+                                string[] playerState = splitted[1].Split(new string(":"));
+                                string nick = playerState[2];
+                                string hand = playerState[4];
+                                CardsCollection cardsCollection = CardsHelper.StringToCardsCollection(hand);
+                                int tokensCount = Convert.ToInt32(playerState[6]);
+                                int currentBet = Convert.ToInt32(playerState[8]);
+                                int xp = Convert.ToInt32(playerState[10]);
+                                Console.WriteLine("Player's '" + nick + "' game state:" + "\nHand: " + cardsCollection + "\nTokens: " + tokensCount + "\nCurrent Bet: " + currentBet + "\nXP: "+xp+"\n");
+                            }
+                            //którego gracza teraz kolej
+                            else if(splitted[0] == "Which player turn")
+                            {
+                                string nickOfThePlayer = splitted[1];
+                                Console.WriteLine("Player's '" + nickOfThePlayer + "' move: ");
+                            }
+                            //inne jeszcze nie zdefiniowane wiadomości, o których zapomniałam XD jeśli takie jeszcze są
+                            else
+                                if(splitted[0] != "")
+                                    Console.WriteLine("Undefined message from server: " + singleRequest);
+                        }
+                        
+                    }
+
                     if (Console.KeyAvailable)
                     {
                         cki = Console.ReadKey();
@@ -130,44 +211,51 @@ namespace ClientTests
                         {
                             running = false;
                         }
-                        if (cki.Key == ConsoleKey.A)
+                        if (cki.Key == ConsoleKey.A) //Dodaj nowy stolik
                         {
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "0" + ' ' + "16" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                             nr++;
 
                         }
-                        if (cki.Key == ConsoleKey.J)
+                        if (cki.Key == ConsoleKey.J) //Dołącz do stolika
                         {
                             Console.WriteLine("Enter table name");
                             string tableName = Console.ReadLine();
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "1" + ' ' + tableName + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                         }
-                        if (cki.Key == ConsoleKey.O)
+                        if (cki.Key == ConsoleKey.O) //Odejdź od stolika
                         {
 
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
 
                         }
-                        if (cki.Key == ConsoleKey.C)
+                        if (cki.Key == ConsoleKey.C) //Zmień ustawienia stolika
                         {
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + "1" + ' ' + "3" + ' ' + "20" + ' ' + "55" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                         }
-                        if (cki.Key == ConsoleKey.R)
+                        if (cki.Key == ConsoleKey.P) //Uruchom grę
+                        {
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
+                            ns.Write(tosend, 0, tosend.Length);
+                        }
+                        if (cki.Key == ConsoleKey.R) //Wyczyść konsolę
                         {
                             Console.Clear();
                         }
                     }
                     Console.WriteLine(emptySpace);
                 }
-                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3");
+                byte[] tose = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3"); //Wyloguj się
                 ns.Write(tose, 0, tose.Length);
                 Thread.Sleep(1000);
                 ns.Flush();
                 serverGame.Close();
+                server.Close();
+                gameStream.Dispose();
             }
             
         }

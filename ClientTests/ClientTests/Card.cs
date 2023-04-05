@@ -101,8 +101,8 @@ namespace PokerGameClasses
 
         override public string ToString()
         {
-            //return this.GetShortName();
-            return ((int)this.Value).ToString() + " " + ((int)this.Sign).ToString();
+            return this.GetShortName();
+            //return ((int)this.Value).ToString() + " " + ((int)this.Sign).ToString();
         }
 
         public int CompareTo(Card other)

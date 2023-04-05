@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+using pGrServer;
+
 namespace PokerGameClasses
 {
     public enum PlayerType
@@ -83,12 +85,19 @@ namespace PokerGameClasses
             }
 
             bool moveDone = false;
-            //int playersTokensCountBeforeMove = this.TokensCount;
             while (!moveDone)
             {
-                //potem zamienić na pobieranie inputu z przycisków
-                Console.WriteLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");
-                int input = Convert.ToInt32(Console.ReadLine());
+                StringBuilder sb = new StringBuilder();
+                sb.Append(":G:");
+                sb.Append("Move request");
+                sb.Append("|");
+                sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");                
+
+                NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
+                this.GameRequestsStream.Flush();
+                string moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+
+                int input = Convert.ToInt32(moveResponse);
                 switch (input)
                 {
                     case 0:
@@ -98,9 +107,17 @@ namespace PokerGameClasses
                         moveDone = Check();
                         break;
                     case 2:
-                        //tu też potem zamienić input
-                        Console.WriteLine("Input how much you want to raise the bid");
-                        int amount = Convert.ToInt32(Console.ReadLine());
+                        sb.Clear();
+                        sb.Append(":G:");
+                        sb.Append("Move request");
+                        sb.Append("|");
+                        sb.AppendLine("Input how much you want to raise the bid:");
+
+                        NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
+                        this.GameRequestsStream.Flush();
+                        moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+
+                        int amount = Convert.ToInt32(moveResponse);
                         moveDone = Raise(amount);
                         break;
                     case 3:
@@ -111,8 +128,6 @@ namespace PokerGameClasses
                         break;
                 }
             }
-
-            //this.PlayersCurrentBet += playersTokensCountBeforeMove - this.TokensCount;
 
             return moveDone;
         }
@@ -132,16 +147,19 @@ namespace PokerGameClasses
         {
             if (this.TokensCount < amount)
             {
-                Console.WriteLine("You have not enough tokens to make this move. Make other choice.");
+                StringBuilder sb = new StringBuilder();
+                sb.Append(":G:");
+                sb.Append("Info");
+                sb.Append("|");
+                sb.AppendLine("You have not enough tokens to make this move. Make other choice.");
+                NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
+                this.GameRequestsStream.Flush();
                 return false;
             }
             this.TokensCount = this.TokensCount - amount;
             this.PlayersCurrentBet = this.PlayersCurrentBet + amount;
 
             this.Table.TokensInGame = this.Table.TokensInGame + amount;
-            //if (this.PlayersCurrentBet > this.Table.CurrentBid)
-            //    this.Table.CurrentBid = this.PlayersCurrentBet;
-            //dodać to w kontrolerze i wskaźnik na gracza, który ostatni przebił
 
             return true;
         }
@@ -217,6 +235,15 @@ namespace PokerGameClasses
                 + "\nTokens: " + this.TokensCount
                 + "\nCurrent bet: "+this.PlayersCurrentBet
                 + "\nXP: " + this.XP;
+        }
+
+        public string MessageGameState()
+        {
+            return ":Nick:" + this.Nick
+                + ":Hand:" + this.PlayerHand.ToString()
+                + ":Tokens:" + this.TokensCount
+                + ":Current bet:" + this.PlayersCurrentBet
+                + ":XP: " + this.XP;
         }
 
     }

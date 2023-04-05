@@ -27,6 +27,7 @@ namespace pGrServer
         public static TcpListener loginListener;
         public static TcpListener gameListener;
 
+        public static List<Thread> allGameThreads;
         
         static void Main()
         {
@@ -45,6 +46,8 @@ namespace pGrServer
             Thread autoLogoutThread = new Thread(AutoLogout);
             Thread requestsThread = new Thread(ListenRequests);
 
+            allGameThreads = new List<Thread>();
+
             //RUN
             loginThread.Start();
             autoLogoutThread.Start();
@@ -57,8 +60,12 @@ namespace pGrServer
                 sb.Clear();
                 sb.AppendLine("--- Server status ---");
                 sb.Append("Login active: " + (loginListener.Server.IsBound ? "YES" : "NO") + emptySpace + '\n');
+                loggedClientsAccess.WaitOne();
                 sb.Append("Logged clients: " + loggedClients.Count + emptySpace + '\n');
+                loggedClientsAccess.ReleaseMutex();
+                openTablesAccess.WaitOne();
                 sb.Append("Open tables: " + openTables.Count + emptySpace + '\n');
+                openTablesAccess.ReleaseMutex();
                 DateTime now = DateTime.Now;
                 sb.Append("Working time: " + now.Subtract(startTime).ToString() + '\n');
                 Console.WriteLine(sb);
@@ -81,6 +88,9 @@ namespace pGrServer
             loginThread.Join();
             autoLogoutThread.Join();
             requestsThread.Join();
+
+            foreach(Thread gameThread in allGameThreads)
+                gameThread.Join();
 
             loggedClientsAccess.WaitOne();
             foreach (string token in loggedTokens)
@@ -155,7 +165,7 @@ namespace pGrServer
                             {
                                 openTablesAccess.WaitOne();
                                 Player client = player;
-                                if (client.Table == null)
+                                if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
                                 {
                                     string name = request[2];
                                     bool found = false;
@@ -187,8 +197,9 @@ namespace pGrServer
                             //informacje o stołach
                             else if (request[1] == "2")
                             {
-                                //if(player.Table == null)
-                                //{
+                                //Uwaga! Nie wysyła informacji o stolikach, kiedy się przy jakimś siedzi --> dlatego pojedynczy klient nigdy nie dostaje listy stolików
+                                if (player.Table == null) 
+                                {
                                     StringBuilder completeMessage = new StringBuilder();
                                     openTablesAccess.WaitOne();
                                     foreach (GameTable table in openTables)
@@ -198,7 +209,7 @@ namespace pGrServer
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
                                     player.MenuRequestsStream.Write(message, 0, message.Length);
                                     openTablesAccess.ReleaseMutex();
-                                //}
+                                }
                             }
                             //wylogowanie
                             else if (request[1] == "3") 
@@ -222,6 +233,17 @@ namespace pGrServer
                                     ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5]);
                                 }
                                 openTablesAccess.ReleaseMutex();
+                            }
+                            //Rozpocznij grę
+                            else if (request[1] == "6")
+                            {
+                                Player client = loggedClients[token];
+                                if (client.Table != null)
+                                {
+                                    Thread gameThread = new Thread(() => Game(client.Table));
+                                    allGameThreads.Add(gameThread);
+                                    gameThread.Start();
+                                }
                             }
                         }
                     }
@@ -326,6 +348,7 @@ namespace pGrServer
 
 
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
+                                Console.WriteLine("Accepted game client");
 
                                 loggedClientsAccess.WaitOne();
 
@@ -338,6 +361,7 @@ namespace pGrServer
                                 loggedClients[token].GameRequestsStream = gameClient.GetStream();
                                 loggedTokens.Add(token);
                                 loggedClientsAccess.ReleaseMutex();
+                                Console.WriteLine("Added client to list");
                             }
                         }
                         else //failed
@@ -459,8 +483,10 @@ namespace pGrServer
             }
         }
         public static void Game(GameTable table)
-        {
-
+        {         
+            GameplayController controller = new GameplayController(table, new TexasHoldemDealer());
+            controller.playTheGame();
+            controller.ConcludeGame();
         }
         public static void ChangeTableSettings(GameTable table,Player player, string mode, string nrOfBots, string minXp, string big_blind)
         {
