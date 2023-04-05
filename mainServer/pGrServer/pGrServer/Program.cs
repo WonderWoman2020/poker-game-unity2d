@@ -209,7 +209,7 @@ namespace pGrServer
                                     byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
                                     player.MenuRequestsStream.Write(message, 0, message.Length);
                                     openTablesAccess.ReleaseMutex();
-                                }
+                                //}
                             }
                             //wylogowanie
                             else if (request[1] == "3") 
