@@ -78,8 +78,10 @@ public class Table : MonoBehaviour
     {
         NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
         bool running = true;
+
         while (running)
         {
+            int playerCounter = 0;
             if (gameStream.DataAvailable)
             {
                 UnityEngine.Debug.Log("sa dane na strumieniu");
@@ -107,6 +109,10 @@ public class Table : MonoBehaviour
                         Debug.Log(playerState);
                         this.playersStates[playerState.Nick] = playerState;
                         Debug.Log("Player state count: " + this.playersStates.Count);
+                        /*this.ShowPlayerOnTable(playerCounter, playerState.Nick);
+                        this.ChangePlayerBet(playerState.CurrentBet, playerCounter);
+                        this.ChangePlayerMoney(playerState.TokensCount, playerCounter);
+                        playerCounter++;*/
                     }
                 }
             }
@@ -174,7 +180,24 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        int i = 0;
+        foreach(KeyValuePair<string, PlayerState> state in this.playersStates)
+        {
+            PlayerState playerState = state.Value;
+
+            if(playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+            {
+                this.InfoMainPlayerName.text = playerState.Nick;
+                this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
+                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+                continue;
+            }
+
+            this.ShowPlayerOnTable(i, playerState.Nick);
+            this.ChangePlayerBet(playerState.CurrentBet, i);
+            this.ChangePlayerMoney(playerState.TokensCount, i);
+            i++;
+        }
     }
     public void ReadInputBet(string inputBet)
     {
