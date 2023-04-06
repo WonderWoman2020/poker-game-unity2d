@@ -164,6 +164,9 @@ namespace pGrServer
                             else if (request[1] == "1")
                             {
                                 openTablesAccess.WaitOne();
+
+                                Console.WriteLine("Client " + player.Nick + " requested adding to table " + request[2]);
+
                                 Player client = player;
                                 if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
                                 {
@@ -245,6 +248,8 @@ namespace pGrServer
                                     gameThread.Start();
                                 }
                             }
+                            else
+                                Console.WriteLine(request);
                         }
                     }
                 }

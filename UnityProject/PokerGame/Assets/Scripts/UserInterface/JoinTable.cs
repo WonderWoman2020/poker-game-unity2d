@@ -8,6 +8,9 @@ using PokerGameClasses;
 
 using TMPro;
 using System;
+using System.Net.Sockets;
+
+using pGrServer;
 
 public class JoinTable : MonoBehaviour
 {
@@ -104,6 +107,12 @@ public class JoinTable : MonoBehaviour
         //}
 
         //Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
+
+        byte[] tosend = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "1" + ' ' + MyGameManager.Instance.GameTableList[this.chosenTable].Name + ' ');
+        NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
+        ns.Write(tosend, 0, tosend.Length);
+        
+
         SceneManager.LoadScene("Table");
     }
 

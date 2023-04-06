@@ -62,15 +62,12 @@ public class Table : MonoBehaviour
         //ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
 
-        string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
-        MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
-        MyGameManager.Instance.mainServerConnection.stream.Flush();
-        Thread.Sleep(1000);
+//
 
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
 
+        //
         new System.Threading.Thread(CommunicateWithServer).Start();
     }
 
@@ -257,5 +254,14 @@ public class Table : MonoBehaviour
             NetworkHelper.WriteNetworkStream(gameStream, "2 " + this.betFieldText.ToString());
             this.readyToSendMove = false;
         }
+    }
+
+    public void onStartGameButton()
+    {
+        string token = MyGameManager.Instance.clientToken;
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
+        MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
+        Thread.Sleep(1000);
     }
 }
