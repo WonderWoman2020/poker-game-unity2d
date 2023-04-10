@@ -157,8 +157,9 @@ namespace ClientTests
                             {
                                 Console.WriteLine(splitted[0]);
                                 Console.WriteLine(splitted[1]);
-                                int input = Convert.ToInt32(Console.ReadLine());
-                                NetworkHelper.WriteNetworkStream(gameStream, input.ToString());
+                                string input = Console.ReadLine();
+                                //int input = Convert.ToInt32(Console.ReadLine());
+                                NetworkHelper.WriteNetworkStream(gameStream, input);
                             }
                             //która runda się toczy
                             else if(splitted[0] == "Round")

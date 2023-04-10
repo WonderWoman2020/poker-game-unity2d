@@ -91,7 +91,9 @@ namespace PokerGameClasses
                 sb.Append(":G:");
                 sb.Append("Move request");
                 sb.Append("|");
-                sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n2 - Raise\n3 - AllIn");                
+                sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n" +
+                    "2 - Raise (if you choose this option, write also amount of coins to raise, separated by 1 space)\n" +
+                    "3 - AllIn");                
 
                 NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
                 this.GameRequestsStream.Flush();
