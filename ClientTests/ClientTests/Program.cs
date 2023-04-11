@@ -125,7 +125,7 @@ namespace ClientTests
                             sb.AppendLine("Name       : " + mess[0]);
                             sb.AppendLine("Owner      : " + mess[1]);
                             sb.AppendLine("Human count: " + mess[2]);
-                            sb.AppendLine("Bot count  : " + mess[3]);
+                            sb.AppendLine("Bot count  : " + mess[3] + " (note: BotsCount != BotsNumberOnStart)");
                             sb.AppendLine("min XP     : " + mess[4]);
                             sb.AppendLine("min tokens : " + mess[5]);
                         }

@@ -19,6 +19,7 @@ public class CreateTable : MonoBehaviour
     [SerializeField] private Button modeMixedButton;
 
     // TODO dodaæ zczytywanie liczby botów! Jest pole w interfejsie, nie ma tu jeszcze metody onClick pobieraj¹cej z niego
+    //[SerializeField] private TMP_Text botsNumberField;
 
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
@@ -83,8 +84,13 @@ public class CreateTable : MonoBehaviour
     // TODO dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika, jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
     void SendTableToServer()
     {
+        if (this.numberOfBots == null)
+            this.numberOfBots = "0";
+
+        int mode = (int)this.chosenMode;
+
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + "1" + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ');
         MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
     }
@@ -141,6 +147,18 @@ public class CreateTable : MonoBehaviour
         Debug.Log(this.xp);
     }
 
+    public void ReadBotsNumber(string botsNumber)
+    {
+        if (botsNumber.Length == 0)
+        {
+            this.numberOfBots = null;
+            return;
+        }
+
+        this.numberOfBots = botsNumber;
+        Debug.Log(this.numberOfBots);
+    }
+
     public void OnModeNoBotsButton()
     {
         this.chosenMode = GameMode.No_Bots;
@@ -158,7 +176,6 @@ public class CreateTable : MonoBehaviour
     public void OnMixedButton()
     {
         this.chosenMode = GameMode.Mixed;
-        this.numberOfBots = "2";
         Debug.Log(this.chosenMode);
     }
 }

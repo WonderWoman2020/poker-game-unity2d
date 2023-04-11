@@ -147,7 +147,7 @@ namespace PokerGameClasses
             if (player.Nick != this.Owner.Nick)
                 return false;
 
-            if(settings == null)
+            if (settings == null)
             {
                 this.Settings = new GameTableSettings();
                 return true;
@@ -205,7 +205,7 @@ namespace PokerGameClasses
             return "Name: " + this.Name + "\n"
                 + "Owner: " + ((this.Owner == null) ? "No owner" : this.Owner.Nick) + "\n"
                 + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
-                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
+                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + " (note: BotsCount != BotsNumberOnStart)\n"
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
                 + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
         }

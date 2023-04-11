@@ -497,13 +497,17 @@ namespace pGrServer
         {
             GameTableSettings gameTableSettings = new GameTableSettings();
             if (mode == "0")
-                gameTableSettings.changeMode(GameMode.Mixed);
-            else if (mode == "1")
                 gameTableSettings.changeMode(GameMode.No_Bots);
-            else if (mode == "2")
+            else if (mode == "1")
                 gameTableSettings.changeMode(GameMode.You_And_Bots);
+            else if (mode == "2")
+                gameTableSettings.changeMode(GameMode.Mixed);
 
+            // (note: BotsCount != BotsNumberOnStart)
+            // bots count is dynamic and changes depending on how many bots sits at the table,
+            // and bots number on start is just an initial setting
             gameTableSettings.changeBotsNumber(int.Parse(nrOfBots));
+
             gameTableSettings.changeMinXP(int.Parse(minXp));
             gameTableSettings.changeMinTokens(int.Parse(big_blind));
 
