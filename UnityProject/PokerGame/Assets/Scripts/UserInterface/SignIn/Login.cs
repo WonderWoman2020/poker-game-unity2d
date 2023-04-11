@@ -1,4 +1,3 @@
-using PokerGameClasses;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,6 +15,8 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using PokerGameClasses;
+
 //using System.Diagnostics;
 //Jesli ktos bedzie potrzebowal tej biblioteki, to bedzie potrzeba zamienic wszystkie Debug.Log(...) na UnityEngine.Debug.Log(...)
 
@@ -28,7 +29,20 @@ public class Login : MonoBehaviour
     [SerializeField] private Button loginButton;
     [SerializeField] private Button backToMenuButton;
 
+    // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public void OnBackToMenuButton()
     {
@@ -39,72 +53,47 @@ public class Login : MonoBehaviour
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
+        if (this.playerLogin == null)
+        {
+            this.ShowWrongInputPopup("Add your login");
+            return;
+        }
+
+        if(this.playerPassword == null)
+        {
+            this.ShowWrongInputPopup("Add your password");
+            return;
+        }
+
+        // TODO dodaæ kiedyœ do klasy MenuRequestManager
+        //////////////
+        // wyœlij zapytanie o logowanie do serwerze
         byte[] message = System.Text.Encoding.ASCII.GetBytes(this.playerLogin + ' ' + this.playerPassword);
         mainServer.stream.Write(message, 0, message.Length);
         mainServer.stream.Flush();
 
+        // odbierz odpowiedŸ
         byte[] myReadBuffer = new byte[1024];
         int numberOfBytesRead = 0;
         StringBuilder myCompleteMessage = new StringBuilder();
         numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
         myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
 
+        // TODO dodaæ reagowanie na b³êdn¹ odpowiedŸ od serwera (z³y login itd.)
+
+        // odczytaj dane gracza z odpowiedzi (token, xp, coins, nick)
         string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
         MyGameManager.Instance.clientToken = request[0];
         var xp = Int32.Parse(request[1]);
         var coins = Int32.Parse(request[2]);
         var nick = request[3];
+        // stwórz g³ównego gracza
         Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
+        ///////////////
+        
+        // zapamiêtaj g³ównego gracza na ca³y czas dzia³ania aplikacji
         MyGameManager.Instance.AddPlayerToGame(player);
-
-        //StartCoroutine(SendNewUser());
-
-        
-        SceneManager.LoadScene("PlayMenu");
-
-        
-    }
-    IEnumerator SendNewUser()
-    {
-        var request = new UnityWebRequest("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/loginuser", "POST");
-
-        string str = "{\"login\":\"" + this.playerLogin + "\",\"password\":\"" + this.playerPassword + "\"}";
-
-        byte[] body = System.Text.Encoding.ASCII.GetBytes(str);
-
-        request.uploadHandler = new UploadHandlerRaw(body);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-        //Debug.Log(request.downloadHandler.text);
-        var dataFromDatabase = request.downloadHandler.text.Split("\"");
-        var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
-
-        if (responseCode == "412") // login exist
-        {
-            ShowWrongInputPopup("Login does not exists.");
-        }
-        else if (responseCode == "416") // ok
-        {
-            ShowWrongInputPopup("Wrong password.");
-        }
-        else if (responseCode == "210") // ok
-        {
-            var xp = Int32.Parse(Regex.Match(dataFromDatabase[6], @"\d+").Value);
-            var coins = Int32.Parse(Regex.Match(dataFromDatabase[12], @"\d+").Value);
-            var login = dataFromDatabase[9];
-            var nick = dataFromDatabase[15];
-            Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
-            MyGameManager.Instance.AddPlayerToGame(player);
-            //Debug.Log("Logged player "+player.Nick);
-            //SceneManager.LoadScene("Table");
-            SceneManager.LoadScene("PlayMenu");
-            //SceneManager.LoadScene("LoginPlayer");
-        }
-        else //failed
-        {
-            ShowWrongInputPopup("Server error.");
-        }
+        SceneManager.LoadScene("PlayMenu");  
     }
 
     void ShowWrongInputPopup(string text)
@@ -141,16 +130,5 @@ public class Login : MonoBehaviour
         }
 
         this.playerPassword = password;
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

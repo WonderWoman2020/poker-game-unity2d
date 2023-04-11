@@ -15,6 +15,12 @@ public class SignInMenu : MonoBehaviour
         
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
     public void OnExitToMenuButton()
     {
         SceneManager.LoadScene("MainMenu");
@@ -22,19 +28,11 @@ public class SignInMenu : MonoBehaviour
 
     public void OnLoginButton()
     {
-        SceneManager.LoadScene("Login"); ;
+        SceneManager.LoadScene("Login");
     }
 
     public void OnRegisterButton()
     {
-        if (MyGameManager.Instance.MainPlayer == null)
-            SceneManager.LoadScene("CreatePlayer");
-        else
-            SceneManager.LoadScene("PlayMenu");
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+        SceneManager.LoadScene("CreatePlayer");
     }
 }

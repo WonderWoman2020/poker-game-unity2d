@@ -64,6 +64,7 @@ public class JoinTable : MonoBehaviour
     {
         
     }
+
     public void OnJoinButton()
     {
         if(MyGameManager.Instance.GameTableList.Count == 0)

@@ -34,13 +34,13 @@ public class Table : MonoBehaviour
     private GameTableState gameTableState;
     private IDictionary<string, PlayerState> playersStates;
 
-
-
     private GameObject[] Players
     {get; set;}
     private Component[] Components
     { get; set; }
     private string betFieldText;
+
+
     // Start is called before the first frame update
     void Start()
     {

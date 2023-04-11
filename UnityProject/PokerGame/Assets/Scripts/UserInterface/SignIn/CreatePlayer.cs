@@ -4,33 +4,54 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-//using SimpleJSON;
-
-using PokerGameClasses;
-
 using TMPro;
 using System;
 using System.Text.RegularExpressions;
+
+using PokerGameClasses;
 
 public class CreatePlayer : MonoBehaviour
 {
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
 
+    // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
+    // dane z formularza
     private string playerNick;
     private string password1;
     private string password2;
     private string login;
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        this.playerNick = null;
+        this.password1 = null;
+        this.password2 = null;
+        this.login = null;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // wciœniêcie enter robi to samo co wciœniêcie przycisku 'Create'
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        {
+            if (this.playerNick != null && this.password1 != null && this.password2 != null && this.login != null)
+                this.OnCreateButton();
+        }
+    }
+
     public void OnBackToMenuButton()
     {
         SceneManager.LoadScene("MainMenu");
     }
+
     public void OnCreateButton()
     {
-        Debug.Log("button was clicked.");
+        Debug.Log("Create button was clicked.");
         if (this.login != null)
         {
             if (this.playerNick != null)
@@ -48,23 +69,11 @@ public class CreatePlayer : MonoBehaviour
         }
         else
             ShowWrongInputPopup("Add your login");
-        //if(this.playerNick == null)
-        //{
-        //    Debug.Log("You must set at least player's nick to create them.");
-        //    if (PopupWindow)
-        //    {
-        //        ShowWrongInputPopup();
-        //    }
-        //    return;
-        //}
-        //
-        //Player player = new HumanPlayer("I'm main player", PlayerType.Human);
-        //this.SetPlayerInputData(player);
-        //MyGameManager.Instance.AddPlayerToGame(player);
-        //Debug.Log("Created player "+player.Nick);
-        ////SceneManager.LoadScene("Table");
-        //SceneManager.LoadScene("PlayMenu");
     }
+
+    // rejestracja nowego gracza w bazie (mamy to tylko w wersji z API webowym od Unity)
+    // TODO przepisaæ kiedyœ na API C#, ¿eby móc korzystaæ z tego te¿ w konsolowym kliencie do testów?
+    // TODO dodaæ kiedyœ do klasy MenuRequestManager
     IEnumerator SendNewUser()
     {
         var request = new UnityWebRequest("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/addAccount", "POST");
@@ -93,7 +102,8 @@ public class CreatePlayer : MonoBehaviour
         }
     }
 
-    void ShowWrongInputPopup(string text)
+    // TODO stworzyæ klasê PopupHelper z tak¹ publiczn¹ metod¹?
+    public void ShowWrongInputPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
         popup.GetComponent<TextMeshProUGUI>().text = text;
@@ -143,39 +153,5 @@ public class CreatePlayer : MonoBehaviour
 
         this.password2 = password;
         Debug.Log(this.password2);
-    }
-
-    private bool SetPlayerInputData(Player player)
-    {
-        //data from input
-        if (this.playerNick != null)
-            player.ChangeNick(this.playerNick);
-
-      //  if (this.chips != null)
-        //    player.TokensCount = Convert.ToInt32(this.chips);
-
-      //  if (this.xp != null)
-        //    player.XP = Convert.ToInt32(this.xp);
-
-        return true;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        this.playerNick = null;
-        this.password1 = null;
-        this.password2 = null;
-        this.login = null;
-    }
-    
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            if (this.playerNick != null && this.password1 != null && this.password2 != null && this.login != null)
-                this.OnCreateButton();
-        }
     }
 }
