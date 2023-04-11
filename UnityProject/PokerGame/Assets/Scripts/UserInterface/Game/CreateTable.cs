@@ -167,7 +167,6 @@ public class CreateTable : MonoBehaviour
     public void OnYouAndBotsButton()
     {
         this.chosenMode = GameMode.You_And_Bots;
-        //this.numberOfBots = "3";
         Debug.Log(this.chosenMode);
     }
 
