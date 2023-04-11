@@ -26,12 +26,7 @@ public class PlayMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (MyGameManager.Instance.MainPlayer == null)
-            return;
-
-        this.InfoPlayerNick.text = MyGameManager.Instance.MainPlayer.Nick;
-        this.InfoPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount)+" $";
-        this.InfoPlayerXP.text = Convert.ToString(MyGameManager.Instance.MainPlayer.XP)+ " XP";
+        this.ChangePlayerInfo();
     }
 
     // Update is called once per frame
@@ -40,6 +35,7 @@ public class PlayMenu : MonoBehaviour
         
     }
 
+    // TODO dodaæ kiedyœ do klasy MenuRequestManager
     public void loadTables()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
@@ -63,6 +59,7 @@ public class PlayMenu : MonoBehaviour
         }
     }
 
+    // TODO dodaæ kiedyœ do klasy MenuRequestManager
     public void parseTableData(string serverResponse)
     {
         string[] data = serverResponse.Split(' ');
@@ -78,6 +75,16 @@ public class PlayMenu : MonoBehaviour
     }
 
 
+    public void ChangePlayerInfo()
+    {
+        if (MyGameManager.Instance.MainPlayer == null)
+            return;
+
+        this.InfoPlayerNick.text = MyGameManager.Instance.MainPlayer.Nick;
+        this.InfoPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
+        this.InfoPlayerXP.text = Convert.ToString(MyGameManager.Instance.MainPlayer.XP) + " XP";
+    }
+
     public void OnJoinTableButton()
     {
         loadTables();
@@ -87,10 +94,14 @@ public class PlayMenu : MonoBehaviour
     {
         SceneManager.LoadScene("CreateTable");
     }
+
+    // TODO ekran Get Chips
     public void OnGetChipsButton()
     {
         Debug.Log("Get Chips");
     }
+
+    // TODO ekran Settings
     public void OnChangeSettingsButton()
     {
         Debug.Log("Settings");

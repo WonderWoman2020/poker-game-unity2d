@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Net.NetworkInformation;
-//using System.Diagnostics;
+
 
 public class MainMenu : MonoBehaviour
 {
@@ -15,29 +15,33 @@ public class MainMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //SceneManager.LoadScene("MainMenu");
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     public void OnExitButton()
     {
         Application.Quit();
     }
+
+    // TODO ekran Settings do zrobienia i zaimplementowania
     public void OnSettingsButton()
     {
         Debug.Log("Settings");
     }
 
+    // W zale¿noœci, czy gracz jest zalogowany, prosi o logowanie lub
+    // przepuszcza do kolejnych ekranów gry
     public void OnPlayButton()
     {
         if(MyGameManager.Instance.MainPlayer == null)
             SceneManager.LoadScene("SignInMenu");
         else
             SceneManager.LoadScene("PlayMenu");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
