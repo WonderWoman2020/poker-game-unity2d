@@ -13,6 +13,7 @@ using System;
 using System.Net.Sockets;
 
 using ClientSideCardsHelper;
+using static System.Net.Mime.MediaTypeNames;
 
 public class Table : MonoBehaviour
 {
@@ -33,11 +34,15 @@ public class Table : MonoBehaviour
     private GameTableState gameTableState;
     private IDictionary<string, PlayerState> playersStates;
 
+    public GameObject PopupWindow;
+
     private GameObject[] Players
     {get; set;}
     private Component[] Components
     { get; set; }
     private string betFieldText;
+
+    bool displayPlayerTurnPopup = false;
 
 
     // Start is called before the first frame update
@@ -89,7 +94,14 @@ public class Table : MonoBehaviour
                 {
                     Debug.Log(singleRequest);
                     string[] splitted = singleRequest.Split(new string("|"));
-                    if (splitted[0] == "Move request")
+                    if (splitted[0] == "Which player turn")
+                    {
+                        if(!this.displayPlayerTurnPopup)
+                        {
+                            CommunicatePlayersTurn(splitted[1]);
+                        }
+                    }
+                    else if (splitted[0] == "Move request")
                     {
                         MoveRequestResponse(splitted);
                     }
@@ -112,6 +124,14 @@ public class Table : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    void CommunicatePlayersTurn(string currentPlayer)
+    {
+        if (currentPlayer == MyGameManager.Instance.MainPlayer.Nick)
+        {
+            this.displayPlayerTurnPopup = true;
         }
     }
 
@@ -139,7 +159,6 @@ public class Table : MonoBehaviour
         {
             nick.GetComponent<TMP_Text>().text = playerNick;
             nick.GetComponent<TMP_Text>().fontSize = 21.75f;    //nie dziala, bo autosize w unity
-            Debug.Log(nick.GetComponent<TMP_Text>().text);
         }
         Players[seatNumber].transform.localScale = Vector3.one;
     }
@@ -193,6 +212,12 @@ public class Table : MonoBehaviour
             this.ChangePlayerBet(playerState.CurrentBet, i);
             this.ChangePlayerMoney(playerState.TokensCount, i);
             i++;
+        }
+        if (this.displayPlayerTurnPopup && PopupWindow)
+        {
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
+            this.displayPlayerTurnPopup = false;
         }
     }
     public void ReadInputBet(string inputBet)
@@ -262,5 +287,6 @@ public class Table : MonoBehaviour
         MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
         Thread.Sleep(1000);
+
     }
 }
