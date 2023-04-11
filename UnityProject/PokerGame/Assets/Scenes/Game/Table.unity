@@ -7115,6 +7115,7 @@ MonoBehaviour:
   InfoMainPlayerChips: {fileID: 801404600}
   InfoMainPlayerBid: {fileID: 304345412}
   menuCanvas: {fileID: 1036125299}
+  PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1292243198
 GameObject:
   m_ObjectHideFlags: 0
