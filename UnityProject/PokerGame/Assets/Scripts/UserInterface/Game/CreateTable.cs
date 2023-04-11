@@ -18,9 +18,6 @@ public class CreateTable : MonoBehaviour
     [SerializeField] private Button modeYouAndBotsButton;
     [SerializeField] private Button modeMixedButton;
 
-    // TODO dodaæ zczytywanie liczby botów! Jest pole w interfejsie, nie ma tu jeszcze metody onClick pobieraj¹cej z niego
-    //[SerializeField] private TMP_Text botsNumberField;
-
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
@@ -79,8 +76,6 @@ public class CreateTable : MonoBehaviour
         SceneManager.LoadScene("Table");
     }
 
-
-    //NA CHWILE OBECNA, LICZBA BOTOW JEST HARDKODOWANA (patrz linijki 34, 163, 171, 178). DO POPRAWY POZNIEJ
     // TODO dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika, jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
     void SendTableToServer()
     {
@@ -166,10 +161,13 @@ public class CreateTable : MonoBehaviour
         Debug.Log(this.chosenMode);
     }
 
+    //TODO dodaæ mo¿liwoœæ podawania liczby botów równie¿ w tym trybie
+    //(na razie gracz ma pole tylko do mixed, mog³o by staæ siê jednym wspólnym dla obu)
+    //bêdzie tak dzia³aæ, ale trzeba by je przesun¹æ te¿ w GUI ¿eby to by³o widoczne dla gracza
     public void OnYouAndBotsButton()
     {
         this.chosenMode = GameMode.You_And_Bots;
-        this.numberOfBots = "3";
+        //this.numberOfBots = "3";
         Debug.Log(this.chosenMode);
     }
 

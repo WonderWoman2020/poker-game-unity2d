@@ -510,6 +510,7 @@ namespace pGrServer
 
             gameTableSettings.changeMinXP(int.Parse(minXp));
             gameTableSettings.changeMinTokens(int.Parse(big_blind));
+            //Console.WriteLine(gameTableSettings);
 
             table.ChangeSettings((HumanPlayer)player, gameTableSettings);
         }
