@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Threading;
-
-using PokerGameClasses;
-
 using TMPro;
 using System;
+
+using PokerGameClasses;
 
 public class CreateTable : MonoBehaviour
 {
@@ -19,14 +18,17 @@ public class CreateTable : MonoBehaviour
     [SerializeField] private Button modeYouAndBotsButton;
     [SerializeField] private Button modeMixedButton;
 
-    private GameMode chosenMode;
+    // TODO dodaæ zczytywanie liczby botów! Jest pole w interfejsie, nie ma tu jeszcze metody onClick pobieraj¹cej z niego
 
+    // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
+    // dane z formularza
     private string numberOfBots;
     private string tableName;
     private string chips;
     private string xp;
+    private GameMode chosenMode;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +43,7 @@ public class CreateTable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // wciœniêcie enter robi to samo co wciœniêcie przycisku 'Create'
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             if (this.tableName != null && this.chips != null && this.xp != null)
@@ -70,18 +73,14 @@ public class CreateTable : MonoBehaviour
             return;
         }
 
-        //GameTable gameTable = p.CreateYourTable("Unnamed table", null);
-        //this.SetGameTableInputData(gameTable);
-        //MyGameManager.Instance.AddTableToGame(gameTable);
-        //Debug.Log("Player "+p.Nick+ " created table "+gameTable);
         SendTableToServer();
-
+        // TODO dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
         SceneManager.LoadScene("Table");
-        //SceneManager.LoadScene("PlayMenu");
     }
 
 
     //NA CHWILE OBECNA, LICZBA BOTOW JEST HARDKODOWANA (patrz linijki 34, 163, 171, 178). DO POPRAWY POZNIEJ
+    // TODO dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika, jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
     void SendTableToServer()
     {
         string token = MyGameManager.Instance.clientToken;
@@ -140,23 +139,6 @@ public class CreateTable : MonoBehaviour
 
         this.xp = xp;
         Debug.Log(this.xp);
-    }
-
-    private bool SetGameTableInputData(GameTable gameTable)
-    {
-        //data from input
-        if (this.tableName != null)
-            gameTable.ChangeName(this.tableName);
-
-        if (this.chips != null)
-            gameTable.Settings.changeMinTokens(Convert.ToInt32(this.chips));
-
-        if (this.xp != null)
-            gameTable.Settings.changeMinXP(Convert.ToInt32(this.xp));
-
-        gameTable.Settings.changeMode(this.chosenMode);
-
-        return true;
     }
 
     public void OnModeNoBotsButton()

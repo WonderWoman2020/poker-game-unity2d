@@ -22,6 +22,7 @@ public class JoinTable : MonoBehaviour
     [SerializeField] private Button table3Button;
     [SerializeField] private Button table4Button;
 
+    // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
     private int chosenTable;
