@@ -10,7 +10,7 @@ using PokerGameClasses;
 using TMPro;
 using System;
 
-public class CreateTableMenu : MonoBehaviour
+public class CreateTable : MonoBehaviour
 {
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;

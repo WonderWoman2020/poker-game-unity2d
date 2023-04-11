@@ -20,7 +20,7 @@ using UnityEngine.UI;
 //Jesli ktos bedzie potrzebowal tej biblioteki, to bedzie potrzeba zamienic wszystkie Debug.Log(...) na UnityEngine.Debug.Log(...)
 
 
-public class LoginPlayer : MonoBehaviour
+public class Login : MonoBehaviour
 {
     private string playerLogin;
     private string playerPassword;

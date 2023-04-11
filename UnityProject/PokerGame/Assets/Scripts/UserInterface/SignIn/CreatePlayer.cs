@@ -12,7 +12,7 @@ using TMPro;
 using System;
 using System.Text.RegularExpressions;
 
-public class CreatePlayerMenu : MonoBehaviour
+public class CreatePlayer : MonoBehaviour
 {
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
@@ -85,7 +85,7 @@ public class CreatePlayerMenu : MonoBehaviour
         }
         else if(responseCode == "205") // ok
         {
-            SceneManager.LoadScene("LoginPlayer");
+            SceneManager.LoadScene("Login");
         }
         else //failed
         {

@@ -85,7 +85,7 @@ public class PlayMenu : MonoBehaviour
     }
     public void OnCreateTableButton()
     {
-        SceneManager.LoadScene("CreateTableMenu");
+        SceneManager.LoadScene("CreateTable");
     }
     public void OnGetChipsButton()
     {
