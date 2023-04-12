@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokerGameClasses
+namespace ClientSideCardsHelper
 {
    public enum CardSign
     {
@@ -101,8 +101,8 @@ namespace PokerGameClasses
 
         override public string ToString()
         {
-            //return this.GetShortName();
-            return ((int)this.Value).ToString() + " " + ((int)this.Sign).ToString();
+            return this.GetShortName();
+            //return ((int)this.Value).ToString() + " " + ((int)this.Sign).ToString();
         }
 
         public int CompareTo(Card other)

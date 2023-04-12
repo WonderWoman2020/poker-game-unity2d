@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: 68c01b8be71cde5459b1ee306f7fa7ca
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - joinButton: {instanceID: 0}
+  - backToMenuButton: {instanceID: 0}
+  - table1Button: {instanceID: 0}
+  - table2Button: {instanceID: 0}
+  - table3Button: {instanceID: 0}
+  - table4Button: {instanceID: 0}
+  - PopupWindow: {instanceID: 0}
+  - Table1: {instanceID: 0}
+  - Table2: {instanceID: 0}
+  - Table3: {instanceID: 0}
+  - Table4: {instanceID: 0}
+  - InfoPlayersCount: {instanceID: 0}
+  - InfoBotsCount: {instanceID: 0}
+  - InfoMinChips: {instanceID: 0}
+  - InfoMinXP: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

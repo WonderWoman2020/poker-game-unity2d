@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using pGrServer;
+
 namespace PokerGameClasses
 {
     public class GameTable
@@ -44,17 +46,28 @@ namespace PokerGameClasses
 
             return false;
         }
-        public bool AddPlayer(Player player)
+        public bool AddPlayer(Player player) //TODO Dodać tu usuwanie z poprzedniego stołu, jeśli przy jakimś siedział?
         {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(":G:");
+            sb.Append("Info");
+            sb.Append("|");
+
             if (this.CheckIfPlayerSitsAtTheTable(player))
             {
-                Console.WriteLine("You already sit at that table, dude, wake up.");
+                sb.AppendLine("You already sit at that table, dude, wake up.");
+                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
+                player.GameRequestsStream.Flush();
+                //Console.WriteLine("You already sit at that table, dude, wake up.");
                 return false;
             }
 
             if (this.Players.Count == this.Settings.MaxPlayersCountInGame)
             {
-                Console.WriteLine("Too many players already at the table. You can't join this table now.");
+                sb.AppendLine("Too many players already at the table. You can't join this table now.");
+                NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
+                player.GameRequestsStream.Flush();
+                //Console.WriteLine("Too many players already at the table. You can't join this table now.");
                 return false;
             }
 
@@ -62,12 +75,18 @@ namespace PokerGameClasses
             {
                 if (this.Settings.MinPlayersXP > player.XP)
                 {
-                    Console.WriteLine("Not enought XP to join the game table");
+                    sb.AppendLine("Not enought XP to join the game table");
+                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
+                    player.GameRequestsStream.Flush();
+                    //Console.WriteLine("Not enought XP to join the game table");
                     return false;
                 }
                 if (this.Settings.MinPlayersTokenCount > player.TokensCount)
                 {
-                    Console.WriteLine("Not enought Tokens to join the game table");
+                    sb.AppendLine("Not enought Tokens to join the game table");
+                    NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
+                    player.GameRequestsStream.Flush();
+                    //Console.WriteLine("Not enought Tokens to join the game table");
                     return false;
                 }
             }
@@ -128,7 +147,7 @@ namespace PokerGameClasses
             if (player.Nick != this.Owner.Nick)
                 return false;
 
-            if(settings == null)
+            if (settings == null)
             {
                 this.Settings = new GameTableSettings();
                 return true;
@@ -186,7 +205,7 @@ namespace PokerGameClasses
             return "Name: " + this.Name + "\n"
                 + "Owner: " + ((this.Owner == null) ? "No owner" : this.Owner.Nick) + "\n"
                 + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
-                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + "\n"
+                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + " (note: BotsCount != BotsNumberOnStart)\n"
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
                 + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
         }
@@ -200,6 +219,14 @@ namespace PokerGameClasses
                 this.GetPlayerTypeCount(PlayerType.Bot) + ' ' +
                 this.Settings.MinPlayersXP + ' ' +
                 this.Settings.MinPlayersTokenCount;
+        }
+
+        public string MessageGameState()
+        {
+            return ":Name:" + this.Name
+                + ":Cards:" +  this.shownHelpingCards.ToString()//String.Join(", ", this.shownHelpingCards.Cards)
+                + ":Tokens in game:" + this.TokensInGame
+                + ":Current bid:" + this.CurrentBid;
         }
 
     }

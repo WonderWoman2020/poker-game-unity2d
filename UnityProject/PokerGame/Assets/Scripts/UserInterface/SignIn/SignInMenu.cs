@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class LoginMenu : MonoBehaviour
+public class SignInMenu : MonoBehaviour
 {
     [SerializeField] private Button exitToMenuButton;
     [SerializeField] private Button loginButton;
@@ -15,6 +15,12 @@ public class LoginMenu : MonoBehaviour
         
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
     public void OnExitToMenuButton()
     {
         SceneManager.LoadScene("MainMenu");
@@ -22,19 +28,11 @@ public class LoginMenu : MonoBehaviour
 
     public void OnLoginButton()
     {
-        SceneManager.LoadScene("LoginPlayer"); ;
+        SceneManager.LoadScene("Login");
     }
 
     public void OnRegisterButton()
     {
-        if (MyGameManager.Instance.MainPlayer == null)
-            SceneManager.LoadScene("CreatePlayerMenu");
-        else
-            SceneManager.LoadScene("PlayMenu");
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+        SceneManager.LoadScene("CreatePlayer");
     }
 }

@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 90bdcaee59e995c4a842a7364efbac5c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - checkButton: {instanceID: 0}
+  - allInButton: {instanceID: 0}
+  - passButton: {instanceID: 0}
+  - bidButton: {instanceID: 0}
+  - InfoMainPlayerName: {instanceID: 0}
+  - InfoMainPlayerChips: {instanceID: 0}
+  - InfoMainPlayerBid: {instanceID: 0}
+  - menuCanvas: {instanceID: 0}
+  - PopupWindow: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

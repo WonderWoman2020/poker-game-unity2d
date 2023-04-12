@@ -20,6 +20,10 @@ namespace PokerGameClasses
         { get; set; }
         public int MaxPlayersCountInGame
         { get; set; }
+
+        // (note: BotsCount != BotsNumberOnStart)
+        // bots count is dynamic and changes depending on how many bots sits at the table,
+        // and bots number on start is just an initial setting
         public int BotsNumberOnStart
         { get; set; }
         public int MinPlayersXP

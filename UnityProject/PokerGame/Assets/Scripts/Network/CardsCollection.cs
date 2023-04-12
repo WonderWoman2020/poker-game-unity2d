@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokerGameClasses
+namespace ClientSideCardsHelper
 {
     public class CardsCollection
     {
@@ -72,8 +72,8 @@ namespace PokerGameClasses
 
         override public string ToString()
         {
-            //return string.Join(", ", this.Cards);
-            return string.Join(",", this.Cards);
+            return string.Join(", ", this.Cards);
+            //return string.Join(",", this.Cards);
         }
     }
 }

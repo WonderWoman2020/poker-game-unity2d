@@ -24,13 +24,13 @@ namespace PokerGameClasses
             {
                 if (settings.MinPlayersXP > this.XP)
                 {
-                    Console.WriteLine("Not enough XP for this table setting - XP of your table will be lowered");
+                    //Console.WriteLine("Not enough XP for this table setting - XP of your table will be lowered");
                     settings.MinPlayersXP = this.XP;
                 }
 
                 if (settings.MinPlayersTokenCount > this.TokensCount)
                 {
-                    Console.WriteLine("Not enough tokens for this table setting - tokens count of your table will be lowered");
+                    //Console.WriteLine("Not enough tokens for this table setting - tokens count of your table will be lowered");
                     settings.MinPlayersTokenCount = this.TokensCount;
                 }
                     
