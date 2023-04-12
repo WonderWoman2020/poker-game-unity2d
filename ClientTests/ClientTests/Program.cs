@@ -245,6 +245,25 @@ namespace ClientTests
                             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                         }
+                        if(cki.Key == ConsoleKey.M) //Kup żetony
+                        {
+                            NetworkHelper.WriteNetworkStream(ns, token + ' ' + "7" + ' ' + "1000");
+                            ns.Flush();
+                            Thread.Sleep(1000);
+                            if (ns.DataAvailable)
+                            {
+                                string response = NetworkHelper.ReadNetworkStream(ns);
+                                ns.Flush();
+                                string[] splitted = response.Split(' ');
+                                // 0 - bool czy się udało zmienić coins gracza na serwerze
+                                if (splitted[0] == "1")
+                                {
+                                    // 1 - aktualna wartość coins gracza, jeśli się udało
+                                    int coins = Convert.ToInt32(splitted[1]);
+                                    Console.WriteLine("You have " + coins + "$ now");
+                                }
+                            }
+                        }
                         if (cki.Key == ConsoleKey.R) //Wyczyść konsolę
                         {
                             Console.Clear();

@@ -248,6 +248,16 @@ namespace pGrServer
                                     gameThread.Start();
                                 }
                             }
+                            //Zmień liczbę żetonów gracza
+                            else if(request[1] == "7")
+                            {
+                                Player client = loggedClients[token];
+                                int coins = Convert.ToInt32(request[2]);
+                                client.TokensCount += coins;
+                                NetworkHelper.WriteNetworkStream(client.MenuRequestsStream, "1" + ' ' + client.TokensCount.ToString());
+                                client.MenuRequestsStream.Flush();
+                                UpdateUserCoinsOrXP(client.Login, "coins", player.TokensCount);
+                            }
                             else
                                 Console.WriteLine(request);
                         }
@@ -444,7 +454,7 @@ namespace pGrServer
             loggedClients.Remove(player.Token);
             loggedTokens.RemoveAt(i);
             //@@@@@@@@@@@@ Działa i szkoda odpalac przy testowaniu obecnie
-            //UpdateBoth(player);
+            UpdateBoth(player);
         }
         public static void RemoveFromTable(Player player)
         {

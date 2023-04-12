@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using PokerGameClasses;
+using pGrServer;
 
 using TMPro;
 using System;
@@ -98,6 +99,24 @@ public class PlayMenu : MonoBehaviour
     // TODO ekran Get Chips
     public void OnGetChipsButton()
     {
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        NetworkHelper.WriteNetworkStream(mainServer.stream, MyGameManager.Instance.clientToken + ' ' + "7" +' '+ "1000");
+        mainServer.stream.Flush();
+        Thread.Sleep(1000);
+        if (mainServer.stream.DataAvailable)
+        {
+            string response = NetworkHelper.ReadNetworkStream(mainServer.stream);
+            mainServer.stream.Flush();
+            string[] splitted = response.Split(' ');
+            // 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
+            if(splitted[0] == "1")
+            {
+                // 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
+                int coins = Convert.ToInt32(splitted[1]);
+                MyGameManager.Instance.MainPlayer.TokensCount = coins;
+                this.ChangePlayerInfo();
+            }
+        }
         Debug.Log("Get Chips");
     }
 
