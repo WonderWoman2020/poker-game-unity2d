@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Cache;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -16,9 +15,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using PokerGameClasses;
-
-//using System.Diagnostics;
-//Jesli ktos bedzie potrzebowal tej biblioteki, to bedzie potrzeba zamienic wszystkie Debug.Log(...) na UnityEngine.Debug.Log(...)
 
 
 public class Login : MonoBehaviour
@@ -52,16 +48,17 @@ public class Login : MonoBehaviour
     public void OnLoginButton()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        mainServer.Start();
 
         if (this.playerLogin == null)
         {
-            this.ShowWrongInputPopup("Add your login");
+            this.ShowPopup("Add your login");
             return;
         }
 
         if(this.playerPassword == null)
         {
-            this.ShowWrongInputPopup("Add your password");
+            this.ShowPopup("Add your password");
             return;
         }
 
@@ -78,25 +75,46 @@ public class Login : MonoBehaviour
         StringBuilder myCompleteMessage = new StringBuilder();
         numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
         myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-
-        // TODO dodaæ reagowanie na b³êdn¹ odpowiedŸ od serwera (z³y login itd.)
-
-        // odczytaj dane gracza z odpowiedzi (token, xp, coins, nick)
         string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
-        MyGameManager.Instance.clientToken = request[0];
-        var xp = Int32.Parse(request[1]);
-        var coins = Int32.Parse(request[2]);
-        var nick = request[3];
-        // stwórz g³ównego gracza
-        Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
-        ///////////////
-        
-        // zapamiêtaj g³ównego gracza na ca³y czas dzia³ania aplikacji
-        MyGameManager.Instance.AddPlayerToGame(player);
-        SceneManager.LoadScene("PlayMenu");  
+        string token = request[0];
+
+        if (token == "##&&@@0000")
+        {
+            this.ShowPopup("Server Error. Please try again later");
+            mainServer.Close();
+            return;
+        }
+        else if (token == "##&&@@0001" || token == "##&&@@0002")
+        {
+            this.ShowPopup("Login or password are incorrect");
+            mainServer.Close();
+            return;
+        }
+        else if (token == "##&&@@0003")
+        {
+            this.ShowPopup("This account is already logged in");
+            mainServer.Close();
+            return;
+        }
+        else  //Jesli wszystko sie udalo z logowaniem
+        {
+            // odczytaj dane gracza z odpowiedzi (token, xp, coins, nick)
+            MyGameManager.Instance.clientToken = token;
+            var xp = Int32.Parse(request[1]);
+            var coins = Int32.Parse(request[2]);
+            var nick = request[3];
+            // stwórz g³ównego gracza
+            Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
+            ///////////////
+
+            // zapamiêtaj g³ównego gracza na ca³y czas dzia³ania aplikacji
+            MyGameManager.Instance.AddPlayerToGame(player);
+            MyGameManager.Instance.gameServerConnection.Start();
+            SceneManager.LoadScene("PlayMenu");
+        }
     }
 
-    void ShowWrongInputPopup(string text)
+    void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
         popup.GetComponent<TextMeshProUGUI>().text = text;

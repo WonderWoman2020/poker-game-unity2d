@@ -46,8 +46,9 @@ public class TcpConnection
         }
     }
 
-    void OnDestroy()
+    public void Close()
     {
         client.Close();
+        stream.Dispose();
     }
 }
