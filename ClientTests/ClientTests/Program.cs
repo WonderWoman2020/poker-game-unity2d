@@ -199,6 +199,11 @@ namespace ClientTests
                                 string nickOfThePlayer = splitted[1];
                                 Console.WriteLine("Player's '" + nickOfThePlayer + "' move: ");
                             }
+                            else if(splitted[0] == "Winner")
+                            {
+                                string nickOfThePlayer = splitted[1];
+                                Console.WriteLine("And the winner is:\n" + nickOfThePlayer + "\nCongrats!");
+                            }
                             //inne jeszcze nie zdefiniowane wiadomości, o których zapomniałam XD jeśli takie jeszcze są
                             else
                                 if(splitted[0] != "")

@@ -43,6 +43,9 @@ public class Table : MonoBehaviour
     private string betFieldText;
 
     bool displayPlayerTurnPopup = false;
+    bool displayWinnerPopup = false;
+
+    string winnerNick = null;
 
 
     // Start is called before the first frame update
@@ -121,6 +124,11 @@ public class Table : MonoBehaviour
                         this.ChangePlayerBet(playerState.CurrentBet, playerCounter);
                         this.ChangePlayerMoney(playerState.TokensCount, playerCounter);
                         playerCounter++;*/
+                    }
+                    else if(splitted[0] == "Winner")
+                    {
+                        this.winnerNick = splitted[1];
+                        this.displayWinnerPopup = true;
                     }
                 }
             }
@@ -218,6 +226,12 @@ public class Table : MonoBehaviour
             var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
             this.displayPlayerTurnPopup = false;
+        }
+        if(this.displayWinnerPopup && PopupWindow)
+        {
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
+            this.displayWinnerPopup = false;
         }
     }
     public void ReadInputBet(string inputBet)

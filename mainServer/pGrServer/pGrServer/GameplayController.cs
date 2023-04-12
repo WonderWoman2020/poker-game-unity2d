@@ -218,9 +218,11 @@ namespace PokerGameClasses
 
             StringBuilder sb = new StringBuilder();
             sb.Append(":G:");
-            sb.Append("Info");
+            //sb.Append("Info");
+            sb.Append("Winner");
             sb.Append("|");
-            sb.AppendLine("And the winner is:\n" + winnerNick + "\nCongrats!");
+            //sb.AppendLine("And the winner is:\n" + winnerNick + "\nCongrats!");
+            sb.Append(winnerNick);
 
             //rozsy³anie do ka¿dego gracza informacji kto wygra³ i jeszcze raz stanu gry na koniec
             foreach (Player p in this.gameTable.Players)
