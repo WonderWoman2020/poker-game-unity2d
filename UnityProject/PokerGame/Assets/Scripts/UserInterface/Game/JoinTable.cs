@@ -73,7 +73,7 @@ public class JoinTable : MonoBehaviour
             Debug.Log("There are no game tables to join. Create one first");
             if (PopupWindow)
             {
-                ShowNoTablesPopup();
+                ShowPopup("There are no game tables to join. Create one first");
             }
             SceneManager.LoadScene("PlayMenu");
             return;
@@ -84,55 +84,41 @@ public class JoinTable : MonoBehaviour
             Debug.Log("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
             if (PopupWindow)
             {
-                ShowNothingChosenPopup();
+                ShowPopup("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
             }
             return;
         }
 
-        //ZNALEZC NOWY SPOSOB NA SPRAWDZANIE CZY GRACZ MOZE DOLACZYC
+        GameTableInfo gameTable = MyGameManager.Instance.GameTableList[this.chosenTable];
+        Player player = MyGameManager.Instance.MainPlayer;
 
-        //GameTableInfo gameTable = MyGameManager.Instance.GameTableList[this.chosenTable];
-        //Player player = MyGameManager.Instance.MainPlayer;
-        //bool playerAdded = gameTable.AddPlayer(player);
-        //if(!playerAdded)
-        //{
+        if(Int32.Parse(gameTable.minXp) > player.XP)
+        {
+            this.ShowPopup("You can't join this table. You don't have enough XP");
+            return;
+        }
+        else if (Int32.Parse(gameTable.minChips) > player.TokensCount)
+        {
+            this.ShowPopup("You can't join this table. You don't have enough chips");
+            return;
+        }
+        else
+        {
+            Debug.Log("Added player " + player.Nick + " to " + gameTable.Name);
 
-        //    if (!gameTable.Players.Contains(player))
-        //    {
-        //        Debug.Log("You can't join this table (" + gameTable.Name + "). It's full or you don't have enough xp or chips.");
-        //        if (PopupWindow)
-        //        {
-        //            ShowCantJoinPopup(gameTable.Name);
-        //        }
-        //        return;
-        //    }
-        //}
+            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "1" + ' ' + MyGameManager.Instance.GameTableList[this.chosenTable].Name + ' ');
+            NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
+            ns.Write(tosend, 0, tosend.Length);
 
-        //Debug.Log("Added player " + player.Nick + " to "+gameTable.Name);
 
-        byte[] tosend = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "1" + ' ' + MyGameManager.Instance.GameTableList[this.chosenTable].Name + ' ');
-        NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
-        ns.Write(tosend, 0, tosend.Length);
-        
-
-        SceneManager.LoadScene("Table");
+            SceneManager.LoadScene("Table");
+        }   
     }
 
-    void ShowNoTablesPopup()
+    void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        popup.GetComponent<TextMeshProUGUI>().text = "There are no game tables to join. Create one first";
-    }
-
-    void ShowNothingChosenPopup()
-    {
-        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        popup.GetComponent<TextMeshProUGUI>().text = "You didn't choose any game table. Choose one to join it by clicking the tick near it. ";
-    }
-    void ShowCantJoinPopup(String name)
-    {
-        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        popup.GetComponent<TextMeshProUGUI>().text = "You can't join this table (" + name + "). It's full or you don't have enough xp or chips.";
+        popup.GetComponent<TextMeshProUGUI>().text = text;
     }
 
     public void OnBackToMenuButton()

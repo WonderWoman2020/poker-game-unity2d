@@ -3052,7 +3052,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 64.15
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3298,6 +3298,7 @@ MonoBehaviour:
   table2Button: {fileID: 0}
   table3Button: {fileID: 0}
   table4Button: {fileID: 0}
+  PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
   Table1: {fileID: 2108977900}
   Table2: {fileID: 47949608}
   Table3: {fileID: 697549244}
@@ -4469,7 +4470,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.55
+  m_fontSize: 64.15
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
