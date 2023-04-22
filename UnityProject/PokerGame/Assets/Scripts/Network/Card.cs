@@ -43,11 +43,13 @@ namespace ClientSideCardsHelper
         { get; set; }
         public CardValue Value
         { get; set; }
-        
-        public Card(CardSign sign, CardValue val)
+        public int Id
+        { get; set; }
+        public Card(CardSign sign, CardValue val, int id)
         {
             this.Sign = sign;
             this.Value = val;
+            this.Id = id;
         }
 
         public CardColor GetCardColor()

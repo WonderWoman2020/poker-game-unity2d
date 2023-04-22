@@ -26,9 +26,11 @@ public class Table : MonoBehaviour
     [SerializeField] private TMP_Text InfoMainPlayerName;
     [SerializeField] private TMP_Text InfoMainPlayerChips;
     [SerializeField] private TMP_Text InfoMainPlayerBid;
-
+    [SerializeField] private GameObject[] MainPlayerCards;
     [SerializeField]
     private CanvasRenderer menuCanvas;
+    [SerializeField]
+    private PokerGameClasses.CardsCollection collection;
 
     private bool readyToSendMove = false;
     private GameTableState gameTableState;
@@ -36,6 +38,7 @@ public class Table : MonoBehaviour
 
     public GameObject PopupWindow;
 
+    private GameObject[] CardsObject;
     private GameObject[] Players
     {get; set;}
     private Component[] Components
@@ -143,6 +146,40 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
+    void ShowCard(ClientSideCardsHelper.Card card, GameObject cardObject)
+    {
+        cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[card.Id];
+    }
+
+    void ShowPlayerCard(int seatNumber, ClientSideCardsHelper.CardsCollection cards)
+    {
+        ShowCard(cards.Cards[0], Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
+        ShowCard(cards.Cards[1], Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
+    }
+    void ShowMainPlayerCard(ClientSideCardsHelper.CardsCollection cards)
+    {
+        ShowCard(cards.Cards[0], MainPlayerCards[0]);
+        ShowCard(cards.Cards[1], MainPlayerCards[1]);
+    }
+
+    void ShowCardOnDeck(ClientSideCardsHelper.Card card, int cardIdToShow)
+    {
+        ShowCard(card, CardsObject[cardIdToShow]);
+    }
+    void HideCard(GameObject cardObject)
+    {
+        cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[52];
+    }
+    void HidePlayerCards(int seatNumber)
+    {
+        HideCard(Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
+        HideCard(Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
+    }
+    void HideMainPlayerCards()
+    {
+        HideCard(MainPlayerCards[0]);
+        HideCard(MainPlayerCards[1]);
+    }
     void HideAllPlayers()
     { 
         foreach (GameObject player in Players)
