@@ -53,29 +53,51 @@ public class Table : MonoBehaviour
     {
         ShowMenu(false); //zakrycie MENU na start
         ShowMenu(true);
-        if (MyGameManager.Instance.MainPlayer == null)
-            return;
+        //if (MyGameManager.Instance.MainPlayer == null)
+        //    return;
 
-        this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
-        this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
-        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
+        //this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
+        //this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
+        //this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         //this.Components = Players[0].GetComponents(typeof(Component));
-
+        this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
         //HideAllPlayers();
         //ShowPlayerOnTable(0, "Player1");
         //ChangePlayerBet(100, 0);
         //ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
 
-//
+        ClientSideCardsHelper.Card card1 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Jack, 9);
+        ClientSideCardsHelper.Card card2 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Diamond, ClientSideCardsHelper.CardValue.Ace, 38);
+        ClientSideCardsHelper.Card card3 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Club, ClientSideCardsHelper.CardValue.Eight, 45);
+        ClientSideCardsHelper.Card card4 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Four, 2);
+        ClientSideCardsHelper.Card card5 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Five, 3);
+
+
+        ShowCardOnDeck(card1, 0);
+        ShowCardOnDeck(card2, 1);
+        ShowCardOnDeck(card3, 2);
+        ShowCardOnDeck(card4, 3);
+        ShowCardOnDeck(card5, 4);
+        List<ClientSideCardsHelper.Card> c = new List<ClientSideCardsHelper.Card>();
+        c.Add(card1);
+        c.Add(card2);
+
+        ClientSideCardsHelper.CardsCollection cc = new ClientSideCardsHelper.CardsCollection(c);
+        ShowPlayerCard(0, cc);
+        ShowMainPlayerCard(cc);
+        //HidePlayerCards(0);
+        //HideMainPlayerCards();
+        //
+
 
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
 
         //
-        new System.Threading.Thread(CommunicateWithServer).Start();
+       // new System.Threading.Thread(CommunicateWithServer).Start();
     }
 
     public void CommunicateWithServer()
@@ -232,30 +254,30 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int i = 0;
-        foreach(KeyValuePair<string, PlayerState> state in this.playersStates)
-        {
-            PlayerState playerState = state.Value;
+        //int i = 0;
+        //foreach(KeyValuePair<string, PlayerState> state in this.playersStates)
+        //{
+        //    PlayerState playerState = state.Value;
 
-            if(playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
-            {
-                this.InfoMainPlayerName.text = playerState.Nick;
-                this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
-                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
-                continue;
-            }
+        //    if(playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+        //    {
+        //        this.InfoMainPlayerName.text = playerState.Nick;
+        //        this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
+        //        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+        //        continue;
+        //    }
 
-            this.ShowPlayerOnTable(i, playerState.Nick);
-            this.ChangePlayerBet(playerState.CurrentBet, i);
-            this.ChangePlayerMoney(playerState.TokensCount, i);
-            i++;
-        }
-        if (this.displayPlayerTurnPopup && PopupWindow)
-        {
-            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-            popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
-            this.displayPlayerTurnPopup = false;
-        }
+        //    this.ShowPlayerOnTable(i, playerState.Nick);
+        //    this.ChangePlayerBet(playerState.CurrentBet, i);
+        //    this.ChangePlayerMoney(playerState.TokensCount, i);
+        //    i++;
+        //}
+        //if (this.displayPlayerTurnPopup && PopupWindow)
+        //{
+        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        //    popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
+        //    this.displayPlayerTurnPopup = false;
+        //}
     }
     public void ReadInputBet(string inputBet)
     {

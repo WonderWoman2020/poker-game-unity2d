@@ -1613,7 +1613,7 @@ GameObject:
   - component: {fileID: 189436300}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4969,7 +4969,7 @@ GameObject:
   - component: {fileID: 794699795}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6748,7 +6748,7 @@ GameObject:
   - component: {fileID: 1141487242}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7147,7 +7147,9 @@ MonoBehaviour:
   InfoMainPlayerName: {fileID: 142579466}
   InfoMainPlayerChips: {fileID: 801404600}
   InfoMainPlayerBid: {fileID: 304345412}
+  MainPlayerCards: []
   menuCanvas: {fileID: 1036125299}
+  collection: {fileID: 0}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1292243198
 GameObject:
@@ -7162,7 +7164,7 @@ GameObject:
   - component: {fileID: 1292243200}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7240,7 +7242,7 @@ GameObject:
   - component: {fileID: 1305394404}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9431,7 +9433,7 @@ GameObject:
   - component: {fileID: 1544674335}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11574,7 +11576,7 @@ GameObject:
   - component: {fileID: 1873692180}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13195,7 +13197,7 @@ GameObject:
   - component: {fileID: 2128977902}
   m_Layer: 5
   m_Name: Cards
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
