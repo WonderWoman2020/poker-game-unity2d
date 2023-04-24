@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace PokerGameClasses
 {
-   public enum CardSign
+   /*public enum CardSign
     {
         Heart, //Serce
         Spade, // Pik
@@ -37,15 +37,15 @@ namespace PokerGameClasses
     {
         Black,
         Red
-    }
+    }*/
  
 
-    public class Card : MonoBehaviour
-    {   [SerializeField]
-        CanvasRenderer Menu;
+    public class Card //: MonoBehaviour
+    {   //[SerializeField]
+        //CanvasRenderer Menu;
 
-        public Sprite cardSprite;
-        public CardSign Sign
+        //public Sprite cardSprite;
+        /*public CardSign Sign
         { get; set; }
         public CardValue Value
         { get; set; }
@@ -66,7 +66,7 @@ namespace PokerGameClasses
                 return CardColor.Red;
             else
                 return CardColor.Black;
-        }*/
+        }
 
         private string CreateCardName()
         {

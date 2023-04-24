@@ -13,9 +13,9 @@ namespace PokerGameClasses
         [SerializeField]
         public Sprite[] cardsSpriteSerialization;
         
-        [SerializeField]
+        /*[SerializeField]
         public List<Card> Cards
-        { get; set; }
+        { get; set; }*/
 
         public CardsCollection()
         {
