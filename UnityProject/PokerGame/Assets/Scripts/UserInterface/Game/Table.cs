@@ -26,9 +26,11 @@ public class Table : MonoBehaviour
     [SerializeField] private TMP_Text InfoMainPlayerName;
     [SerializeField] private TMP_Text InfoMainPlayerChips;
     [SerializeField] private TMP_Text InfoMainPlayerBid;
-
+    [SerializeField] private GameObject[] MainPlayerCards;
     [SerializeField]
     private CanvasRenderer menuCanvas;
+    [SerializeField]
+    private PokerGameClasses.CardsCollection collection;
 
     private bool readyToSendMove = false;
     private GameTableState gameTableState;
@@ -36,6 +38,7 @@ public class Table : MonoBehaviour
 
     public GameObject PopupWindow;
 
+    private GameObject[] CardsObject;
     private GameObject[] Players
     {get; set;}
     private Component[] Components
@@ -62,14 +65,37 @@ public class Table : MonoBehaviour
 
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         //this.Components = Players[0].GetComponents(typeof(Component));
-
+        this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
         //HideAllPlayers();
         //ShowPlayerOnTable(0, "Player1");
         //ChangePlayerBet(100, 0);
         //ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
 
-//
+        //ClientSideCardsHelper.Card card1 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Jack, 9);
+        //ClientSideCardsHelper.Card card2 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Diamond, ClientSideCardsHelper.CardValue.Ace, 38);
+        //ClientSideCardsHelper.Card card3 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Club, ClientSideCardsHelper.CardValue.Eight, 45);
+        //ClientSideCardsHelper.Card card4 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Four, 2);
+        //ClientSideCardsHelper.Card card5 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Five, 3);
+
+
+        //ShowCardOnDeck(card1, 0);
+        //ShowCardOnDeck(card2, 1);
+        //ShowCardOnDeck(card3, 2);
+        //ShowCardOnDeck(card4, 3);
+        //ShowCardOnDeck(card5, 4);
+        //List<ClientSideCardsHelper.Card> c = new List<ClientSideCardsHelper.Card>();
+        //c.Add(card1);
+        //c.Add(card2);
+
+        //ClientSideCardsHelper.CardsCollection cc = new ClientSideCardsHelper.CardsCollection(c);
+        //ShowPlayerCards(0, cc);
+        //ShowMainPlayerCards(cc);
+        //HidePlayerCards(0);
+        //HideMainPlayerCards();
+        //HideCardsOnDeck();
+        //
+
 
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
@@ -151,6 +177,48 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
+    void ShowCard(ClientSideCardsHelper.Card card, GameObject cardObject)
+    {
+        cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[card.Id];
+    }
+
+    void ShowPlayerCards(int seatNumber, ClientSideCardsHelper.CardsCollection cards)
+    {
+        ShowCard(cards.Cards[0], Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
+        ShowCard(cards.Cards[1], Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
+    }
+    void ShowMainPlayerCards(ClientSideCardsHelper.CardsCollection cards)
+    {
+        ShowCard(cards.Cards[0], MainPlayerCards[0]);
+        ShowCard(cards.Cards[1], MainPlayerCards[1]);
+    }
+
+    void ShowCardOnDeck(ClientSideCardsHelper.Card card, int cardIdToShow)
+    {
+        ShowCard(card, CardsObject[cardIdToShow]);
+    }
+    void HideCard(GameObject cardObject)
+    {
+        cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[52];
+    }
+    void HidePlayerCards(int seatNumber)
+    {
+        HideCard(Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
+        HideCard(Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
+    }
+    void HideMainPlayerCards()
+    {
+        HideCard(MainPlayerCards[0]);
+        HideCard(MainPlayerCards[1]);
+    }
+    void HideCardsOnDeck()
+    {
+        for(int i = 0; i < CardsObject.Length; i++)
+        {
+            HideCard(CardsObject[i]);
+        }
+    }
+
     void HideAllPlayers()
     { 
         foreach (GameObject player in Players)
@@ -204,11 +272,11 @@ public class Table : MonoBehaviour
     void Update()
     {
         int i = 0;
-        foreach(KeyValuePair<string, PlayerState> state in this.playersStates)
+        foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
         {
             PlayerState playerState = state.Value;
 
-            if(playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+            if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
             {
                 this.InfoMainPlayerName.text = playerState.Nick;
                 this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
