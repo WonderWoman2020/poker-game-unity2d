@@ -10,7 +10,7 @@ public class MyGameManager : MonoBehaviour
     public static MyGameManager Instance
     { get; set; }
 
-    public Player MainPlayer
+    public PlayerState MainPlayer
     { get; set; }
 
     public TcpConnection mainServerConnection;
@@ -18,8 +18,8 @@ public class MyGameManager : MonoBehaviour
 
     public string clientToken;
 
-    public List<Player> HotSeatPlayers
-    { get; set; }
+    /*public List<Player> HotSeatPlayers
+    { get; set; }*/
 
     public List<GameTableInfo> GameTableList
     { get; set; }
@@ -39,7 +39,7 @@ public class MyGameManager : MonoBehaviour
         this.MainPlayer = null;
         //this.MainPlayer = new HumanPlayer("Test main player", PlayerType.Human);
         this.GameTableList = new List<GameTableInfo>();
-        this.HotSeatPlayers = new List<Player>();
+        //this.HotSeatPlayers = new List<Player>();
 
         mainServerConnection = new TcpConnection();
         mainServerConnection.port = 6937;
@@ -56,7 +56,7 @@ public class MyGameManager : MonoBehaviour
         
     }
 
-    public bool AddPlayerToGame(Player p)
+    public bool AddPlayerToGame(PlayerState p)
     {
         this.MainPlayer = p;
         return true;
@@ -68,7 +68,7 @@ public class MyGameManager : MonoBehaviour
         return true;
     }
 
-    private bool CreateHotSeatPlayers()
+    /*private bool CreateHotSeatPlayers()
     {
         this.HotSeatPlayers.Add(new Player("Gamer#1", PlayerType.Human,0,1000));
         this.HotSeatPlayers.Add(new Player("PokerLover123", PlayerType.Human, 0, 1000));
@@ -76,5 +76,5 @@ public class MyGameManager : MonoBehaviour
         this.HotSeatPlayers.Add(new Player("I'm Rich", PlayerType.Human, 0, 1000));
         this.HotSeatPlayers.Add(new Player("Card Games Enjoyer", PlayerType.Human, 0, 1000));
         return true;
-    }
+    }*/
 }

@@ -50,7 +50,7 @@ public class CreateTable : MonoBehaviour
     }
     public void OnCreateButton()
     {
-        HumanPlayer p = (HumanPlayer)MyGameManager.Instance.MainPlayer;
+        PlayerState p = MyGameManager.Instance.MainPlayer;
         if(p == null)
         {
             Debug.Log("Table not created. Player was null");

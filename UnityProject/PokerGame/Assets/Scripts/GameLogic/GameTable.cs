@@ -8,7 +8,7 @@ namespace PokerGameClasses
 {
     public class GameTable
     {
-        public string Name
+        /*public string Name
         { get; set; }
         public HumanPlayer Owner
         { get; set; }
@@ -182,7 +182,7 @@ namespace PokerGameClasses
             this.Players.ForEach(p => p.PlayerHand = new CardsCollection());
             this.Players.ForEach(p => p.folded = false);
             this.Players.ForEach(p => p.AllInMade = false);
-        }
+        }*/
 
     }
 }

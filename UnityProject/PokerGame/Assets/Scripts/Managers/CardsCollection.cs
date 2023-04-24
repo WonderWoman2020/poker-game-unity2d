@@ -22,7 +22,7 @@ namespace PokerGameClasses
 
         }
 
-        public CardsCollection(List<Card> cards)
+        /*public CardsCollection(List<Card> cards)
         {
             this.Cards = cards;
         }
@@ -76,6 +76,6 @@ namespace PokerGameClasses
                 }
             }
             return new CardsCollection(deck);
-        }
+        }*/
     }
 }

@@ -14,7 +14,7 @@ namespace PokerGameClasses
     }
     public class GameTableSettings
     {
-        public const int MaxPlayersCountByRules = 9;
+        /*public const int MaxPlayersCountByRules = 9;
         public const int MinPlayersCountByRules = 2;
         public GameMode Mode
         { get; set; }
@@ -109,6 +109,6 @@ namespace PokerGameClasses
         {
             this.MinPlayersTokenCount = minTokens;
             return true;
-        }
+        }*/
     }
 }

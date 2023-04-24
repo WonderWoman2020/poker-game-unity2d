@@ -83,7 +83,7 @@ public class PlayMenu : MonoBehaviour
 
         this.InfoPlayerNick.text = MyGameManager.Instance.MainPlayer.Nick;
         this.InfoPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
-        this.InfoPlayerXP.text = Convert.ToString(MyGameManager.Instance.MainPlayer.XP) + " XP";
+        this.InfoPlayerXP.text = Convert.ToString(MyGameManager.Instance.MainPlayer.Xp) + " XP";
     }
 
     public void OnJoinTableButton()

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PokerGameClasses
 {
-    public class HumanPlayer : Player
+    public class HumanPlayer //: Player
     {
-        public HumanPlayer(string nick, PlayerType type, int xp, int coins)
+        /*public HumanPlayer(string nick, PlayerType type, int xp, int coins)
             : base(nick, type, xp, coins)
         {
 
@@ -38,6 +38,6 @@ namespace PokerGameClasses
             table.ChangeSettings(this, settings);
 
             return table;
-        }
+        }*/
     }
 }

@@ -104,7 +104,8 @@ public class Login : MonoBehaviour
             var coins = Int32.Parse(request[2]);
             var nick = request[3];
             // stwórz g³ównego gracza
-            Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
+            //Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
+            PlayerState player = new PlayerState(nick, null, coins, 0, xp);
             ///////////////
 
             // zapamiêtaj g³ównego gracza na ca³y czas dzia³ania aplikacji

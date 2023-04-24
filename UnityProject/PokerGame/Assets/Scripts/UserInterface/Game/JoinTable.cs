@@ -90,9 +90,9 @@ public class JoinTable : MonoBehaviour
         }
 
         GameTableInfo gameTable = MyGameManager.Instance.GameTableList[this.chosenTable];
-        Player player = MyGameManager.Instance.MainPlayer;
+        PlayerState player = MyGameManager.Instance.MainPlayer;
 
-        if(Int32.Parse(gameTable.minXp) > player.XP)
+        if(Int32.Parse(gameTable.minXp) > player.Xp)
         {
             this.ShowPopup("You can't join this table. You don't have enough XP");
             return;

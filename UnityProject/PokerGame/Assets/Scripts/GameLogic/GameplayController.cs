@@ -7,7 +7,7 @@ namespace PokerGameClasses
 {
     public class GameplayController
     {
-        public GameTable gameTable
+        /*public GameTable gameTable
         { get; set; }
         public CardsCollection deck;
         public CardsCollection helpingCards; //karty pomocnicze lezace na stole, ale niewidoczne dla graczy
@@ -337,7 +337,7 @@ namespace PokerGameClasses
             else {
                 return 10;// zawsze ma sie jakas najwyzsza karte
             }
-        }
+        }*/
 
 
 }

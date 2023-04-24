@@ -60,13 +60,13 @@ namespace PokerGameClasses
             this.Name = this.CreateCardName();
         }
 
-        public CardColor GetCardColor()
+        /*public CardColor GetCardColor()
         {
             if (this.Sign == CardSign.Diamond || this.Sign == CardSign.Heart)
                 return CardColor.Red;
             else
                 return CardColor.Black;
-        }
+        }*/
 
         private string CreateCardName()
         {
@@ -110,12 +110,12 @@ namespace PokerGameClasses
             }
         }
 
-        public string CardColorToString()
+        /*public string CardColorToString()
         {
             if (this.GetCardColor() == CardColor.Black)
                 return "Black";
             else
                 return "Red";
-        }
+        }*/
     }
 }

@@ -13,7 +13,7 @@ namespace PokerGameClasses
     }
     public class Player
     {
-        public string Nick
+        /*public string Nick
         { get; set; }
         public CardsCollection PlayerHand
         { get; set; }
@@ -174,6 +174,6 @@ namespace PokerGameClasses
 
             this.Nick = newNick;
             return true;
-        }
+        }*/
     }
 }
