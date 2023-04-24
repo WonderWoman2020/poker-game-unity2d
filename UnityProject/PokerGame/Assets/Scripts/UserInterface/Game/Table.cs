@@ -356,7 +356,7 @@ public class Table : MonoBehaviour
         if (this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
-            int input = Convert.ToInt32(Console.ReadLine());
+            //int input = Convert.ToInt32(Console.ReadLine());
             NetworkHelper.WriteNetworkStream(gameStream, "2 " + this.betFieldText.ToString());
             this.readyToSendMove = false;
         }
