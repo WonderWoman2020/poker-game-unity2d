@@ -10,6 +10,7 @@ public class TcpConnection
     public TcpClient client;
     public NetworkStream stream;
 
+    // TODO dodaæ konstruktor przyjmuj¹cy port jako parametr
     public int port;
 
     public void Start()
