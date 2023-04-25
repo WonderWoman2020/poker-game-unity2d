@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace pGrServer
 {
+    // Klasa-wrapper do wygodniejszej obsługi NetworkStream z klienta Tcp
     public class NetworkHelper
     {
         public static string ReadNetworkStream(NetworkStream stream)
