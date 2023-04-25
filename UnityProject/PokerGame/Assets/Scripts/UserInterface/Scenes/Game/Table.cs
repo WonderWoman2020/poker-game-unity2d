@@ -12,7 +12,7 @@ using TMPro;
 using System;
 using System.Net.Sockets;
 
-using ClientSideCardsHelper;
+
 using static System.Net.Mime.MediaTypeNames;
 
 public class Table : MonoBehaviour
@@ -73,11 +73,11 @@ public class Table : MonoBehaviour
         //ChangePlayerMoney(200, 0);
         //HidePlayerOnTable(2);
 
-        //ClientSideCardsHelper.Card card1 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Jack, 9);
-        //ClientSideCardsHelper.Card card2 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Diamond, ClientSideCardsHelper.CardValue.Ace, 38);
-        //ClientSideCardsHelper.Card card3 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Club, ClientSideCardsHelper.CardValue.Eight, 45);
-        //ClientSideCardsHelper.Card card4 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Four, 2);
-        //ClientSideCardsHelper.Card card5 = new ClientSideCardsHelper.Card(ClientSideCardsHelper.CardSign.Heart, ClientSideCardsHelper.CardValue.Five, 3);
+        //Card card1 = new Card(CardSign.Heart, CardValue.Jack, 9);
+        //Card card2 = new Card(CardSign.Diamond, CardValue.Ace, 38);
+        //Card card3 = new Card(CardSign.Club, CardValue.Eight, 45);
+        //Card card4 = new Card(CardSign.Heart, CardValue.Four, 2);
+        //Card card5 = new Card(CardSign.Heart, CardValue.Five, 3);
 
 
         //ShowCardOnDeck(card1, 0);
@@ -85,11 +85,11 @@ public class Table : MonoBehaviour
         //ShowCardOnDeck(card3, 2);
         //ShowCardOnDeck(card4, 3);
         //ShowCardOnDeck(card5, 4);
-        //List<ClientSideCardsHelper.Card> c = new List<ClientSideCardsHelper.Card>();
+        //List<Card> c = new List<Card>();
         //c.Add(card1);
         //c.Add(card2);
 
-        //ClientSideCardsHelper.CardsCollection cc = new ClientSideCardsHelper.CardsCollection(c);
+        //CardsCollection cc = new CardsCollection(c);
         //ShowPlayerCards(0, cc);
         //ShowMainPlayerCards(cc);
         //HidePlayerCards(0);
@@ -178,23 +178,23 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
-    void ShowCard(ClientSideCardsHelper.Card card, GameObject cardObject)
+    void ShowCard(Card card, GameObject cardObject)
     {
         cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[card.Id];
     }
 
-    void ShowPlayerCards(int seatNumber, ClientSideCardsHelper.CardsCollection cards)
+    void ShowPlayerCards(int seatNumber, CardsCollection cards)
     {
         ShowCard(cards.Cards[0], Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
         ShowCard(cards.Cards[1], Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
     }
-    void ShowMainPlayerCards(ClientSideCardsHelper.CardsCollection cards)
+    void ShowMainPlayerCards(CardsCollection cards)
     {
         ShowCard(cards.Cards[0], MainPlayerCards[0]);
         ShowCard(cards.Cards[1], MainPlayerCards[1]);
     }
 
-    void ShowCardOnDeck(ClientSideCardsHelper.Card card, int cardIdToShow)
+    void ShowCardOnDeck(Card card, int cardIdToShow)
     {
         ShowCard(card, CardsObject[cardIdToShow]);
     }

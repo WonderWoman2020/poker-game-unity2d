@@ -6,15 +6,13 @@ using System;
 using System.Text;
 
 
-using ClientSideCardsHelper;
-
 
 namespace PokerGameClasses
 {
     public class GameTableState
     {
         public string Name { get; set; }
-        public ClientSideCardsHelper.CardsCollection Cards { get; set; }
+        public CardsCollection Cards { get; set; }
         public int TokensInGame { get; set; }
         public int CurrentBid { get; set; }
 
@@ -26,7 +24,7 @@ namespace PokerGameClasses
             this.CurrentBid = 0;
         }
 
-        public GameTableState(string name, ClientSideCardsHelper.CardsCollection cards, int tokensInGame, int currentBid)
+        public GameTableState(string name, CardsCollection cards, int tokensInGame, int currentBid)
         {
             this.Name = name;
             this.Cards = cards;
@@ -39,7 +37,7 @@ namespace PokerGameClasses
             string[] tableState = splitted[1].Split(new string(":"));
             this.Name = tableState[2];
             string cards = tableState[4];
-            ClientSideCardsHelper.CardsCollection cardsCollection = ClientSideCardsHelper.CardsHelper.StringToCardsCollection(cards);
+            CardsCollection cardsCollection = CardsHelper.StringToCardsCollection(cards);
             this.Cards = cardsCollection;
             this.TokensInGame = Convert.ToInt32(tableState[6]);
             this.CurrentBid = Convert.ToInt32(tableState[8]);

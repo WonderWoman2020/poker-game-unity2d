@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ClientSideCardsHelper;
 
-namespace ClientSideCardsHelper
+namespace PokerGameClasses
 {
     public class CardsHelper
     {

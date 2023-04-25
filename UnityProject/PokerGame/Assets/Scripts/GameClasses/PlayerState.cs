@@ -6,14 +6,13 @@ using UnityEngine;
 using System;
 using System.Text;
 
-using ClientSideCardsHelper;
 
 namespace PokerGameClasses
 {
     public class PlayerState
     {
         public string Nick { get; set; }
-        public ClientSideCardsHelper.CardsCollection Hand { get; set; }
+        public CardsCollection Hand { get; set; }
         public int TokensCount { get; set; }
         public int CurrentBet { get; set; }
         public int Xp { get; set; }
@@ -27,7 +26,7 @@ namespace PokerGameClasses
             this.Xp = 0;
         }
 
-        public PlayerState(string nick, ClientSideCardsHelper.CardsCollection hand, int tokensCount, int currentBet, int xp)
+        public PlayerState(string nick, CardsCollection hand, int tokensCount, int currentBet, int xp)
         {
             this.Nick = nick;
             this.Hand = hand;
@@ -41,7 +40,7 @@ namespace PokerGameClasses
             string[] playerState = splitted[1].Split(new string(":"));
             this.Nick = playerState[2];
             string hand = playerState[4];
-            ClientSideCardsHelper.CardsCollection cardsCollection = ClientSideCardsHelper.CardsHelper.StringToCardsCollection(hand);
+            CardsCollection cardsCollection = CardsHelper.StringToCardsCollection(hand);
             this.Hand = cardsCollection;
             this.TokensCount = Convert.ToInt32(playerState[6]);
             this.CurrentBet = Convert.ToInt32(playerState[8]);
