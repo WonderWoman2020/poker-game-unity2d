@@ -51,6 +51,7 @@ public class Login : MonoBehaviour
 
     public void OnLoginButton()
     {
+        // Nawi¹zanie po³¹czenia z serwerem na porcie od zdarzeñ w menu aplikacji
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
         mainServer.Start();
 
@@ -113,6 +114,7 @@ public class Login : MonoBehaviour
 
             // zapamiêtaj g³ównego gracza na ca³y czas dzia³ania aplikacji
             MyGameManager.Instance.AddPlayerToGame(player);
+            // Nawi¹zanie po³¹czenia z serwerem na porcie od zdarzeñ w grze
             MyGameManager.Instance.gameServerConnection.Start();
             SceneManager.LoadScene("PlayMenu");
         }
