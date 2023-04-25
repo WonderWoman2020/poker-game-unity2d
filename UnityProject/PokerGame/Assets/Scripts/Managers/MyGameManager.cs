@@ -5,49 +5,46 @@ using UnityEngine;
 using PokerGameClasses;
 using System.Net.NetworkInformation;
 
+// Klasa trzymaj¹ca zmienne ¿yj¹ce ca³¹ grê i dostêpne w ka¿dym ekranie
 public class MyGameManager : MonoBehaviour
 {
+    // Dzia³a wed³ug wzorca singleton
     public static MyGameManager Instance
     { get; set; }
 
+    // Zmienne trzymaj¹ce dane, które maj¹ byæ dostêpne we wszystkich ekranach
     public PlayerState MainPlayer
     { get; set; }
-
-    public TcpConnection mainServerConnection;
-    public TcpConnection gameServerConnection;
-
-    public string clientToken;
-
-    /*public List<Player> HotSeatPlayers
-    { get; set; }*/
-
     public List<GameTableInfo> GameTableList
     { get; set; }
 
+    // Klienci tcp do ³¹czenia siê z serwerem na porcie od obs³ugi menu (6937)
+    // i od obs³ugi zdarzeñ z gry (6938)
+    public TcpConnection mainServerConnection;
+    public TcpConnection gameServerConnection;
+
+    // Token gracza, dostêpny po zalogowaniu
+    public string clientToken;
+
     void Awake()
     {
+        // Wzorzec singleton (ma zawsze istnieæ tylko 1 instancja tej klasy)
         if (Instance != null && Instance != this)
             Destroy(this);
         else
             Instance = this;
-
-        //DontDestroyOnLoad(Instance.gameObject);
     }
     // Start is called before the first frame update
     void Start()
     {
         this.MainPlayer = null;
-        //this.MainPlayer = new HumanPlayer("Test main player", PlayerType.Human);
         this.GameTableList = new List<GameTableInfo>();
-        //this.HotSeatPlayers = new List<Player>();
 
         mainServerConnection = new TcpConnection();
         mainServerConnection.port = 6937;
-        //mainServerConnection.Start();
 
         gameServerConnection = new TcpConnection();
         gameServerConnection.port = 6938;
-        //gameServerConnection.Start();
     }
 
     // Update is called once per frame
@@ -67,14 +64,4 @@ public class MyGameManager : MonoBehaviour
         this.GameTableList.Add(gt);
         return true;
     }
-
-    /*private bool CreateHotSeatPlayers()
-    {
-        this.HotSeatPlayers.Add(new Player("Gamer#1", PlayerType.Human,0,1000));
-        this.HotSeatPlayers.Add(new Player("PokerLover123", PlayerType.Human, 0, 1000));
-        this.HotSeatPlayers.Add(new Player("Joker", PlayerType.Human, 0, 1000));
-        this.HotSeatPlayers.Add(new Player("I'm Rich", PlayerType.Human, 0, 1000));
-        this.HotSeatPlayers.Add(new Player("Card Games Enjoyer", PlayerType.Human, 0, 1000));
-        return true;
-    }*/
 }
