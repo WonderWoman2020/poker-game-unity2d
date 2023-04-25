@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Net.NetworkInformation;
 
-
+// Ekran g³ówny gry, pierwsza scena widoczna po w³¹czeniu aplikacji
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button exitButton;

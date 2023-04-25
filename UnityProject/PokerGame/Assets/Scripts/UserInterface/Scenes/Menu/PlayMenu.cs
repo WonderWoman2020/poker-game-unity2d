@@ -13,13 +13,21 @@ using System.Threading;
 using System.Net.NetworkInformation;
 using System.Text;
 
+/* Menu opcji jakie dzia³anie w grze chcemy podj¹æ
+ * - stworzyæ stolik
+ * - wybraæ i do³¹czyæ do stolika
+ * - kupiæ ¿etony (na razie kupuje zahardkowan¹ wartoœæ 1000 ¿etonów) - TODO poprawiæ to
+ * - zmieniæ ustawienia naszego stolika/rozgrywki (na razie nie mamy) - TODO dodaæ taki ekran i pod³¹czyæ tak¹ logikê
+ */
 public class PlayMenu : MonoBehaviour
 {
+    // Przyciski menu
     [SerializeField] private Button joinTableButton;
     [SerializeField] private Button createTableButton;
     [SerializeField] private Button getChipsButton;
     [SerializeField] private Button changeSettingsButton;
 
+    // Informacje o graczu wyœwietlane na ekranie obok menu
     [SerializeField] private TMP_Text InfoPlayerNick;
     [SerializeField] private TMP_Text InfoPlayerChips;
     [SerializeField] private TMP_Text InfoPlayerXP;
@@ -36,7 +44,7 @@ public class PlayMenu : MonoBehaviour
         
     }
 
-    // TODO dodaæ kiedyœ do klasy MenuRequestManager
+    // TODO dodaæ kiedyœ do osobnej klasy
     public void loadTables()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
@@ -60,7 +68,7 @@ public class PlayMenu : MonoBehaviour
         }
     }
 
-    // TODO dodaæ kiedyœ do klasy MenuRequestManager
+    // TODO dodaæ kiedyœ do osobnej klasy
     public void parseTableData(string serverResponse)
     {
         string[] data = serverResponse.Split(' ');
@@ -88,6 +96,10 @@ public class PlayMenu : MonoBehaviour
 
     public void OnJoinTableButton()
     {
+        // TODO zrobiæ tak, ¿eby klient co jakiœ czas (np. 10s)
+        // automatycznie wysy³a³ proœbê o aktualizacjê stolików,
+        // a ten przycisk tylko przenosi³ do kolejnego ekranu
+        // (bo czekanie na odpowiedŸ serwera zamula dzia³anie GUI)
         loadTables();
         SceneManager.LoadScene("JoinTable");
     }
@@ -96,7 +108,7 @@ public class PlayMenu : MonoBehaviour
         SceneManager.LoadScene("CreateTable");
     }
 
-    // TODO ekran Get Chips
+    // TODO ekran Get Chips i poprawiæ, ¿eby nie pobiera³o zahardkodowanej wartoœci ¿etonów
     public void OnGetChipsButton()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
@@ -108,10 +120,10 @@ public class PlayMenu : MonoBehaviour
             string response = NetworkHelper.ReadNetworkStream(mainServer.stream);
             mainServer.stream.Flush();
             string[] splitted = response.Split(' ');
-            // 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
+            // arg 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
             if(splitted[0] == "1")
             {
-                // 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
+                // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
                 int coins = Convert.ToInt32(splitted[1]);
                 MyGameManager.Instance.MainPlayer.TokensCount = coins;
                 this.ChangePlayerInfo();
@@ -120,7 +132,7 @@ public class PlayMenu : MonoBehaviour
         Debug.Log("Get Chips");
     }
 
-    // TODO ekran Settings
+    // TODO ekran Settings od zmieniania ustawieñ stolika/rozgrywki
     public void OnChangeSettingsButton()
     {
         Debug.Log("Settings");
