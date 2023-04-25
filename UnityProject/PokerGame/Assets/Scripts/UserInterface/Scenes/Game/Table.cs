@@ -15,39 +15,66 @@ using System.Net.Sockets;
 
 using static System.Net.Mime.MediaTypeNames;
 
+// G³ówny ekran gry - widok stolika, kart i graczy
 public class Table : MonoBehaviour
 {
+    // Przyciski ruchów gracza (menu w lewym dolnym rogu ekranu)
     [SerializeField] private Button checkButton;
     [SerializeField] private Button allInButton;
     [SerializeField] private Button passButton;
     [SerializeField] private Button bidButton;
 
+    // Dane pobrane z pola input 'Bid' (menu w lewym dolnym rogu ekranu)
+    private string betFieldText;
 
+    // Wyœwietlanie informacji o g³ównym graczu
+    /*
+     * - Nick
+     * - Ile ma ¿etonów
+     * - Ile postawi³ ¿etonów w tym rozdaniu
+     * - Jego karty (GameObject'y)
+     */
     [SerializeField] private TMP_Text InfoMainPlayerName;
     [SerializeField] private TMP_Text InfoMainPlayerChips;
     [SerializeField] private TMP_Text InfoMainPlayerBid;
     [SerializeField] private GameObject[] MainPlayerCards;
+
+
     [SerializeField]
-    private CanvasRenderer menuCanvas;
+    private CanvasRenderer menuCanvas; /////////??? TODO sprawdziæ co to
+
+    // Lista sprite'ów kart, z której wybieramy odpowiedni
+    // sprite do przypisania do GameObject'u karty gracza
     [SerializeField]
     private CardsSprites collection;
 
+    // Prze³¹cznik ustawiany na 'true', kiedy serwer przyœle do klienta zapytanie o wykonanie ruchu
     private bool readyToSendMove = false;
+
+    // Stan stolika, odebrany od serwera (wysy³a po ka¿dym ruchu kogokolwiek)
     private GameTableState gameTableState;
+    // Stany wszystkich graczy, odebrane od serwera (wysy³a po ka¿dym ruchu kogokolwiek)
     private IDictionary<string, PlayerState> playersStates;
 
+    // informacje o b³êdach, komunikaty dla gracza
+    // m.in. komunikat o tym czyj ruch jest teraz
     public GameObject PopupWindow;
 
+    // GameObject'y graczy i wszystkich kart na stole, których dane update'ujemy
     private GameObject[] CardsObject;
     private GameObject[] Players
     {get; set;}
-    private Component[] Components
-    { get; set; }
-    private string betFieldText;
 
+
+    private Component[] Components ///////??? TODO sprawdziæ co to
+    { get; set; }
+
+    // Prze³¹czniki, które wykorzystujemy w Update'owaniu sceny, ¿eby wiedzieæ,
+    // kiedy mamy wyœwietliæ dany tekst informacyjny
     bool displayPlayerTurnPopup = false;
     bool displayWinnerPopup = false;
 
+    // Nick zwyciêzcy gry, od serwera (wysy³a pod koniec gry)
     string winnerNick = null;
 
 
@@ -164,6 +191,9 @@ public class Table : MonoBehaviour
         }
     }
 
+    // Kiedy przyjdzie zapytanie od serwera o ruch gracza, ustawiamy prze³¹cznik,
+    // ¿e gracz mo¿e teraz wys³aæ jeden ruch (prze³¹cznik siê przestawia ponownie na 'false'
+    // w trakcie wysy³ania ruchu przez gracza (po klikniêciu przez niego któregoœ z przycisków od ruchów)
     void MoveRequestResponse(string[] splitted)
     {
         Debug.Log(splitted[0]);
@@ -307,6 +337,10 @@ public class Table : MonoBehaviour
         this.betFieldText = inputBet;
         Debug.Log(this.betFieldText);
     }
+
+    // Obs³uga przycisków z menu ruchów,
+    // wysy³anie odpowiednich zapytañ do serwera w ka¿dym z nich
+    // TODO wysy³anie ¿¹dañ mo¿na ewentualnie przenieœæ do osobnej klasy
     public void OnCheckButton()
     {
         Debug.Log("Check");
@@ -337,6 +371,8 @@ public class Table : MonoBehaviour
             this.readyToSendMove = false;
         }
     }
+    // TODO dodaæ sprawdzanie, czy podaliœmy jakiœ zak³ad w polu input 'Bid' i czy to liczba,
+    // bo aktualnie podajemy po prostu string
     public void OnBidButton()
     {
         Debug.Log("Bid");
@@ -348,6 +384,8 @@ public class Table : MonoBehaviour
         }
     }
 
+    // Wysy³anie zapytania do serwera o rozpoczêcie gry
+    // TODO mo¿e przenieœæ kiedyœ do osobnej klasy
     public void onStartGameButton()
     {
         string token = MyGameManager.Instance.clientToken;
@@ -355,6 +393,5 @@ public class Table : MonoBehaviour
         MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
         Thread.Sleep(1000);
-
     }
 }
