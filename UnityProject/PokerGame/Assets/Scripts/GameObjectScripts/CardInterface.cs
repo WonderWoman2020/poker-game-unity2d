@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CardInterface : MonoBehaviour
 {
-    Image img;
+    /*Image img;
     public CardsCollection collection;
     [SerializeField]
     int numberOfCardInCollection;
@@ -26,5 +26,5 @@ public class CardInterface : MonoBehaviour
     void Update()
     {
         
-    }
+    }*/
 }
