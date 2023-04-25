@@ -99,11 +99,13 @@ public class CreateTable : MonoBehaviour
         MyGameManager.Instance.mainServerConnection.stream.Flush();
     }
 
+    // TODO jeœli dodamy w PopupText, wywaliæ
     void ShowPlayerNullPopup()
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
         popup.GetComponent<TextMeshProUGUI>().text = "Table not created. Player was null";
     }
+    // TODO jeœli dodamy w PopupText, wywaliæ
     void ShowTableNameEmptyPopup()
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
