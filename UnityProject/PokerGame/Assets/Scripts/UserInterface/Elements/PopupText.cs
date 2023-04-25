@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Klasa od napisów informacyjnych wyœwietlanych w grze (ma swój Prefab w Prefabs -> Popup)
+// TODO dodaæ tutaj metody typu SetPosition, SetText, SetDestroyTime
 public class PopupText : MonoBehaviour
 {
     public float DestroyTime = 3f;
