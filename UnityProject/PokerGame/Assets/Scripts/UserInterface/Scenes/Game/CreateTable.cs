@@ -9,11 +9,18 @@ using System;
 
 using PokerGameClasses;
 
+// Ekran do podawania danych do stworzenia stolika
 public class CreateTable : MonoBehaviour
 {
+    // Przycisku menu ekranu
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
 
+    /* Przyciski do wyboru trybu gry (enum GameMode)
+     * - Bez botów
+     * - Tylko Ty i boty
+     * - Gracze i boty
+     */
     [SerializeField] private Button modeNoBotsButton;
     [SerializeField] private Button modeYouAndBotsButton;
     [SerializeField] private Button modeMixedButton;
@@ -76,7 +83,9 @@ public class CreateTable : MonoBehaviour
         SceneManager.LoadScene("Table");
     }
 
-    // TODO dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika, jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
+    // TODO dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika,
+    // jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
+    // TODO dodaæ kiedyœ do osobnej klasy
     void SendTableToServer()
     {
         if (this.numberOfBots == null)
