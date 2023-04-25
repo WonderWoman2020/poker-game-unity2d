@@ -47,6 +47,7 @@ namespace PokerGameClasses
             this.Xp = Convert.ToInt32(playerState[10]);
             
         }
+        //TODO mo¿e dodaæ lustrzan¹ metodê PackGameState? Bêdziemy wysy³aæ tak¹ wiadomoœæ do serwera wgl?
 
         public override string ToString()
         {

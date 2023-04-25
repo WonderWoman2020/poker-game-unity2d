@@ -30,7 +30,6 @@ public class Table : MonoBehaviour
     [SerializeField]
     private CanvasRenderer menuCanvas;
     [SerializeField]
-    //private PokerGameClasses.CardsCollection collection;
     private CardsSprites collection;
 
     private bool readyToSendMove = false;
@@ -112,7 +111,6 @@ public class Table : MonoBehaviour
 
         while (running)
         {
-            int playerCounter = 0;
             if (gameStream.DataAvailable)
             {
                 UnityEngine.Debug.Log("sa dane na strumieniu");
@@ -147,10 +145,6 @@ public class Table : MonoBehaviour
                         Debug.Log(playerState);
                         this.playersStates[playerState.Nick] = playerState;
                         Debug.Log("Player state count: " + this.playersStates.Count);
-                        /*this.ShowPlayerOnTable(playerCounter, playerState.Nick);
-                        this.ChangePlayerBet(playerState.CurrentBet, playerCounter);
-                        this.ChangePlayerMoney(playerState.TokensCount, playerCounter);
-                        playerCounter++;*/
                     }
                     else if(splitted[0] == "Winner")
                     {
@@ -316,8 +310,6 @@ public class Table : MonoBehaviour
     public void OnCheckButton()
     {
         Debug.Log("Check");
-        //MyGameManager.Instance.MainPlayer.Check();
-
         if(this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
@@ -328,8 +320,6 @@ public class Table : MonoBehaviour
     public void OnAllInButton()
     {
         Debug.Log("All in");
-        //MyGameManager.Instance.MainPlayer.AllIn();
-
         if (this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
@@ -340,8 +330,6 @@ public class Table : MonoBehaviour
     public void OnPassButton()
     {
         Debug.Log("Pass");
-        //MyGameManager.Instance.MainPlayer.Fold();
-
         if (this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
@@ -352,12 +340,9 @@ public class Table : MonoBehaviour
     public void OnBidButton()
     {
         Debug.Log("Bid");
-        //MyGameManager.Instance.MainPlayer.Raise(Convert.ToInt32(this.betFieldText));
-
         if (this.readyToSendMove)
         {
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
-            //int input = Convert.ToInt32(Console.ReadLine());
             NetworkHelper.WriteNetworkStream(gameStream, "2 " + this.betFieldText.ToString());
             this.readyToSendMove = false;
         }

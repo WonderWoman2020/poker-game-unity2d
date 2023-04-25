@@ -23,6 +23,7 @@ namespace PokerGameClasses
                 CardValue value = (CardValue)Convert.ToInt32(cardData[0]);
                 CardSign sign = (CardSign)Convert.ToInt32(cardData[1]);
                 //pozyskiwanie ID karty
+                //TODO zrobić z tego jednak metodę, może się przyda gdzieś w ekranach
                 int v = Convert.ToInt32(value)-2;
                 int s = Convert.ToInt32(sign);
                 int index = v * 4 + s;
