@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3649341147988361569}
-  - component: {fileID: 1291003972461400792}
+  - component: {fileID: 1116562636611478936}
   m_Layer: 5
   m_Name: Cards_Collection
   m_TagString: Untagged
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 390}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1291003972461400792
+--- !u!114 &1116562636611478936
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3649341147988361570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 903c79f5ee1e16243bc75d97f9d955e4, type: 3}
+  m_Script: {fileID: 11500000, guid: 01b1badac9e5adb4982f724266ad154f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cardsSpriteSerialization:

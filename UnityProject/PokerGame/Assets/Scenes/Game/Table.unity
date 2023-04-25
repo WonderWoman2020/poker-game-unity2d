@@ -7103,7 +7103,7 @@ MonoBehaviour:
   - {fileID: 137281452}
   - {fileID: 2082320624}
   menuCanvas: {fileID: 1036125299}
-  collection: {fileID: 1291003972461400792, guid: 379f7fa19d429e9409f4dab5222eea51, type: 3}
+  collection: {fileID: 1116562636611478936, guid: 379f7fa19d429e9409f4dab5222eea51, type: 3}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1292243198
 GameObject:

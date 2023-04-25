@@ -30,7 +30,8 @@ public class Table : MonoBehaviour
     [SerializeField]
     private CanvasRenderer menuCanvas;
     [SerializeField]
-    private PokerGameClasses.CardsCollection collection;
+    //private PokerGameClasses.CardsCollection collection;
+    private CardsSprites collection;
 
     private bool readyToSendMove = false;
     private GameTableState gameTableState;
