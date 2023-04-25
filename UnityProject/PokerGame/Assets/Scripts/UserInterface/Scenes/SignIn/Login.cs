@@ -17,11 +17,15 @@ using UnityEngine.UI;
 using PokerGameClasses;
 
 
+// Ekran do podawania danych logowania
 public class Login : MonoBehaviour
 {
+    // Dane pobierane z formularza logowania
     private string playerLogin;
     private string playerPassword;
     private string IP;
+
+    // Przyciski ekranu
     [SerializeField] private Button loginButton;
     [SerializeField] private Button backToMenuButton;
 
@@ -62,7 +66,7 @@ public class Login : MonoBehaviour
             return;
         }
 
-        // TODO dodaæ kiedyœ do klasy MenuRequestManager
+        // TODO dodaæ kiedyœ do osobnej klasy
         //////////////
         // wyœlij zapytanie o logowanie do serwerze
         byte[] message = System.Text.Encoding.ASCII.GetBytes(this.playerLogin + ' ' + this.playerPassword);
@@ -104,7 +108,6 @@ public class Login : MonoBehaviour
             var coins = Int32.Parse(request[2]);
             var nick = request[3];
             // stwórz g³ównego gracza
-            //Player player = new HumanPlayer(nick, PlayerType.Human, xp, coins);
             PlayerState player = new PlayerState(nick, null, coins, 0, xp);
             ///////////////
 
@@ -115,6 +118,7 @@ public class Login : MonoBehaviour
         }
     }
 
+    // TODO tak¹ funkcjê mo¿na by mo¿e przenieœæ do klasy PopupText, upubliczniæ i stamt¹d u¿ywaæ?
     void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);

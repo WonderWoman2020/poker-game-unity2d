@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 
 using PokerGameClasses;
 
+// Ekran do rejestracji nowego u¿ytkownika
 public class CreatePlayer : MonoBehaviour
 {
     [SerializeField] private Button createButton;
@@ -73,7 +74,7 @@ public class CreatePlayer : MonoBehaviour
 
     // rejestracja nowego gracza w bazie (mamy to tylko w wersji z API webowym od Unity)
     // TODO przepisaæ kiedyœ na API C#, ¿eby móc korzystaæ z tego te¿ w konsolowym kliencie do testów?
-    // TODO dodaæ kiedyœ do klasy MenuRequestManager
+    // TODO dodaæ kiedyœ do osobnej klasy
     IEnumerator SendNewUser()
     {
         var request = new UnityWebRequest("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/addAccount", "POST");
@@ -92,7 +93,7 @@ public class CreatePlayer : MonoBehaviour
         {
             ShowWrongInputPopup("Login exists.");
         }
-        else if(responseCode == "205") // ok
+        else if(responseCode == "205") // ok - przejdŸ do ekranu logowania
         {
             SceneManager.LoadScene("Login");
         }
@@ -102,7 +103,6 @@ public class CreatePlayer : MonoBehaviour
         }
     }
 
-    // TODO stworzyæ klasê PopupHelper z tak¹ publiczn¹ metod¹?
     public void ShowWrongInputPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
