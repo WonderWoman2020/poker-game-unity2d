@@ -29,7 +29,7 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
-    // TODO ekran Settings do zrobienia i zaimplementowania
+    // TODO (cz. PGGP-107) ekran Settings do zrobienia i zaimplementowania
     public void OnSettingsButton()
     {
         Debug.Log("Settings");

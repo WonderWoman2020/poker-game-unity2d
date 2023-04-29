@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 // Menu wyboru co gracz chce zrobiæ po zakoñczeniu siê pojedynczego rozdania
-// (na razie nigdy do niego nie docieramy) - TODO zmieniæ to XD
+// (na razie nigdy do niego nie docieramy) - TODO (cz. PGGP-64) zmieniæ to XD
 public class EndOfHandMenu : MonoBehaviour
 {
     [SerializeField] private Button continueButton;
@@ -31,7 +31,7 @@ public class EndOfHandMenu : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    // TODO jak ju¿ bêd¹ boty, to dodaæ tê funkcjonalnoœæ
+    // TODO (cz. PGGP-55) jak ju¿ bêd¹ boty, to dodaæ tê funkcjonalnoœæ
     public void OnKickBotButton()
     {
         SceneManager.LoadScene("Table");

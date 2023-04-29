@@ -32,7 +32,7 @@ public class JoinTable : MonoBehaviour
     private int chosenTable;
 
     // Nazwy stolików obok przycisków do ich wybierania
-    //TODO zrobiæ z tego kiedyœ tablicê zamiast oddzielnych zmiennych
+    //TODO (cz. PGGP-34) zrobiæ z tego kiedyœ tablicê zamiast oddzielnych zmiennych
     [SerializeField] private TMP_Text Table1;
     [SerializeField] private TMP_Text Table2;
     [SerializeField] private TMP_Text Table3;
@@ -55,15 +55,15 @@ public class JoinTable : MonoBehaviour
 
         // Jeœli stolików jest wiêcej ni¿ tyle ile siê zmieœci w naszym menu (obecnie 4 opcje),
         // wyœwietlamy tylko 4 pierwsze z listy
-        // (TODO mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
+        // (TODO (cz. PGGP-34) mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
         int tablesToShow = MyGameManager.Instance.GameTableList.Count;
         if (tablesToShow > 4)
             tablesToShow = 4;
 
         // Pokazywanie nazwy danego stoliku obok przycisku wyboru
-        // (TODO dlatego warto by zamieniæ to na tablicê tekstów o stolikach,
+        // (TODO (cz. PGGP-34) dlatego warto by zamieniæ to na tablicê tekstów o stolikach,
         // ¿eby nie by³o tylu if'ów na przypadki ile mamy dostêpnych stolików)
-        if(tablesToShow >= 1)
+        if (tablesToShow >= 1)
             this.Table1.text = MyGameManager.Instance.GameTableList[0].Name;
         if(tablesToShow >= 2)
             this.Table2.text = MyGameManager.Instance.GameTableList[1].Name;
@@ -74,9 +74,9 @@ public class JoinTable : MonoBehaviour
     }
 
     // Update is called once per frame
-    // TODO jak zrobimy wysy³anie zapytania o stoliki co ileœ czasu automatycznie,
+    // TODO (cz. PGGP-69) jak zrobimy wysy³anie zapytania o stoliki co ileœ czasu automatycznie,
     // to powinniœmy tu wrzuciæ update'owanie nazw dostêpnych stolików na ekranie
-    // TODO update'owana wtedy te¿ powinna byæ zmienna 'chosenTable', bo móg³ znikn¹æ z serwera wybrany stolik
+    // TODO (cz. PGGP-69) update'owana wtedy te¿ powinna byæ zmienna 'chosenTable', bo móg³ znikn¹æ z serwera wybrany stolik
     void Update()
     {
         
@@ -132,7 +132,7 @@ public class JoinTable : MonoBehaviour
             NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
             ns.Write(tosend, 0, tosend.Length);
 
-            // TODO dodaæ czekanie na odpowiedŸ od serwera, czy zostaliœmy dodani
+            // TODO (cz. PGGP-66) dodaæ czekanie na odpowiedŸ od serwera, czy zostaliœmy dodani
             // do wybranego stolika, zanim przejdziemy do sceny stolika
             SceneManager.LoadScene("Table");
         }   

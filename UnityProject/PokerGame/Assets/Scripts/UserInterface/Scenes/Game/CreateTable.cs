@@ -79,11 +79,11 @@ public class CreateTable : MonoBehaviour
         }
 
         SendTableToServer();
-        // TODO dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
+        // TODO (cz. PGGP-56) dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
         SceneManager.LoadScene("Table");
     }
 
-    // TODO dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika,
+    // TODO (cz. PGGP-106) dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika,
     // jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
     // TODO dodaæ kiedyœ do osobnej klasy
     void SendTableToServer()

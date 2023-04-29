@@ -151,7 +151,7 @@ public class Table : MonoBehaviour
          * Tutaj odbierane s¹:
          * - zapytania od serwera o wykonanie ruchu przez gracza
          * - komunikaty od serwera z informacjami o stanie stolika i wszystkich graczy (w tym ich kartach)
-         * (TODO zmieniæ, ¿eby odbierane by³y tylko karty naszego gracza, a reszty tylko na koniec gry - ale to akurat na serwerze)
+         * (TODO (PGGP-54) zmieniæ, ¿eby odbierane by³y tylko karty naszego gracza, a reszty tylko na koniec gry - ale to akurat na serwerze)
          * - komunikaty od serwera czyj ruch i pod koniec gry, kto zwyciê¿y³
          */
         while (running)
@@ -166,12 +166,12 @@ public class Table : MonoBehaviour
                  * i maj¹ postaæ Typ_wiadomoœci|Treœæ
                  * Podczas przesy³ania wiadomoœci o stanie gry wysy³anych jest na raz kilka wiadomoœci:
                  * (wszystkie zaczynaj¹ siê od znacznika :G:, wiêc w sumie to osobne wiadomoœci, ale to tak dla jasnoœci jak to dzia³a)
-                 * - wiadomoœæ typu "Round" (która to runda gry) TODO dodaæ jej odbieranie tu i wyœwietlanie gdzieœ na górze ekranu numeru rundy
+                 * - wiadomoœæ typu "Round" (która to runda gry) TODO (cz. PGGP-44) dodaæ jej odbieranie tu i wyœwietlanie gdzieœ na górze ekranu numeru rundy
                  * - wiadomoœæ typu "Table state"
                  * - kilka wiadomoœci typu "Player state" (o stanie ka¿dego z graczy)
                  * - wiadomoœæ typu "Which player turn"
                  */
-                // TODO dodaæ jeszcze odbieranie wiadomoœci typu 'Info' i wyœwietlanie takich komunikatów na ekranie
+                // TODO (cz. PGGP-44) dodaæ jeszcze odbieranie wiadomoœci typu 'Info' i wyœwietlanie takich komunikatów na ekranie
                 string[] splittedRequests = gameRequest.Split(new string(":G:"));
 
                 foreach (string singleRequest in splittedRequests)
@@ -416,7 +416,7 @@ public class Table : MonoBehaviour
             this.readyToSendMove = false;
         }
     }
-    // TODO dodaæ sprawdzanie, czy podaliœmy jakiœ zak³ad w polu input 'Bid' i czy to liczba,
+    // TODO (cz. PGGP-106) dodaæ sprawdzanie, czy podaliœmy jakiœ zak³ad w polu input 'Bid' i czy to liczba,
     // bo aktualnie podajemy po prostu string
     public void OnBidButton()
     {

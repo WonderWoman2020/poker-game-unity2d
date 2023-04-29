@@ -16,8 +16,8 @@ using System.Text;
 /* Menu opcji jakie dzia³anie w grze chcemy podj¹æ
  * - stworzyæ stolik
  * - wybraæ i do³¹czyæ do stolika
- * - kupiæ ¿etony (na razie kupuje zahardkowan¹ wartoœæ 1000 ¿etonów) - TODO poprawiæ to
- * - zmieniæ ustawienia naszego stolika/rozgrywki (na razie nie mamy) - TODO dodaæ taki ekran i pod³¹czyæ tak¹ logikê
+ * - kupiæ ¿etony (na razie kupuje zahardkowan¹ wartoœæ 1000 ¿etonów) - TODO (cz. PGGP-107) poprawiæ to (ekran do podawania liczby ¿etonów do kupienia czy coœ)
+ * - zmieniæ ustawienia naszego stolika/rozgrywki (na razie nie mamy) - TODO (cz. PGGP-107) dodaæ taki ekran i pod³¹czyæ tak¹ logikê
  */
 public class PlayMenu : MonoBehaviour
 {
@@ -96,7 +96,7 @@ public class PlayMenu : MonoBehaviour
 
     public void OnJoinTableButton()
     {
-        // TODO zrobiæ tak, ¿eby klient co jakiœ czas (np. 10s)
+        // TODO (cz. PGGP-69) zrobiæ tak, ¿eby klient co jakiœ czas (np. 10s)
         // automatycznie wysy³a³ proœbê o aktualizacjê stolików,
         // a ten przycisk tylko przenosi³ do kolejnego ekranu
         // (bo czekanie na odpowiedŸ serwera zamula dzia³anie GUI)
@@ -108,7 +108,7 @@ public class PlayMenu : MonoBehaviour
         SceneManager.LoadScene("CreateTable");
     }
 
-    // TODO ekran Get Chips i poprawiæ, ¿eby nie pobiera³o zahardkodowanej wartoœci ¿etonów
+    // TODO (cz. PGGP-107) ekran Get Chips, przenieœæ t¹ metodê tam i poprawiæ, ¿eby nie pobiera³o zahardkodowanej wartoœci ¿etonów
     public void OnGetChipsButton()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
@@ -132,7 +132,7 @@ public class PlayMenu : MonoBehaviour
         Debug.Log("Get Chips");
     }
 
-    // TODO ekran Settings od zmieniania ustawieñ stolika/rozgrywki
+    // TODO (cz. PGGP-107) ekran Settings od zmieniania ustawieñ stolika/rozgrywki
     public void OnChangeSettingsButton()
     {
         Debug.Log("Settings");
