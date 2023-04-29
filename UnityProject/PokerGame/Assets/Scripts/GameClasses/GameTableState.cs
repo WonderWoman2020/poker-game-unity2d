@@ -42,7 +42,6 @@ namespace PokerGameClasses
             this.TokensInGame = Convert.ToInt32(tableState[6]);
             this.CurrentBid = Convert.ToInt32(tableState[8]);
         }
-        //TODO mo¿e dodaæ lustrzan¹ metodê PackGameState? Bêdziemy wysy³aæ tak¹ wiadomoœæ do serwera wgl?
 
         public override string ToString()
         {

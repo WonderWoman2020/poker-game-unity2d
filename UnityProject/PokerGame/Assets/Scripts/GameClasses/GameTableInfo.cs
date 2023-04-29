@@ -27,6 +27,6 @@ namespace PokerGameClasses
             this.minChips = minChips;
         }
 
-        // TODO metoda Unpack i Pack GameTableInfo?
+        // TODO metoda Unpack GameTableInfo
     }
 }
