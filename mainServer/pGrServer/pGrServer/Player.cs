@@ -239,10 +239,10 @@ namespace PokerGameClasses
                 + "\nXP: " + this.XP;
         }
 
-        public string MessageGameState()
+        public string MessageGameState(bool withCards)
         {
             return ":Nick:" + this.Nick
-                + ":Hand:" + this.PlayerHand.ToString()
+                + ":Hand:" + (withCards ? this.PlayerHand.ToString() : null)
                 + ":Tokens:" + this.TokensCount
                 + ":Current bet:" + this.PlayersCurrentBet
                 + ":XP: " + this.XP;

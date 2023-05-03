@@ -127,7 +127,7 @@ namespace PokerGameClasses
                     //rozsy³anie stanu gry do wszystkich graczy przed ka¿dym ruchem
                     foreach (Player p in this.gameTable.Players)
                     {
-                        NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(player));
+                        NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(player, p, false));
                         p.GameRequestsStream.Flush();
                     }
 
@@ -227,7 +227,7 @@ namespace PokerGameClasses
             //rozsy³anie do ka¿dego gracza informacji kto wygra³ i jeszcze raz stanu gry na koniec
             foreach (Player p in this.gameTable.Players)
             {
-                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(null) + sb.ToString());
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(null, p, true) + sb.ToString());
                 p.GameRequestsStream.Flush();
             }
 
@@ -264,7 +264,7 @@ namespace PokerGameClasses
             this.gameTable.ResetGameState();
         }
 
-        public string MessageGameState(Player currentPlayer)
+        public string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -283,7 +283,12 @@ namespace PokerGameClasses
                 sb.Append(":G:");
                 sb.Append("Player state");
                 sb.Append("|");
-                sb.Append(p.MessageGameState());
+                if(p.Nick == fromWhichPerspective.Nick) // Uwaga! Za³o¿enie, ¿e nick gracza jest indywidualny
+                    sb.Append(p.MessageGameState(true));
+                else if(allPlayersCards)
+                    sb.Append(p.MessageGameState(true));
+                else
+                    sb.Append(p.MessageGameState(false));
             }
 
             if (currentPlayer != null)
