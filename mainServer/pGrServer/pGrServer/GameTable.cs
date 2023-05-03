@@ -27,6 +27,9 @@ namespace PokerGameClasses
         public GameTableSettings Settings
         { get; set; }
 
+        public bool isGameActive
+        { get; set; }
+
         public GameTable(string name, HumanPlayer owner)
         {
             this.ChangeName(name);
@@ -37,6 +40,7 @@ namespace PokerGameClasses
             this.Players = new List<Player>();
             this.AddPlayer(owner);
             this.ChangeOwner(owner);
+            this.isGameActive = false;
         }
 
         private bool CheckIfPlayerSitsAtTheTable(Player player)
@@ -48,6 +52,10 @@ namespace PokerGameClasses
         }
         public bool AddPlayer(Player player) //TODO Dodać tu usuwanie z poprzedniego stołu, jeśli przy jakimś siedział?
         {
+            // Nie dodawaj nowych graczy do listy aktywnych graczy w trakcie trwania gry
+            if (this.isGameActive)
+                return false;
+
             StringBuilder sb = new StringBuilder();
             sb.Append(":G:");
             sb.Append("Info");

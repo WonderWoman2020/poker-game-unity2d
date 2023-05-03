@@ -187,10 +187,16 @@ namespace pGrServer
                                         if (git)
                                         {
                                             client.Table = table;
+                                            byte[] message = System.Text.Encoding.ASCII.GetBytes("2" + ' ' + "1"); // odpowiedź OK
+                                            player.MenuRequestsStream.Write(message, 0, message.Length);
+                                            player.MenuRequestsStream.Flush();
                                         }
                                         else
                                         {
                                             client.Table = null;
+                                            byte[] message = System.Text.Encoding.ASCII.GetBytes("2"+' '+"0"); // odpowiedź FAILED
+                                            player.MenuRequestsStream.Write(message, 0, message.Length);
+                                            player.MenuRequestsStream.Flush();
                                         }
                                     }
 

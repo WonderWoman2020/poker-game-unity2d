@@ -54,6 +54,8 @@ public class PlayMenu : MonoBehaviour
         Thread.Sleep(1000);
         if(mainServer.stream.DataAvailable)
         {
+            // Usuñ poprzednio za³adowane stoliki
+            MyGameManager.Instance.GameTableList.Clear();
             byte[] readBuf = new byte[4096];
             StringBuilder menuRequestStr = new StringBuilder();
             int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);

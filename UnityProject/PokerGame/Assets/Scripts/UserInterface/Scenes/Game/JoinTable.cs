@@ -9,6 +9,7 @@ using PokerGameClasses;
 using TMPro;
 using System;
 using System.Net.Sockets;
+using System.Threading;
 
 using pGrServer;
 
@@ -125,8 +126,7 @@ public class JoinTable : MonoBehaviour
         }
         else // ok
         {
-            Debug.Log("Added player " + player.Nick + " to " + gameTable.Name);
-
+            Debug.Log("Sending request to add player " + player.Nick + " to " + gameTable.Name);
             // zapytanie o dodanie do stolika na serwerze
             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "1" + ' ' + MyGameManager.Instance.GameTableList[this.chosenTable].Name + ' ');
             NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
@@ -134,7 +134,33 @@ public class JoinTable : MonoBehaviour
 
             // TODO (cz. PGGP-66) dodaæ czekanie na odpowiedŸ od serwera, czy zostaliœmy dodani
             // do wybranego stolika, zanim przejdziemy do sceny stolika
-            SceneManager.LoadScene("Table");
+            Thread.Sleep(1000);
+            bool joinedTheTable = false;
+            if (ns.DataAvailable)
+            {
+                string response = NetworkHelper.ReadNetworkStream(ns);
+                ns.Flush();
+                Debug.Log("Received response: "+response);
+                string[] splitted = response.Split(' ');
+                // arg 0 - numer rodzaju odpowiedzi (odpowiedŸ na zapytanie o dodanie do stolika)
+                if (splitted[0] == "2")
+                {
+                    // arg 1 - bool czy siê uda³o dodaæ do stolika
+                    Debug.Log(splitted[1]);
+                    joinedTheTable = Convert.ToBoolean(Convert.ToInt32(splitted[1]));
+                }
+                Debug.Log("Joined bool value: " + joinedTheTable);
+            }
+            if (!joinedTheTable)
+            {
+                Debug.Log("Player " + player.Nick + " wasn't added to " + gameTable.Name);
+                this.ShowPopup("Joining the table failed. The game by it has already started or it is an error.");
+            }
+            else
+            {
+                Debug.Log("Added player " + player.Nick + " to " + gameTable.Name);
+                SceneManager.LoadScene("Table");
+            }
         }   
     }
 

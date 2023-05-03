@@ -29,6 +29,7 @@ namespace PokerGameClasses
 
         public void playTheGame()
         {
+            this.gameTable.isGameActive = true;
             this.gameTable.SortPlayersBySeats();
 
             this.MakeBlindsFirstMoves();
@@ -262,6 +263,7 @@ namespace PokerGameClasses
             this.Dealer.TakeBackCards(this.gameTable);
             this.Dealer.ChangePosition(this.gameTable);
             this.gameTable.ResetGameState();
+            this.gameTable.isGameActive = false;
         }
 
         public string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)
