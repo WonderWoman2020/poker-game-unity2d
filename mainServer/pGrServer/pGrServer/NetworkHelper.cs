@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace pGrServer
 {
+    //TODO używać tej klasy wszędzie i nie wysyłać/odbierać wiadomości ze strumienia ręcznie - potrzebne są te try-catch
     public class NetworkHelper
     {
         // TODO odczytywanie - dodać odczytywanie w pętli, gdyby wiadomość okazała się być dłuższa niż 1024 znaki
