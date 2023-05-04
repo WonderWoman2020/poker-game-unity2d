@@ -93,11 +93,21 @@ namespace PokerGameClasses
                 sb.Append("|");
                 sb.AppendLine("Input move number to be made: \n0 - Fold\n1 - Check\n" +
                     "2 - Raise (if you choose this option, write also amount of coins to raise, separated by 1 space)\n" +
-                    "3 - AllIn");                
+                    "3 - AllIn");
 
+                Console.WriteLine("Trying to send message to player '" + this.Nick + "'");
                 NetworkHelper.WriteNetworkStream(this.GameRequestsStream, sb.ToString());
-                this.GameRequestsStream.Flush();
+
+                Console.WriteLine("Trying to read message from player '" + this.Nick + "'");
                 string moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
+                Console.WriteLine("Move response from player '" + this.Nick + "' was: " + moveResponse);
+                if (moveResponse == null)
+                {
+                    Console.WriteLine("Move response from player '" + this.Nick + "' was a clear null");
+                    Fold();
+                    return false;
+                }
+
                 string[] splitted = moveResponse.Split(new string(" "));
 
                 switch (Convert.ToInt32(splitted[0]))

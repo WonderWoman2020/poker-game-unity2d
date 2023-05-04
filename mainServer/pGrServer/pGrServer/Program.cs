@@ -56,7 +56,7 @@ namespace pGrServer
             Console.Clear();
             while (running)
             {
-                Console.SetCursorPosition(0, 0);
+               /* Console.SetCursorPosition(0, 0);
                 sb.Clear();
                 sb.AppendLine("--- Server status ---");
                 sb.Append("Login active: " + (loginListener.Server.IsBound ? "YES" : "NO") + emptySpace + '\n');
@@ -78,7 +78,7 @@ namespace pGrServer
                     }
                 }
                 Console.WriteLine(emptySpace);
-                Thread.Sleep(500);
+                Thread.Sleep(500);*/
 
             }
 
@@ -442,7 +442,7 @@ namespace pGrServer
                     bool pt2 = (s.Available == 0);
                     if (pt1 && pt2)
                     {
-                        RemoveFromTable(loggedClients[token]);
+                        //RemoveFromTable(loggedClients[token]);
                         LogOut(loggedClients[token], i);
                     }
                 }

@@ -108,12 +108,15 @@ namespace PokerGameClasses
         // ze stolika
         public void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
         {
+            Console.WriteLine("It's round nr " + this.CurrentRound);
             bool equalBets = false;
             while (!equalBets)
             {
                 for (int i = 0; i < roundParticipantsNr; i++)
                 {
                     int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
+                    Console.WriteLine("It's player's " + currentPlayer + " turn. (" + this.gameTable.Players[currentPlayer].Nick + ", seat: "+ this.gameTable.Players[currentPlayer].SeatNr+")");
+                    Console.WriteLine("Position of player who raised last is: " + this.PositionOfPlayerWhoRaised);
                     if (this.PositionOfPlayerWhoRaised == currentPlayer) // koiec tury, wróciliœmy do ostatniego gracza, który przebi³
                     {
                         equalBets = true;
@@ -128,8 +131,8 @@ namespace PokerGameClasses
                     //rozsy³anie stanu gry do wszystkich graczy przed ka¿dym ruchem
                     foreach (Player p in this.gameTable.Players)
                     {
+                        Console.WriteLine("Trying to send message to player '" + p.Nick + "'");
                         NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(player, p, false));
-                        p.GameRequestsStream.Flush();
                     }
 
                     bool moveDone = player.MakeMove();
