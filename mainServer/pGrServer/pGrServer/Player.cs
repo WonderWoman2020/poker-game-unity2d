@@ -103,7 +103,7 @@ namespace PokerGameClasses
                 Console.WriteLine("Move response from player '" + this.Nick + "' was: " + moveResponse);
                 if (moveResponse == null || moveResponse == "")
                 {
-                    Console.WriteLine("Move response from player '" + this.Nick + "' was empty");
+                    Console.WriteLine("Move response from player '" + this.Nick + "' was empty. Player will automatically pass");
                     Fold();
                     return false;
                 }

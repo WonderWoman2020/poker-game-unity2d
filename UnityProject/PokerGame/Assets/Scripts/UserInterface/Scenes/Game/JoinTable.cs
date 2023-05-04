@@ -132,8 +132,9 @@ public class JoinTable : MonoBehaviour
             NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
             ns.Write(tosend, 0, tosend.Length);
 
-            // TODO (cz. PGGP-66) dodaæ czekanie na odpowiedŸ od serwera, czy zostaliœmy dodani
+            // Czekanie na odpowiedŸ od serwera, czy zostaliœmy dodani
             // do wybranego stolika, zanim przejdziemy do sceny stolika
+            // TODO zrobiæ to lepiej ni¿ z sekundowym czasem oczekiwania, powinniœmy gdzieœ w osobnym w¹tku odbieraæ odpowiedzi
             Thread.Sleep(1000);
             bool joinedTheTable = false;
             if (ns.DataAvailable)
