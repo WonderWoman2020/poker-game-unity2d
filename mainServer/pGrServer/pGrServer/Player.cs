@@ -101,9 +101,9 @@ namespace PokerGameClasses
                 Console.WriteLine("Trying to read message from player '" + this.Nick + "'");
                 string moveResponse = NetworkHelper.ReadNetworkStream(this.GameRequestsStream);
                 Console.WriteLine("Move response from player '" + this.Nick + "' was: " + moveResponse);
-                if (moveResponse == null)
+                if (moveResponse == null || moveResponse == "")
                 {
-                    Console.WriteLine("Move response from player '" + this.Nick + "' was a clear null");
+                    Console.WriteLine("Move response from player '" + this.Nick + "' was empty");
                     Fold();
                     return false;
                 }
