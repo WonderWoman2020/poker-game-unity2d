@@ -29,6 +29,7 @@ namespace PokerGameClasses
 
         public void playTheGame()
         {
+            Console.WriteLine("Next hand is on");
             this.gameTable.isGameActive = true;
             this.gameTable.SortPlayersBySeats();
 
@@ -268,6 +269,8 @@ namespace PokerGameClasses
             this.Dealer.ChangePosition(this.gameTable);
             this.gameTable.ResetGameState();
             this.gameTable.isGameActive = false;
+            this.PositionOfPlayerWhoRaised = -1;
+            this.CurrentRound = 0;
         }
 
         public string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)

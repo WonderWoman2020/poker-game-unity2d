@@ -510,8 +510,12 @@ namespace pGrServer
         public static void Game(GameTable table)
         {
             GameplayController controller = new GameplayController(table, new TexasHoldemDealer());
-            controller.playTheGame();
-            controller.ConcludeGame();
+            // TODO poprawić, żeby gra była włączana np. co 10 sekund i nie n razy, tylko dopóki wszyscy gracze nie opuszczą stolika
+            for (int i = 0; i < table.Players.Count; i++)
+            {
+                controller.playTheGame();
+                controller.ConcludeGame();
+            }
         }
         public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string big_blind)
         {
