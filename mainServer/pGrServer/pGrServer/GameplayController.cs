@@ -133,6 +133,7 @@ namespace PokerGameClasses
                     {
                         Console.WriteLine("Trying to send message to player '" + p.Nick + "'");
                         NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(player, p, false));
+                        //Console.WriteLine("Message sent to " + p.Nick + " was:\n" + this.MessageGameState(player, p, false));
                     }
 
                     bool moveDone = player.MakeMove();

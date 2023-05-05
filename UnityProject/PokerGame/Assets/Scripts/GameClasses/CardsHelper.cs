@@ -22,16 +22,41 @@ namespace PokerGameClasses
                 string[] cardData = card.Split(new string(" "));
                 CardValue value = (CardValue)Convert.ToInt32(cardData[0]);
                 CardSign sign = (CardSign)Convert.ToInt32(cardData[1]);
-                //pozyskiwanie ID karty
-                //TODO zrobić z tego jednak metodę, może się przyda gdzieś w ekranach
-                int v = Convert.ToInt32(value)-2;
-                int s = Convert.ToInt32(sign);
-                int index = v * 4 + s;
+
+                int index = CardsHelper.GetCardSpriteID(sign, value);
                 Card receivedCard = new Card(sign, value, index);
                 cardsCollection.AddCard(receivedCard);
             }
 
             return cardsCollection;
+        }
+
+        public static int GetCardSpriteID(CardSign sign, CardValue value)
+        {
+            //pozyskiwanie ID karty
+            int v = Convert.ToInt32(value) - 2;
+            int s = 0;
+
+            switch (sign)
+            {
+                case CardSign.Heart:
+                    s = 0;
+                    break;
+                case CardSign.Spade:
+                    s = 1;
+                    break;
+                case CardSign.Diamond:
+                    s = 2;
+                    break;
+                case CardSign.Club:
+                    s = 3;
+                    break;
+                default:
+                    break;
+            }
+
+            int index = s * 13 + v;
+            return index;
         }
     }
 }

@@ -74,6 +74,11 @@ public class Table : MonoBehaviour
     bool displayPlayerTurnPopup = false;
     bool displayWinnerPopup = false;
 
+    // Update stanu kart graczy
+    bool displayMainPlayerCards = false;
+    bool displayPlayersCards = false;
+    bool displayTableCards = false;
+
     // Nick zwyciêzcy gry, od serwera (wysy³a pod koniec gry)
     string winnerNick = null;
 
@@ -208,6 +213,9 @@ public class Table : MonoBehaviour
                         this.displayWinnerPopup = true;
                     }
                 }
+                //this.displayTableCards = true;
+                //this.displayPlayersCards = true;
+                //this.displayMainPlayerCards = true;
             }
         }
     }
@@ -242,13 +250,31 @@ public class Table : MonoBehaviour
 
     void ShowPlayerCards(int seatNumber, CardsCollection cards)
     {
-        ShowCard(cards.Cards[0], Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
-        ShowCard(cards.Cards[1], Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
+        if (cards == null)
+            return;
+
+        for (int i = 0; i < cards.Cards.Count; i++)
+        {
+            if (i >= 2)
+                break;
+
+            ShowCard(cards.Cards[i], Players[seatNumber].transform.Find("Cards/Card "+(i+1)).gameObject);
+            //ShowCard(cards.Cards[1], Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
+        }
     }
     void ShowMainPlayerCards(CardsCollection cards)
     {
-        ShowCard(cards.Cards[0], MainPlayerCards[0]);
-        ShowCard(cards.Cards[1], MainPlayerCards[1]);
+        if (cards == null)
+            return;
+
+        for (int i = 0; i < cards.Cards.Count; i++)
+        {
+            if (i >= 2)
+                break;
+
+            ShowCard(cards.Cards[i], MainPlayerCards[i]);
+            //Debug.Log("Card "+i+" id: "+cards.Cards[i].Id);
+        }
     }
 
     void ShowCardOnDeck(Card card, int cardIdToShow)
@@ -346,13 +372,22 @@ public class Table : MonoBehaviour
                 this.InfoMainPlayerName.text = playerState.Nick;
                 this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
                 this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+                this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
                 continue;
             }
 
             this.ShowPlayerOnTable(i, playerState.Nick);
             this.ChangePlayerBet(playerState.CurrentBet, i);
             this.ChangePlayerMoney(playerState.TokensCount, i);
+            this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
             i++;
+        }
+
+        // Wyœwietlanie kart na stoliku
+        if (this.gameTableState.Cards != null)
+        {
+            for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
+                ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
         }
 
         // Wyœwietlanie Popupu o kolejnoœci ruchu
@@ -362,7 +397,7 @@ public class Table : MonoBehaviour
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
             this.displayPlayerTurnPopup = false;
         }
-        // Wyœwietlanie Popupu o zwyciêzcy gry
+        // Wyœwietlanie Popupu o zwyciêzcy gry (i kart pozosta³ych graczy)
         if (this.displayWinnerPopup && PopupWindow)
         {
             var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
