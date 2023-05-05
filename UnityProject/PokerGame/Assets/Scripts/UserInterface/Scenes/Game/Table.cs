@@ -74,11 +74,6 @@ public class Table : MonoBehaviour
     bool displayPlayerTurnPopup = false;
     bool displayWinnerPopup = false;
 
-    // Update stanu kart graczy
-    bool displayMainPlayerCards = false;
-    bool displayPlayersCards = false;
-    bool displayTableCards = false;
-
     // Nick zwyciêzcy gry, od serwera (wysy³a pod koniec gry)
     string winnerNick = null;
 
@@ -213,9 +208,6 @@ public class Table : MonoBehaviour
                         this.displayWinnerPopup = true;
                     }
                 }
-                //this.displayTableCards = true;
-                //this.displayPlayersCards = true;
-                //this.displayMainPlayerCards = true;
             }
         }
     }
@@ -259,7 +251,6 @@ public class Table : MonoBehaviour
                 break;
 
             ShowCard(cards.Cards[i], Players[seatNumber].transform.Find("Cards/Card "+(i+1)).gameObject);
-            //ShowCard(cards.Cards[1], Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
         }
     }
     void ShowMainPlayerCards(CardsCollection cards)
@@ -273,7 +264,6 @@ public class Table : MonoBehaviour
                 break;
 
             ShowCard(cards.Cards[i], MainPlayerCards[i]);
-            //Debug.Log("Card "+i+" id: "+cards.Cards[i].Id);
         }
     }
 
@@ -397,7 +387,7 @@ public class Table : MonoBehaviour
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
             this.displayPlayerTurnPopup = false;
         }
-        // Wyœwietlanie Popupu o zwyciêzcy gry (i kart pozosta³ych graczy)
+        // Wyœwietlanie Popupu o zwyciêzcy gry
         if (this.displayWinnerPopup && PopupWindow)
         {
             var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);

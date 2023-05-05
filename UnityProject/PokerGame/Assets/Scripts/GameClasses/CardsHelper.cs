@@ -35,9 +35,15 @@ namespace PokerGameClasses
         {
             //pozyskiwanie ID karty
             int v = Convert.ToInt32(value) - 2;
-            int s = 0;
+            List<CardSign> signsInOrder = new List<CardSign> { CardSign.Heart, CardSign.Spade, CardSign.Diamond, CardSign.Club };
+            int s = signsInOrder.IndexOf(sign);
+            // Jeśli zły znak, zwróć ID sprite'a tyłu karty
+            if (s == -1)
+                return 52;
 
-            switch (sign)
+
+
+            /*switch (sign)
             {
                 case CardSign.Heart:
                     s = 0;
@@ -53,7 +59,7 @@ namespace PokerGameClasses
                     break;
                 default:
                     break;
-            }
+            }*/
 
             int index = s * 13 + v;
             return index;
