@@ -271,6 +271,10 @@ namespace pGrServer
                 }
                 loggedClientsAccess.ReleaseMutex();
                 Thread.Sleep(250);
+
+                // Usuń wątki gry, które się już skończyły
+                allGameThreads.RemoveAll(t => !t.IsAlive);
+                //Console.WriteLine("Active threads: " + allGameThreads.Count);
             }
             Console.WriteLine("Menu requests listening stopped");
         }
