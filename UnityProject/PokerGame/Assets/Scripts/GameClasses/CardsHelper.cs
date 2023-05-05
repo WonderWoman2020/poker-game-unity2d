@@ -41,26 +41,6 @@ namespace PokerGameClasses
             if (s == -1)
                 return 52;
 
-
-
-            /*switch (sign)
-            {
-                case CardSign.Heart:
-                    s = 0;
-                    break;
-                case CardSign.Spade:
-                    s = 1;
-                    break;
-                case CardSign.Diamond:
-                    s = 2;
-                    break;
-                case CardSign.Club:
-                    s = 3;
-                    break;
-                default:
-                    break;
-            }*/
-
             int index = s * 13 + v;
             return index;
         }
