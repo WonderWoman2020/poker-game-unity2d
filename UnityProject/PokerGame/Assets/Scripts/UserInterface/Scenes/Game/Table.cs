@@ -243,7 +243,12 @@ public class Table : MonoBehaviour
     void ShowPlayerCards(int seatNumber, CardsCollection cards)
     {
         if (cards == null)
+        {
+            Card cardBackSprite = new Card(0, 0, 52);
+            for (int i = 0; i < MainPlayerCards.Length; i++)
+                ShowCard(cardBackSprite, Players[seatNumber].transform.Find("Cards/Card " + (i + 1)).gameObject);
             return;
+        }
 
         for (int i = 0; i < cards.Cards.Count; i++)
         {
@@ -256,7 +261,12 @@ public class Table : MonoBehaviour
     void ShowMainPlayerCards(CardsCollection cards)
     {
         if (cards == null)
+        {
+            Card cardBackSprite = new Card(0, 0, 52);
+            for (int i = 0; i < MainPlayerCards.Length; i++)
+                ShowCard(cardBackSprite, MainPlayerCards[i]);
             return;
+        }
 
         for (int i = 0; i < cards.Cards.Count; i++)
         {
@@ -378,6 +388,12 @@ public class Table : MonoBehaviour
         {
             for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
                 ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
+        }
+        else
+        {
+            Card cardBackSprite = new Card(0, 0, 52);
+            for (int j = 0; j < CardsObject.Length; j++)
+                ShowCardOnDeck(cardBackSprite, j);
         }
 
         // Wyœwietlanie Popupu o kolejnoœci ruchu

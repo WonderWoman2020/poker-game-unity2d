@@ -515,6 +515,7 @@ namespace pGrServer
             {
                 controller.playTheGame();
                 controller.ConcludeGame();
+                Thread.Sleep(10000);
             }
         }
         public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string big_blind)
