@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Threading;
 
 using pGrServer;
+using System.Text;
 
 // Ekran do wyboru stolika do do³¹czenia, z list¹ istniej¹cych na serwerze stolików
 public class JoinTable : MonoBehaviour
@@ -31,6 +32,10 @@ public class JoinTable : MonoBehaviour
 
     // Numer przycisku obok stolika, który zosta³ wybrany
     private int chosenTable;
+    private string chosenTableName;
+
+    // Zmienna sprawdzajaca, czy wybrany stolik wciaz istnieje
+    private bool chosenTableStillExists;
 
     // Nazwy stolików obok przycisków do ich wybierania
     //TODO (cz. PGGP-34) zrobiæ z tego kiedyœ tablicê zamiast oddzielnych zmiennych
@@ -51,9 +56,67 @@ public class JoinTable : MonoBehaviour
         if (MyGameManager.Instance.GameTableList == null)
             return;
 
+        InvokeRepeating("loadTables", 0.0f, 10.0f);
+
         // Domyœlnie nie wybrano stolika
         this.chosenTable = -1;
 
+    }
+
+    // TODO dodaæ kiedyœ do osobnej klasy
+    public void loadTables()
+    {
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        byte[] request = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "2");
+        mainServer.stream.Write(request, 0, request.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
+        Thread.Sleep(1000);
+        if (mainServer.stream.DataAvailable)
+        {
+            // Usuñ poprzednio za³adowane stoliki
+            MyGameManager.Instance.GameTableList.Clear();
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            MyGameManager.Instance.mainServerConnection.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] tables = menuRequestStr.ToString().Split(new string(":T:"));
+            this.chosenTableStillExists = false;
+            for (int i = 1; i < tables.Length; i++)
+            {
+                UnityEngine.Debug.Log(tables[i]);
+                parseTableData(tables[i]);
+            }
+            if(!this.chosenTableStillExists)
+            {
+                this.chosenTable = -1;
+            }
+            displayTables();
+        }
+    }
+
+    // TODO dodaæ kiedyœ do osobnej klasy
+    public void parseTableData(string serverResponse)
+    {
+        string[] data = serverResponse.Split(' ');
+        string name = data[0];
+        string owner = data[1];
+        string humanCount = data[2];
+        string botCount = data[3];
+        string minXp = data[4];
+        string minChips = data[5];
+
+        if (name == this.chosenTableName) 
+        {
+            this.chosenTableStillExists = false;
+        }
+
+        GameTableInfo table = new GameTableInfo(name, owner, humanCount, botCount, minXp, minChips);
+        MyGameManager.Instance.AddTableToListed(table);
+    }
+
+    public void displayTables()
+    {
         // Jeœli stolików jest wiêcej ni¿ tyle ile siê zmieœci w naszym menu (obecnie 4 opcje),
         // wyœwietlamy tylko 4 pierwsze z listy
         // (TODO (cz. PGGP-34) mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
@@ -66,7 +129,7 @@ public class JoinTable : MonoBehaviour
         // ¿eby nie by³o tylu if'ów na przypadki ile mamy dostêpnych stolików)
         if (tablesToShow >= 1)
             this.Table1.text = MyGameManager.Instance.GameTableList[0].Name;
-        if(tablesToShow >= 2)
+        if (tablesToShow >= 2)
             this.Table2.text = MyGameManager.Instance.GameTableList[1].Name;
         if (tablesToShow >= 3)
             this.Table3.text = MyGameManager.Instance.GameTableList[2].Name;
@@ -75,9 +138,6 @@ public class JoinTable : MonoBehaviour
     }
 
     // Update is called once per frame
-    // TODO (cz. PGGP-69) jak zrobimy wysy³anie zapytania o stoliki co ileœ czasu automatycznie,
-    // to powinniœmy tu wrzuciæ update'owanie nazw dostêpnych stolików na ekranie
-    // TODO (cz. PGGP-69) update'owana wtedy te¿ powinna byæ zmienna 'chosenTable', bo móg³ znikn¹æ z serwera wybrany stolik
     void Update()
     {
         
@@ -180,6 +240,7 @@ public class JoinTable : MonoBehaviour
     // Update info o wybranym stoliku w lewym dolnym rogu ekranu
     private bool UpdateGameTableInfo(GameTableInfo gameTable)
     {
+        this.chosenTableName = gameTable.Name;
         this.InfoPlayersCount.text = gameTable.HumanCount;
         this.InfoBotsCount.text = gameTable.BotCount;
         this.InfoMinChips.text = gameTable.minChips;
