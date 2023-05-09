@@ -56,7 +56,7 @@ namespace pGrServer
             Console.Clear();
             while (running)
             {
-               /* Console.SetCursorPosition(0, 0);
+                Console.SetCursorPosition(0, 0);
                 sb.Clear();
                 sb.AppendLine("--- Server status ---");
                 sb.Append("Login active: " + (loginListener.Server.IsBound ? "YES" : "NO") + emptySpace + '\n');
@@ -78,7 +78,12 @@ namespace pGrServer
                     }
                 }
                 Console.WriteLine(emptySpace);
-                Thread.Sleep(500);*/
+                Thread.Sleep(500);
+
+                Thread.Sleep(500);
+                // Usuń wątki gry, które się już skończyły
+                allGameThreads.RemoveAll(t => !t.IsAlive);
+                //Console.WriteLine("Active threads: " + allGameThreads.Count);
 
             }
 
@@ -134,19 +139,36 @@ namespace pGrServer
                             //Utworzenie stołu
                             if (request[1] == "0")
                             {
-                                //  2      3    4      5        6
-                                //nazwa, tryb, bots, min xp, min stawka
-                                string name = request[2];
+                                //  2      3    4      5        6           7
+                                //nazwa, tryb, bots, min xp, min stawka, big blind
+                                byte[] answear = null;
+                                bool valid = true;
 
-                                bool found = false;
+                                if (request[2].Length > 32)
+                                    valid = false;
+                                else if (!ValidateStringIfPositiveInt(request[4]))
+                                    valid = false;
+                                else if (!ValidateStringIfPositiveInt(request[5]))
+                                    valid = false;
+                                else if (!ValidateStringIfPositiveInt(request[6]))
+                                    valid = false;
+                                else if (!ValidateStringIfPositiveInt(request[7]))
+                                    valid = false;
+
+
                                 openTablesAccess.WaitOne();
                                 //Tylko dla clienta ktory nie jest przy stole
-                                if (player.Table == null)
+                                if (player.Table == null && valid)
                                 {
+                                    string name = request[2];
+                                    bool found = false;
                                     //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
                                     foreach (GameTable table in openTables)
                                         if (table.Name == name)
+                                        {
                                             found = true;
+                                        }
+                                            
 
                                     if (!found)
                                     {
@@ -154,10 +176,23 @@ namespace pGrServer
                                         GameTable gameTable = new GameTable(name, (HumanPlayer)player);
                                         //Ustawienie przy jakim stole jest Client
                                         loggedClients[token].Table = gameTable;
-                                        ChangeTableSettings(gameTable, player, request[3], request[4], request[5], request[6]);
+                                        ChangeTableSettings(gameTable, player, request[3], request[4], request[5], request[6], request[7]);
                                         openTables.Add(gameTable);
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 0 "); // odpowiedź OK
+                                    }
+                                    else
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 2 "); // juz jest taka nazwa
                                     }
                                 }
+                                else
+                                {
+                                    if(!valid)
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 9 "); // błąd w walidacji
+                                    else
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 1 "); // gracz przy stole
+                                }
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
                             //Dolaczenie do stolu
@@ -166,11 +201,13 @@ namespace pGrServer
                                 openTablesAccess.WaitOne();
 
                                 Console.WriteLine("Client " + player.Nick + " requested adding to table " + request[2]);
+                                byte[] answear = null;
 
                                 Player client = player;
                                 if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
                                 {
                                     string name = request[2];
+                                    
                                     bool found = false;
                                     GameTable table = null;
                                     //Szukanie nazwy stołu do którego chce sie dolaczyc
@@ -187,18 +224,26 @@ namespace pGrServer
                                         if (git)
                                         {
                                             client.Table = table;
-                                            byte[] message = System.Text.Encoding.ASCII.GetBytes("2" + ' ' + "1"); // odpowiedź OK
-                                            player.MenuRequestsStream.Write(message, 0, message.Length);
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answear 1 0 "); // odpowiedź OK
+                                           
                                         }
                                         else
                                         {
                                             client.Table = null;
-                                            byte[] message = System.Text.Encoding.ASCII.GetBytes("2"+' '+"0"); // odpowiedź FAILED
-                                            player.MenuRequestsStream.Write(message, 0, message.Length);
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answear 1 3 "); // odpowiedź FAILED
                                         }
+                                    }
+                                    else
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 1 2 "); // odpowiedź FAILED
                                     }
 
                                 }
+                                else
+                                {
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 1 1 "); // odpowiedź FAILED
+                                }
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
                             //informacje o stołach
@@ -223,56 +268,115 @@ namespace pGrServer
                             {
                                 RemoveFromTable(player);
                                 LogOut(player, i);
+                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answear 3 0 "); // odpowiedź OK
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //Odejscie od stołu
                             else if (request[1] == "4")
                             {
                                 RemoveFromTable(player);
+                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answear 4 0 "); // odpowiedź OK
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //Zmiana ustawień
                             else if (request[1] == "5")
                             {
+                                byte[] answear = null;
+                                bool valid = true;
                                 openTablesAccess.WaitOne();
                                 Player client = loggedClients[token];
 
-                                if (client.Table != null)
+                                if (!ValidateStringIfPositiveInt(request[3]))
+                                    valid = false;
+                                if (!ValidateStringIfPositiveInt(request[4]))
+                                    valid = false;
+                                if (!ValidateStringIfPositiveInt(request[5]))
+                                    valid = false;
+                                if (!ValidateStringIfPositiveInt(request[6]))
+                                    valid = false;
+
+                                if (client.Table != null && valid)
                                 {
-                                    ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5]);
+                                    ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5], request[6]);
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 5 0 "); // odpowiedź OK
                                 }
+                                else
+                                {
+                                    if (!valid)
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 5 9 "); // odpowiedź Failed
+                                    else
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 5 1 "); // odpowiedź Failed
+                                }
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
                             //Rozpocznij grę
                             else if (request[1] == "6")
                             {
+                                byte[] answear = null;
                                 Player client = loggedClients[token];
                                 if (client.Table != null)
                                 {
                                     Thread gameThread = new Thread(() => Game(client.Table));
                                     allGameThreads.Add(gameThread);
                                     gameThread.Start();
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 6 0 "); // odpowiedź OK
                                 }
+                                else
+                                {
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 6 1 "); // odpowiedź Failed
+                                }
+
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //Zmień liczbę żetonów gracza
                             else if(request[1] == "7")
                             {
-                                Player client = loggedClients[token];
-                                int coins = Convert.ToInt32(request[2]);
-                                client.TokensCount += coins;
-                                NetworkHelper.WriteNetworkStream(client.MenuRequestsStream, "1" + ' ' + client.TokensCount.ToString());
-                                client.MenuRequestsStream.Flush();
-                                UpdateUserCoinsOrXP(client.Login, "coins", player.TokensCount);
+                                bool valid = true;
+                                byte[] answear = null;
+                                if (!ValidateStringIfPositiveInt(request[2]))
+                                    valid = false;
+
+                                if (valid)
+                                {
+                                    Player client = loggedClients[token];
+                                    int coins = Convert.ToInt32(request[2]);
+                                    client.TokensCount += coins;
+                                    NetworkHelper.WriteNetworkStream(client.MenuRequestsStream, "1" + ' ' + client.TokensCount.ToString());
+                                    client.MenuRequestsStream.Flush();
+                                    UpdateUserCoinsOrXP(client.Login, "coins", player.TokensCount);
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 7 0 "); // odpowiedź OK
+                                    player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                }
+                                else
+                                {
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 7 9 "); // odpowiedź Failed
+                                }
+                                
+                            }
+                            //zmiana nicku
+                            else if(request[1] == "8")
+                            {
+
+                            }
+                            //zmiana hasla
+                            else if (request[1] == "9")
+                            {
+
                             }
                             else
+                            {
                                 Console.WriteLine(request);
+                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answear 100 1 "); // odpowiedź Failed
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                            }
+                               
                         }
                     }
                 }
                 loggedClientsAccess.ReleaseMutex();
-                Thread.Sleep(250);
 
-                // Usuń wątki gry, które się już skończyły
-                allGameThreads.RemoveAll(t => !t.IsAlive);
-                //Console.WriteLine("Active threads: " + allGameThreads.Count);
+                
             }
             Console.WriteLine("Menu requests listening stopped");
         }
@@ -285,14 +389,30 @@ namespace pGrServer
             {
                 while (running)
                 {
+                    //wczesniej (akceptuje port) (otrzymuje login i haslo) (odpowiadam ok lub nie ok) (akceptuje drugi port)
+                    //teraz  (akceptuje port) (wysylam klucz publiczny) (otrzymuje zaszyfrowany login i haslo i deszyfruje) (odpowiadam ok lub nie) 
+                    //(akceptuje drugi port)
+
+                    //(akceptuje port)
                     TcpClient client = loginListener.AcceptTcpClient();
                     NetworkStream clientStream = client.GetStream();
 
-                    byte[] readBuffer = new byte[1024];
+                    //(wysylam klucz publiczny)
+                    var rsa = new RSACryptoServiceProvider(1024);
+                    rsa.PersistKeyInCsp = false;
+                    var publicKeyXml = rsa.ToXmlString(false);
+                    byte[] publicKeyBytes = System.Text.Encoding.ASCII.GetBytes(publicKeyXml);
+                    clientStream.Write(publicKeyBytes, 0, publicKeyBytes.Length);
+
+                    //(otrzymuje zaszyfrowany login i haslo i deszyfruje)
+                    byte[] readBuffer = new byte[128];
                     int numberOfBytesRead = 0;
-                    StringBuilder lognpass = new StringBuilder();
+                    
                     numberOfBytesRead = clientStream.Read(readBuffer, 0, readBuffer.Length);
-                    lognpass.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, numberOfBytesRead));
+                    var decryptedLognPass = rsa.Decrypt(readBuffer, false);
+
+                    StringBuilder lognpass = new StringBuilder();
+                    lognpass.AppendFormat("{0}", Encoding.ASCII.GetString(decryptedLognPass, 0, decryptedLognPass.Length));
 
                     clientStream.Flush();
                     string[] loginAndPassword = lognpass.ToString().Split(new char[] { ' ' }, 2);
@@ -300,6 +420,7 @@ namespace pGrServer
                     string username = loginAndPassword[0];
                     string password = loginAndPassword[1];
 
+                    //(odpowiadam ok lub nie) 
                     var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/loginuser");
                     httpWebRequest.ContentType = "application/json";
                     httpWebRequest.Method = "POST";
@@ -369,7 +490,7 @@ namespace pGrServer
                                 byte[] message = System.Text.Encoding.ASCII.GetBytes(token + ' ' + xp + ' ' + coins + ' ' + nick);
                                 clientStream.Write(message, 0, message.Length);
 
-
+                                //(akceptuje drugi port)
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
                                 Console.WriteLine("Accepted game client");
 
@@ -393,6 +514,7 @@ namespace pGrServer
                             clientStream.Write(message, 0, message.Length);
                         }
                     }
+                    rsa.Dispose();
                 }
             }
             catch (SocketException ex)
@@ -516,7 +638,7 @@ namespace pGrServer
                 Thread.Sleep(10000);
             }
         }
-        public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string big_blind)
+        public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string min_tokens, string big_blind)
         {
             GameTableSettings gameTableSettings = new GameTableSettings();
             if (mode == "0")
@@ -532,10 +654,32 @@ namespace pGrServer
             gameTableSettings.changeBotsNumber(int.Parse(nrOfBots));
 
             gameTableSettings.changeMinXP(int.Parse(minXp));
-            gameTableSettings.changeMinTokens(int.Parse(big_blind));
+            gameTableSettings.changeMinTokens(int.Parse(min_tokens));
+            gameTableSettings.changeBigBlind(int.Parse(big_blind));
             //Console.WriteLine(gameTableSettings);
 
             table.ChangeSettings((HumanPlayer)player, gameTableSettings);
         }
+
+        public static bool ValidateStringIfPositiveInt(string attribute)
+        {
+            Regex regex = new Regex(@"^\d+$");
+            if (regex.IsMatch(attribute))
+            {
+                if(attribute.Length <= 9)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

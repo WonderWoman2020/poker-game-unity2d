@@ -9,15 +9,15 @@ namespace PokerGameClasses
 {
     public class GameplayController
     {
-        public GameTable gameTable
+        private GameTable gameTable
         { get; set; }
-        public ICardsDealer Dealer
+        private ICardsDealer Dealer
+        {  get;  set; }
+
+        private int CurrentRound
         { get; set; }
 
-        public int CurrentRound
-        { get; set; }
-
-        public int PositionOfPlayerWhoRaised
+        private int PositionOfPlayerWhoRaised
         { get; set; }
         public GameplayController(GameTable gameTable, ICardsDealer cardsDealer)
         {
@@ -107,7 +107,7 @@ namespace PokerGameClasses
             return (basePlayerPosition + otherPlayerRelativePosition) % this.gameTable.Players.Count;
         }
         // ze stolika
-        public void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
+        private void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
         {
             Console.WriteLine("It's round nr " + this.CurrentRound);
             bool equalBets = false;
@@ -153,7 +153,7 @@ namespace PokerGameClasses
             }
         }
 
-        public bool CheckIfAllFolded()
+        private bool CheckIfAllFolded()
         {
             bool folded = true;
             foreach(Player p in this.gameTable.Players)
@@ -163,7 +163,7 @@ namespace PokerGameClasses
             }
             return folded;
         }
-        public void MakeNextRound()
+        private void MakeNextRound()
         {
             switch(this.CurrentRound)
             {
@@ -185,25 +185,25 @@ namespace PokerGameClasses
             this.CurrentRound++;
         }
 
-        public void PreFlopRound()
+        private void PreFlopRound()
         {
             this.Dealer.DealCards(this.gameTable, 0);
             this.MakeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count);
         }
 
-        public void FlopRound()
+        private void FlopRound()
         {
             this.Dealer.DealCards(gameTable, 1);
             this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
-        public void TurnRound()
+        private void TurnRound()
         {
             this.Dealer.DealCards(gameTable, 2);
             this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
-        public void RiverRound()
+        private void RiverRound()
         {
             this.Dealer.DealCards(gameTable, 3);
             this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
@@ -239,7 +239,7 @@ namespace PokerGameClasses
 
             this.ResetGame();
         }
-        public Player determineWinner()
+        private Player determineWinner()
         {
             HandsComparer handsComparer = new HandsComparer();
             int biggestScore = 11;//gorzej niz najwyzsza karta
@@ -263,7 +263,7 @@ namespace PokerGameClasses
             return winner;
         }
 
-        public void ResetGame()
+        private void ResetGame()
         {
             this.Dealer.TakeBackCards(this.gameTable);
             this.Dealer.ChangePosition(this.gameTable);
@@ -273,7 +273,7 @@ namespace PokerGameClasses
             this.CurrentRound = 0;
         }
 
-        public string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)
+        private string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)
         {
             StringBuilder sb = new StringBuilder();
 

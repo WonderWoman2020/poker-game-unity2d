@@ -146,13 +146,13 @@ namespace PokerGameClasses
 
         public bool SmallBlindFirstMove()
         {
-            int smallBlindAmount = this.Table.Settings.MinPlayersTokenCount/2;
+            int smallBlindAmount = this.Table.Settings.BigBlind/2;
             return this.SpendSomeMoneyOnHazard(smallBlindAmount);
         }
 
         public bool BigBlindFirstMove()
         {
-            int bigBlindAmount = this.Table.Settings.MinPlayersTokenCount;
+            int bigBlindAmount = this.Table.Settings.BigBlind;
             return this.SpendSomeMoneyOnHazard(bigBlindAmount);
         }
         private bool SpendSomeMoneyOnHazard(int amount)

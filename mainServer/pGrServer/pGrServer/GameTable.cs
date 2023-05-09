@@ -12,11 +12,12 @@ namespace PokerGameClasses
     {
 
         public string Name
-        { get; set; }
+        { get; private set; }
         public HumanPlayer Owner
-        { get; set; }
+        { get; private set; }
         public List<Player> Players
         { get; set; }
+
         public CardsCollection shownHelpingCards; //odsloniete karty pomocnicze, brac z tego pola do GUI
 
         public int TokensInGame
@@ -89,7 +90,7 @@ namespace PokerGameClasses
                     //Console.WriteLine("Not enought XP to join the game table");
                     return false;
                 }
-                if (this.Settings.MinPlayersTokenCount > player.TokensCount)
+                if (this.Settings.MinTokens > player.TokensCount)
                 {
                     sb.AppendLine("Not enought Tokens to join the game table");
                     NetworkHelper.WriteNetworkStream(player.GameRequestsStream, sb.ToString());
@@ -215,7 +216,8 @@ namespace PokerGameClasses
                 + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
                 + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + " (note: BotsCount != BotsNumberOnStart)\n"
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
-                + "Min Chips: " + this.Settings.MinPlayersTokenCount + "\n";
+                + "Min Chips: " + this.Settings.MinTokens + "\n"
+                + "Big Blind: " + this.Settings.BigBlind + "\n";
         }
         public string toMessage()
         {
@@ -226,7 +228,8 @@ namespace PokerGameClasses
                 this.GetPlayerTypeCount(PlayerType.Human) + ' ' +
                 this.GetPlayerTypeCount(PlayerType.Bot) + ' ' +
                 this.Settings.MinPlayersXP + ' ' +
-                this.Settings.MinPlayersTokenCount;
+                this.Settings.MinTokens + ' ' +
+                this.Settings.BigBlind;
         }
 
         public string MessageGameState()
