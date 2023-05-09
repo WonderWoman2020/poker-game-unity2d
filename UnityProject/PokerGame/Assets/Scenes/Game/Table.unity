@@ -848,7 +848,7 @@ GameObject:
   - component: {fileID: 76474549}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1965,7 +1965,7 @@ GameObject:
   - component: {fileID: 271568473}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2388,7 +2388,7 @@ GameObject:
   - component: {fileID: 341122524}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7099,6 +7099,7 @@ MonoBehaviour:
   InfoMainPlayerName: {fileID: 142579466}
   InfoMainPlayerChips: {fileID: 801404600}
   InfoMainPlayerBid: {fileID: 304345412}
+  InfoMainPlayerIcon: {fileID: 1763861905}
   MainPlayerCards:
   - {fileID: 137281452}
   - {fileID: 2082320624}
@@ -8849,7 +8850,7 @@ GameObject:
   - component: {fileID: 1487802235}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9603,7 +9604,7 @@ GameObject:
   - component: {fileID: 1584111900}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9755,7 +9756,7 @@ GameObject:
   - component: {fileID: 1607966460}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9965,7 +9966,7 @@ GameObject:
   - component: {fileID: 1625604670}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12393,7 +12394,7 @@ GameObject:
   - component: {fileID: 1990249327}
   m_Layer: 5
   m_Name: Icon
-  m_TagString: Untagged
+  m_TagString: Avatar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

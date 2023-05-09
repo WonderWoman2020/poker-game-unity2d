@@ -32,11 +32,13 @@ public class Table : MonoBehaviour
      * - Nick
      * - Ile ma ¿etonów
      * - Ile postawi³ ¿etonów w tym rozdaniu
+     * - Jego ikona (GameObject)
      * - Jego karty (GameObject'y)
      */
     [SerializeField] private TMP_Text InfoMainPlayerName;
     [SerializeField] private TMP_Text InfoMainPlayerChips;
     [SerializeField] private TMP_Text InfoMainPlayerBid;
+    [SerializeField] private GameObject InfoMainPlayerIcon;
     [SerializeField] private GameObject[] MainPlayerCards;
 
 
@@ -81,63 +83,33 @@ public class Table : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         ShowMenu(false); //zakrycie MENU na start
         ShowMenu(true);
-        if (MyGameManager.Instance.MainPlayer == null)
-            return;
+        //if (MyGameManager.Instance.MainPlayer == null)
+        //    return;
 
-        // Pierwszy update wyœwietlanego info g³ównego gracza
-        this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
-        this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
-        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
+        //// Pierwszy update wyœwietlanego info g³ównego gracza
+        //this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
+        //this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
+        //this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
-        // Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
-        // (Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
-        // wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
+        //// Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
+        //// (Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
+        //// wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
-
-        // Testowanie pokazywania i ukrywania odpowiednich kart u graczy
-        // oraz chowania i pokazywania tak¿e graczy
-        //
-        //HideAllPlayers();
-        //ShowPlayerOnTable(0, "Player1");
-        //ChangePlayerBet(100, 0);
-        //ChangePlayerMoney(200, 0);
-        //HidePlayerOnTable(2);
-
-        //Card card1 = new Card(CardSign.Heart, CardValue.Jack, 9);
-        //Card card2 = new Card(CardSign.Diamond, CardValue.Ace, 38);
-        //Card card3 = new Card(CardSign.Club, CardValue.Eight, 45);
-        //Card card4 = new Card(CardSign.Heart, CardValue.Four, 2);
-        //Card card5 = new Card(CardSign.Heart, CardValue.Five, 3);
-
-
-        //ShowCardOnDeck(card1, 0);
-        //ShowCardOnDeck(card2, 1);
-        //ShowCardOnDeck(card3, 2);
-        //ShowCardOnDeck(card4, 3);
-        //ShowCardOnDeck(card5, 4);
-        //List<Card> c = new List<Card>();
-        //c.Add(card1);
-        //c.Add(card2);
-
-        //CardsCollection cc = new CardsCollection(c);
-        //ShowPlayerCards(0, cc);
-        //ShowMainPlayerCards(cc);
-        //HidePlayerCards(0);
-        //HideMainPlayerCards();
-        //HideCardsOnDeck();
-        //
+        TestHidingCards();
 
         // Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
-        this.gameTableState = new GameTableState();
-        this.playersStates = new Dictionary<string, PlayerState>();
+        //this.gameTableState = new GameTableState();
+        //this.playersStates = new Dictionary<string, PlayerState>();
 
-        // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
-        // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
-        // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
-        new System.Threading.Thread(CommunicateWithServer).Start();
+        //// W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
+        //// W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
+        //// ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
+        //new System.Threading.Thread(CommunicateWithServer).Start();
+
     }
 
     public void CommunicateWithServer()
@@ -233,8 +205,131 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
+    // Testowanie pokazywania i ukrywania odpowiednich kart u graczy
+    // oraz chowania i pokazywania tak¿e graczy
+    //
+    public void TestHidingCards()
+    {
+        
+        HideAllPlayers();
+        ShowPlayerOnTable(0, "Player1");
+        ChangePlayerBet(100, 0);
+        ChangePlayerMoney(200, 0);
+        HidePlayerOnTable(2);
+
+        Card card1 = new Card(CardSign.Heart, CardValue.Jack, 9);
+        Card card2 = new Card(CardSign.Diamond, CardValue.Ace, 38);
+        Card card3 = new Card(CardSign.Club, CardValue.Eight, 45);
+        Card card4 = new Card(CardSign.Heart, CardValue.Four, 2);
+        Card card5 = new Card(CardSign.Heart, CardValue.Five, 3);
+
+
+        ShowCardOnDeck(card1, 0);
+        ShowCardOnDeck(card2, 1);
+        ShowCardOnDeck(card3, 2);
+        ShowCardOnDeck(card4, 3);
+        ShowCardOnDeck(card5, 4);
+        List<Card> c = new List<Card>();
+        c.Add(card1);
+        c.Add(card2);
+
+        CardsCollection cc = new CardsCollection(c);
+        ShowPlayerCards(0, cc);
+        ShowMainPlayerCards(cc);
+        HidePlayerCards(0);
+        HideMainPlayerCards();
+        HideCardsOnDeck();
+
+        ShowPlayerOnTable(1, "lala");
+        ShowPlayerOnTable(2, "baba");
+        HidePlayerCards(1);
+        GraphicPass(true, true);
+        GraphicPass(true, false, 1) ;
+      //  GraphicWaitingForGame(true, true);
+       // GraphicWaitingForGame(true, false, 1);
+
+    }
     // Metody od pokazywania i chowania kart, graczy i menu ruchów
     // TODO przenieœæ to do jakiejœ osobnej klasy?
+
+    //Funkcja pomocnicza dla GraphicPass
+    void ChangingPlayerVisibility(bool makeInvisible, GameObject avatar, GameObject nick, GameObject bet)
+    {
+        if (makeInvisible == true) //Pasowanie
+        {
+            avatar.GetComponent<UnityEngine.UI.Image>().color = new Color32(255, 255, 255, 100);
+            nick.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 100);
+            bet.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 100);
+        }
+        else //Odpasowywanie
+        {
+            avatar.GetComponent<UnityEngine.UI.Image>().color = new Color32(255, 255, 255, 255);
+            nick.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 255);
+            bet.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 255);
+        }
+    }
+
+    //Funkcja pokazujaca pasowanie lub cofajaca pasowanie, (ukrywanie lub pokazanie gracza, zostawienie kart)
+    //Dla glownego gracza
+    void GraphicPass(bool isPassing, bool isMainPlayerPassing)
+    {
+        GameObject avatar = InfoMainPlayerIcon;
+        GameObject nick = InfoMainPlayerName.gameObject;
+        GameObject bet = InfoMainPlayerBid.gameObject;
+        ChangingPlayerVisibility(isPassing, avatar, nick, bet);
+    }
+
+    //Funkcja pokazujaca pasowanie lub cofajaca pasowanie, (ukrywanie lub pokazanie gracza, zostawienie kart)
+    //Dla gracza o konkretnym numerze siedzenia
+    void GraphicPass(bool isPassing, bool isMainPlayerPassing, int seatNumber) 
+    {
+        GameObject avatar = Players[seatNumber].transform.Find("Icon").gameObject;
+        GameObject nick = Players[seatNumber].transform.Find("Informations/Name/NickText").gameObject;
+        GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
+        ChangingPlayerVisibility(isPassing, avatar, nick, bet);
+    }
+
+    //Funkcja pomocnicza dla GraphicWaitingForGame
+    void ChangingCardsVisibility(bool makeInvisible, GameObject card1, GameObject card2, GameObject bet)
+    {
+        if (makeInvisible == true) //Czekanie na gre - wylaczenie widocznosci kart
+        {
+            card1.GetComponent<UnityEngine.UI.Image>().enabled = false;
+            card2.GetComponent<UnityEngine.UI.Image>().enabled = false;
+            bet.GetComponent<TMP_Text>().enabled = false;
+        }
+        else //Odczekowywanie na gre - pokazanie widocznosci kart
+        {
+            card1.GetComponent<UnityEngine.UI.Image>().enabled = true;
+            card2.GetComponent<UnityEngine.UI.Image>().enabled = true;
+            bet.GetComponent<TMP_Text>().enabled = true;
+        }
+    }
+    //Funcja pokazujaca lub cofajaca pokazywanie czekania gracza na kolejna gre
+    //Dla gracza glownego
+    void GraphicWaitingForGame(bool isWaiting, bool isMainPlayerWaiting)
+    {
+        if (isMainPlayerWaiting == true)
+        {
+            GameObject card1 = MainPlayerCards[0];
+            GameObject card2 = MainPlayerCards[1];
+            GameObject bet = InfoMainPlayerBid.gameObject;
+            ChangingCardsVisibility(isWaiting, card1, card2, bet);
+        }
+    }
+    //Funcja pokazujaca lub cofajaca pokazywanie czekania gracza na kolejna gre
+    //Dla gracza o konkretnym numerze siedzenia
+    void GraphicWaitingForGame(bool isWaiting, bool isMainPlayerWaiting, int seatNumber)
+    {
+        if (isMainPlayerWaiting == false)
+        {
+            GameObject card1 = Players[seatNumber].transform.Find("Cards/Card 1").gameObject;
+            GameObject card2 = Players[seatNumber].transform.Find("Cards/Card 2").gameObject;
+            GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
+            ChangingCardsVisibility(isWaiting, card1, card2, bet);
+        } 
+    }
+
     void ShowCard(Card card, GameObject cardObject)
     {
         cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[card.Id];
@@ -281,21 +376,25 @@ public class Table : MonoBehaviour
     {
         ShowCard(card, CardsObject[cardIdToShow]);
     }
-    void HideCard(GameObject cardObject)
+    void HideCard(GameObject cardObject) //Funkcja pomocnicza, ukrywa karte
     {
         cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[52];
     }
-    void HidePlayerCards(int seatNumber)
+    void HidePlayerCards(int seatNumber) //Ukrywanie kart gracza
     {
         HideCard(Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
         HideCard(Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
     }
-    void HideMainPlayerCards()
+    public void HidePlayerOnTable(int seatNumber) //Ukrywanie gracza i jego kart 
+    {
+        Players[seatNumber].transform.localScale = Vector3.zero;
+    }
+    void HideMainPlayerCards()//Ukrywanie kart glownego gracza (tego na srodku)
     {
         HideCard(MainPlayerCards[0]);
         HideCard(MainPlayerCards[1]);
     }
-    void HideCardsOnDeck()
+    void HideCardsOnDeck() //Karty na stole wylozone
     {
         for(int i = 0; i < CardsObject.Length; i++)
         {
@@ -303,7 +402,7 @@ public class Table : MonoBehaviour
         }
     }
 
-    void HideAllPlayers()
+    void HideAllPlayers() //Ukrywanie wszystkich graczy i ich kart
     { 
         foreach (GameObject player in Players)
         {
@@ -321,11 +420,6 @@ public class Table : MonoBehaviour
             nick.GetComponent<TMP_Text>().fontSize = 21.75f;    //nie dziala, bo autosize w unity
         }
         Players[seatNumber].transform.localScale = Vector3.one;
-    }
-
-    public void HidePlayerOnTable(int seatNumber)
-    {
-        Players[seatNumber].transform.localScale = Vector3.zero;
     }
 
     public void ShowMenu(bool isMenuToShow)
@@ -357,59 +451,59 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
-        // (na razie tylko o zak³adach i posiadanych ¿etonach)
-        // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
-        int i = 0;
-        foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
-        {
-            PlayerState playerState = state.Value;
+        //// Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
+        //// (na razie tylko o zak³adach i posiadanych ¿etonach)
+        //// TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
+        //int i = 0;
+        //foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
+        //{
+        //    PlayerState playerState = state.Value;
 
-            // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
-            // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
-            if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
-            {
-                this.InfoMainPlayerName.text = playerState.Nick;
-                this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
-                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
-                this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
-                continue;
-            }
+        //    // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
+        //    // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
+        //    if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+        //    {
+        //        this.InfoMainPlayerName.text = playerState.Nick;
+        //        this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
+        //        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+        //        this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
+        //        continue;
+        //    }
 
-            this.ShowPlayerOnTable(i, playerState.Nick);
-            this.ChangePlayerBet(playerState.CurrentBet, i);
-            this.ChangePlayerMoney(playerState.TokensCount, i);
-            this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
-            i++;
-        }
+        //    this.ShowPlayerOnTable(i, playerState.Nick);
+        //    this.ChangePlayerBet(playerState.CurrentBet, i);
+        //    this.ChangePlayerMoney(playerState.TokensCount, i);
+        //    this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
+        //    i++;
+        //}
 
-        // Wyœwietlanie kart na stoliku
-        if (this.gameTableState.Cards != null)
-        {
-            for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
-                ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
-        }
-        else
-        {
-            Card cardBackSprite = new Card(0, 0, 52);
-            for (int j = 0; j < CardsObject.Length; j++)
-                ShowCardOnDeck(cardBackSprite, j);
-        }
+        //// Wyœwietlanie kart na stoliku
+        //if (this.gameTableState.Cards != null)
+        //{
+        //    for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
+        //        ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
+        //}
+        //else
+        //{
+        //    Card cardBackSprite = new Card(0, 0, 52);
+        //    for (int j = 0; j < CardsObject.Length; j++)
+        //        ShowCardOnDeck(cardBackSprite, j);
+        //}
 
-        // Wyœwietlanie Popupu o kolejnoœci ruchu
-        if (this.displayPlayerTurnPopup && PopupWindow)
-        {
-            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-            popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
-            this.displayPlayerTurnPopup = false;
-        }
-        // Wyœwietlanie Popupu o zwyciêzcy gry
-        if (this.displayWinnerPopup && PopupWindow)
-        {
-            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-            popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
-            this.displayWinnerPopup = false;
-        }
+        //// Wyœwietlanie Popupu o kolejnoœci ruchu
+        //if (this.displayPlayerTurnPopup && PopupWindow)
+        //{
+        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        //    popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
+        //    this.displayPlayerTurnPopup = false;
+        //}
+        //// Wyœwietlanie Popupu o zwyciêzcy gry
+        //if (this.displayWinnerPopup && PopupWindow)
+        //{
+        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        //    popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
+        //    this.displayWinnerPopup = false;
+        //}
     }
 
     // Wczytanie stawki z pola input 'Bid'
