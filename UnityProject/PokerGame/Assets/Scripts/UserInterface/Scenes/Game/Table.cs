@@ -86,29 +86,29 @@ public class Table : MonoBehaviour
         
         ShowMenu(false); //zakrycie MENU na start
         ShowMenu(true);
-        //if (MyGameManager.Instance.MainPlayer == null)
-        //    return;
+        if (MyGameManager.Instance.MainPlayer == null)
+            return;
 
-        //// Pierwszy update wyœwietlanego info g³ównego gracza
-        //this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
-        //this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
-        //this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
+        // Pierwszy update wyœwietlanego info g³ównego gracza
+        this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
+        this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
+        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
-        //// Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
-        //// (Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
-        //// wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
+        // Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
+        // (Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
+        // wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
-        TestHidingCards();
+        //2TestHidingCards();
 
-        // Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
-        //this.gameTableState = new GameTableState();
-        //this.playersStates = new Dictionary<string, PlayerState>();
+        //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
+        this.gameTableState = new GameTableState();
+        this.playersStates = new Dictionary<string, PlayerState>();
 
-        //// W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
-        //// W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
-        //// ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
-        //new System.Threading.Thread(CommunicateWithServer).Start();
+        // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
+        // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
+        // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
+        new System.Threading.Thread(CommunicateWithServer).Start();
 
     }
 
@@ -245,10 +245,12 @@ public class Table : MonoBehaviour
         HidePlayerCards(1);
         GraphicPass(true, true);
         GraphicPass(true, false, 1) ;
-      //  GraphicWaitingForGame(true, true);
-       // GraphicWaitingForGame(true, false, 1);
+        GraphicWaitingForGame(true, true);
+        GraphicWaitingForGame(true, false, 1);
 
     }
+
+
     // Metody od pokazywania i chowania kart, graczy i menu ruchów
     // TODO przenieœæ to do jakiejœ osobnej klasy?
 
@@ -451,59 +453,59 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //// Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
-        //// (na razie tylko o zak³adach i posiadanych ¿etonach)
-        //// TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
-        //int i = 0;
-        //foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
-        //{
-        //    PlayerState playerState = state.Value;
+        // Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
+        // (na razie tylko o zak³adach i posiadanych ¿etonach)
+        // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
+        int i = 0;
+        foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
+        {
+            PlayerState playerState = state.Value;
 
-        //    // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
-        //    // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
-        //    if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
-        //    {
-        //        this.InfoMainPlayerName.text = playerState.Nick;
-        //        this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
-        //        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
-        //        this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
-        //        continue;
-        //    }
+            // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
+            // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
+            if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+            {
+                this.InfoMainPlayerName.text = playerState.Nick;
+                this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
+                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+                this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
+                continue;
+            }
 
-        //    this.ShowPlayerOnTable(i, playerState.Nick);
-        //    this.ChangePlayerBet(playerState.CurrentBet, i);
-        //    this.ChangePlayerMoney(playerState.TokensCount, i);
-        //    this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
-        //    i++;
-        //}
+            this.ShowPlayerOnTable(i, playerState.Nick);
+            this.ChangePlayerBet(playerState.CurrentBet, i);
+            this.ChangePlayerMoney(playerState.TokensCount, i);
+            this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
+            i++;
+        }
 
-        //// Wyœwietlanie kart na stoliku
-        //if (this.gameTableState.Cards != null)
-        //{
-        //    for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
-        //        ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
-        //}
-        //else
-        //{
-        //    Card cardBackSprite = new Card(0, 0, 52);
-        //    for (int j = 0; j < CardsObject.Length; j++)
-        //        ShowCardOnDeck(cardBackSprite, j);
-        //}
+        // Wyœwietlanie kart na stoliku
+        if (this.gameTableState.Cards != null)
+        {
+            for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
+                ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
+        }
+        else
+        {
+            Card cardBackSprite = new Card(0, 0, 52);
+            for (int j = 0; j < CardsObject.Length; j++)
+                ShowCardOnDeck(cardBackSprite, j);
+        }
 
-        //// Wyœwietlanie Popupu o kolejnoœci ruchu
-        //if (this.displayPlayerTurnPopup && PopupWindow)
-        //{
-        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        //    popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
-        //    this.displayPlayerTurnPopup = false;
-        //}
-        //// Wyœwietlanie Popupu o zwyciêzcy gry
-        //if (this.displayWinnerPopup && PopupWindow)
-        //{
-        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        //    popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
-        //    this.displayWinnerPopup = false;
-        //}
+        // Wyœwietlanie Popupu o kolejnoœci ruchu
+        if (this.displayPlayerTurnPopup && PopupWindow)
+        {
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
+            this.displayPlayerTurnPopup = false;
+        }
+        // Wyœwietlanie Popupu o zwyciêzcy gry
+        if (this.displayWinnerPopup && PopupWindow)
+        {
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
+            this.displayWinnerPopup = false;
+        }
     }
 
     // Wczytanie stawki z pola input 'Bid'
