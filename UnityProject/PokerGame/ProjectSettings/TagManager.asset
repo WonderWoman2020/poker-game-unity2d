@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Card
   - Avatar
+  - Chips
   layers:
   - Default
   - TransparentFX

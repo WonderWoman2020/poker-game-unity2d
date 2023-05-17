@@ -51,6 +51,11 @@ public class Table : MonoBehaviour
     [SerializeField]
     private CardsSprites collection;
 
+    // Lista sprite'ów ¿etonów, z której wybieramy odpowiedni
+    // sprite, ¿eby zwizualizowaæ ¿etony
+    [SerializeField]
+    private ChipsSprites chipsSprites;
+
     // Prze³¹cznik ustawiany na 'true', kiedy serwer przyœle do klienta zapytanie o wykonanie ruchu
     private bool readyToSendMove = false;
 
@@ -86,29 +91,29 @@ public class Table : MonoBehaviour
         
         ShowMenu(false); //zakrycie MENU na start
         ShowMenu(true);
-        //if (MyGameManager.Instance.MainPlayer == null)
-        //    return;
+        if (MyGameManager.Instance.MainPlayer == null)
+            return;
 
-        //// Pierwszy update wyœwietlanego info g³ównego gracza
-        //this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
-        //this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
-        //this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
+        // Pierwszy update wyœwietlanego info g³ównego gracza
+        this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
+        this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
+        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
         // Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
         // (Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
         // wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
-        //2TestHidingCards();
-        ShowChipsBidInGame(50);
-        ////Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
-        //this.gameTableState = new GameTableState();
-        //this.playersStates = new Dictionary<string, PlayerState>();
+        //TestHidingCards();
 
-        //// W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
-        //// W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
-        //// ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
-        //new System.Threading.Thread(CommunicateWithServer).Start();
+        //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
+        this.gameTableState = new GameTableState();
+        this.playersStates = new Dictionary<string, PlayerState>();
+
+        // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
+        // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
+        // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
+        new System.Threading.Thread(CommunicateWithServer).Start();
 
     }
 
@@ -205,13 +210,106 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
+    //Usuwanie ¿etonów ze œrodka 
+    void DeleteChipsBitInGame()
+    {
+        GameObject chips = GameObject.FindGameObjectWithTag("Chips");
+        GameObject chipsContainer;
+        chipsContainer = chips.transform.Find("Chips").gameObject;
+        Destroy(chipsContainer);
+        GameObject chipsText = chips.transform.Find("Bet/BetText").gameObject;
+        chipsText.GetComponent<TMP_Text>().enabled = false;
+    }
+    //Utworzenie GameObject pojedynczego ¿etonu i przypisanie mu sprite'a oraz pozycji
+    void CreateChip(GameObject chipsContainer, Vector3 position, Sprite chipSprite)
+    {
+        GameObject chipsCanvas = GameObject.FindGameObjectWithTag("Chips");
+        GameObject chip = new("Chip");
+        chip.transform.parent = chipsContainer.transform;
+        UnityEngine.UI.Image imageOfChipComponent = chip.AddComponent<UnityEngine.UI.Image>();
+        imageOfChipComponent.sprite = chipSprite;
+        chip.transform.localScale = new Vector3(0.75f, 0.75f, 1.0f);
+        chip.transform.localPosition = position;
+    }
+
+    //Podzial liczby zetonow na kupki o odpowiednich wartosciach
+    Tuple<int,int[]> DivisionIntoChips(int amount)
+    {
+        int tempAmount = amount;
+
+        int[] chipsValue = { 1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000 };
+        int[] amountOfChipsInStack = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        if (amount < 600)
+        {
+            for (int i = 8; i >= 0; i--)
+            {
+                while (tempAmount >= chipsValue[i])
+                {
+                    tempAmount = tempAmount - chipsValue[i];
+                    amountOfChipsInStack[i] = amountOfChipsInStack[i] + 1;
+                }
+            }
+        }
+        else if (amount < 1200)
+        {
+            for (int i = 9; i >= 0; i--)
+            {
+                while (tempAmount >= chipsValue[i])
+                {
+                    tempAmount = tempAmount - chipsValue[i];
+                    amountOfChipsInStack[i] = amountOfChipsInStack[i] + 1;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 10; i >= 0; i--)
+            {
+                while (tempAmount >= chipsValue[i])
+                {
+                    tempAmount = tempAmount - chipsValue[i];
+                    amountOfChipsInStack[i] = amountOfChipsInStack[i] + 1;
+                }
+            }
+        }
+        int numberOfStacks = 0;
+        for (int i = 0; i < amountOfChipsInStack.Length; i++)
+        {
+            if (amountOfChipsInStack[i] != 0)
+                numberOfStacks += 1;
+        }
+        return Tuple.Create(numberOfStacks, amountOfChipsInStack);
+    }
+
+    //Wyswietlanie tekstowe liczby zetonow oraz zarzadzanie wyswietlaniem zetonow
     void ShowChipsBidInGame(int amount)
     {
         GameObject chips = GameObject.FindGameObjectWithTag("Chips");
         GameObject chipsText = chips.transform.Find("Bet/BetText").gameObject;
+        GameObject bet = chips.transform.Find("Bet").gameObject;
+        chipsText.GetComponent<TMP_Text>().enabled = true;
         chipsText.GetComponent<TMP_Text>().text = amount.ToString() +"$";
+        (int numberOfStacks, int[]amountOfChipsInStack) = DivisionIntoChips(amount);
 
-
+        float positionX = 0 - 75 * (numberOfStacks / 2) - 75;
+        float positionY = 0;
+        GameObject chipsContainer = new("Chips");
+        chipsContainer.transform.parent = chips.transform;
+        chipsContainer.transform.position = chips.transform.position;
+        for (int i = 0; i < amountOfChipsInStack.Length; i++)
+        {
+            positionY = -8;
+            if (amountOfChipsInStack[i] != 0)
+            {
+                positionX += 75;
+                Sprite chipSprite = chipsSprites.chipsSpriteSerialization[i]; //wybor sprite'a
+                for (int j = 0; j < amountOfChipsInStack[i]; j++)
+                {
+                    positionY += 8;
+                    CreateChip(chipsContainer,new Vector3(positionX, positionY, 0.0f), chipSprite);
+                }
+            }
+        }
     }
     // Testowanie pokazywania i ukrywania odpowiednich kart u graczy
     // oraz chowania i pokazywania tak¿e graczy
@@ -256,6 +354,9 @@ public class Table : MonoBehaviour
         GraphicWaitingForGame(true, true);
         GraphicWaitingForGame(true, false, 1);
 
+        ShowChipsBidInGame(585);
+        DeleteChipsBitInGame();
+        ShowChipsBidInGame(1203);
     }
 
 
@@ -461,59 +562,59 @@ public class Table : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //// Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
-        //// (na razie tylko o zak³adach i posiadanych ¿etonach)
-        //// TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
-        //int i = 0;
-        //foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
-        //{
-        //    PlayerState playerState = state.Value;
+        // Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
+        // (na razie tylko o zak³adach i posiadanych ¿etonach)
+        // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
+        int i = 0;
+        foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
+        {
+            PlayerState playerState = state.Value;
 
-        //    // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
-        //    // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
-        //    if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
-        //    {
-        //        this.InfoMainPlayerName.text = playerState.Nick;
-        //        this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
-        //        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
-        //        this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
-        //        continue;
-        //    }
+            // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
+            // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
+            if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+            {
+                this.InfoMainPlayerName.text = playerState.Nick;
+                this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
+                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+                this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
+                continue;
+            }
 
-        //    this.ShowPlayerOnTable(i, playerState.Nick);
-        //    this.ChangePlayerBet(playerState.CurrentBet, i);
-        //    this.ChangePlayerMoney(playerState.TokensCount, i);
-        //    this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
-        //    i++;
-        //}
+            this.ShowPlayerOnTable(i, playerState.Nick);
+            this.ChangePlayerBet(playerState.CurrentBet, i);
+            this.ChangePlayerMoney(playerState.TokensCount, i);
+            this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
+            i++;
+        }
 
-        //// Wyœwietlanie kart na stoliku
-        //if (this.gameTableState.Cards != null)
-        //{
-        //    for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
-        //        ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
-        //}
-        //else
-        //{
-        //    Card cardBackSprite = new Card(0, 0, 52);
-        //    for (int j = 0; j < CardsObject.Length; j++)
-        //        ShowCardOnDeck(cardBackSprite, j);
-        //}
+        // Wyœwietlanie kart na stoliku
+        if (this.gameTableState.Cards != null)
+        {
+            for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
+                ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
+        }
+        else
+        {
+            Card cardBackSprite = new Card(0, 0, 52);
+            for (int j = 0; j < CardsObject.Length; j++)
+                ShowCardOnDeck(cardBackSprite, j);
+        }
 
-        //// Wyœwietlanie Popupu o kolejnoœci ruchu
-        //if (this.displayPlayerTurnPopup && PopupWindow)
-        //{
-        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        //    popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
-        //    this.displayPlayerTurnPopup = false;
-        //}
-        //// Wyœwietlanie Popupu o zwyciêzcy gry
-        //if (this.displayWinnerPopup && PopupWindow)
-        //{
-        //    var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        //    popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
-        //    this.displayWinnerPopup = false;
-        //}
+        // Wyœwietlanie Popupu o kolejnoœci ruchu
+        if (this.displayPlayerTurnPopup && PopupWindow)
+        {
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
+            this.displayPlayerTurnPopup = false;
+        }
+        // Wyœwietlanie Popupu o zwyciêzcy gry
+        if (this.displayWinnerPopup && PopupWindow)
+        {
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
+            this.displayWinnerPopup = false;
+        }
     }
 
     // Wczytanie stawki z pola input 'Bid'
