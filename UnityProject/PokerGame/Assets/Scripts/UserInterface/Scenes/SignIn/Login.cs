@@ -15,6 +15,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using PokerGameClasses;
+using System.Security.Cryptography;
 
 
 // Ekran do podawania danych logowania
@@ -55,6 +56,18 @@ public class Login : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
         mainServer.Start();
 
+        byte[] myReadBuffer = new byte[1024];
+        int numberOfBytesRead = 0;
+        StringBuilder publicKeyMessage = new StringBuilder();
+        numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
+        publicKeyMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
+        string[] request = publicKeyMessage.ToString().Split(new char[] { ' ' });
+        string publicKeyXml = request[0];
+
+        var rsa = new RSACryptoServiceProvider();
+        rsa.PersistKeyInCsp = false;
+        rsa.FromXmlString(publicKeyXml);
+
         if (this.playerLogin == null)
         {
             this.ShowPopup("Add your login");
@@ -69,18 +82,17 @@ public class Login : MonoBehaviour
 
         // TODO dodaæ kiedyœ do osobnej klasy
         //////////////
-        // wyœlij zapytanie o logowanie do serwerze
-        byte[] message = System.Text.Encoding.ASCII.GetBytes(this.playerLogin + ' ' + this.playerPassword);
-        mainServer.stream.Write(message, 0, message.Length);
+        // wyœlij zapytanie o logowanie do serwera
+        string message = this.playerLogin + ' ' + this.playerPassword;
+        byte[] encryptedMessage = rsa.Encrypt(Encoding.ASCII.GetBytes(message), false);
+        mainServer.stream.Write(encryptedMessage, 0, encryptedMessage.Length);
         mainServer.stream.Flush();
 
         // odbierz odpowiedŸ
-        byte[] myReadBuffer = new byte[1024];
-        int numberOfBytesRead = 0;
         StringBuilder myCompleteMessage = new StringBuilder();
         numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
         myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-        string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
+        request = myCompleteMessage.ToString().Split(new char[] { ' ' });
         string token = request[0];
 
         if (token == "##&&@@0000")
