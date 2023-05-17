@@ -8,6 +8,7 @@ using TMPro;
 using System;
 
 using PokerGameClasses;
+using System.Text;
 
 // Ekran do podawania danych do stworzenia stolika
 public class CreateTable : MonoBehaviour
@@ -93,8 +94,9 @@ public class CreateTable : MonoBehaviour
 
         int mode = (int)this.chosenMode;
 
+        // TODO Zmieniæ ostatni¹ wartoœæ w wiadomoœci na jak¹œ obliczan¹, nie hardcoded
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + "20" + ' ');
         MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
     }

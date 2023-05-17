@@ -204,11 +204,18 @@ public class JoinTable : MonoBehaviour
                 Debug.Log("Received response: "+response);
                 string[] splitted = response.Split(' ');
                 // arg 0 - numer rodzaju odpowiedzi (odpowiedŸ na zapytanie o dodanie do stolika)
-                if (splitted[0] == "2")
+                if (splitted[1] == "1")
                 {
                     // arg 1 - bool czy siê uda³o dodaæ do stolika
-                    Debug.Log(splitted[1]);
-                    joinedTheTable = Convert.ToBoolean(Convert.ToInt32(splitted[1]));
+                    Debug.Log(splitted[2]);
+                    if (splitted[2] == "0")
+                    {
+                        joinedTheTable = true;
+                    }
+                    else
+                    {
+                        joinedTheTable = false;
+                    }
                 }
                 Debug.Log("Joined bool value: " + joinedTheTable);
             }
