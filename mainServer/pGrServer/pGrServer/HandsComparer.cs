@@ -56,6 +56,71 @@ namespace PokerGameClasses
             }
             return false;
         }
+        public Card HighestCardOfPoker(CardsCollection Cards)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value - 1 && Cards.Cards[i].Sign == Cards.Cards[i + 1].Sign)
+                {
+                    if (Cards.Cards[i + 1].Value == Cards.Cards[i + 2].Value - 1 && Cards.Cards[i + 1].Sign == Cards.Cards[i + 2].Sign)
+                    {
+                        if (Cards.Cards[i + 2].Value == Cards.Cards[i + 3].Value - 2 && Cards.Cards[i + 2].Sign == Cards.Cards[i + 3].Sign)
+                        {
+                            if (Cards.Cards[i + 3].Value == Cards.Cards[i + 4].Value - 3 && Cards.Cards[i + 3].Sign == Cards.Cards[i + 4].Sign)
+                            {
+                                return Cards.Cards[i];
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        public Card HighestCardOfStraigth(CardsCollection Cards)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value - 1)
+                {
+                    if (Cards.Cards[i + 1].Value == Cards.Cards[i + 2].Value - 1)
+                    {
+                        if (Cards.Cards[i + 2].Value == Cards.Cards[i + 3].Value - 2)
+                        {
+                            if (Cards.Cards[i + 3].Value == Cards.Cards[i + 4].Value - 3)
+                            {
+                                return Cards.Cards[i];
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        public Card GiveCardOfTree(CardsCollection Cards)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
+                {
+                    if (Cards.Cards[i + 1].Value == Cards.Cards[i + 2].Value)
+                    {
+                        return Cards.Cards[i];
+                    }
+                }
+            }
+            return null;
+        }
+        public Card GiveCardOfTwo(CardsCollection Cards)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value)
+                {
+                    return Cards.Cards[i];
+                }
+            }
+            return null;
+        }
         public bool isQuads(CardsCollection Cards)//Kareta
         {
             for (int i = 0; i < 4; i++)
@@ -73,6 +138,19 @@ namespace PokerGameClasses
                 }
             }
             return false;
+        }
+        public Card CardOfQuads(CardsCollection Cards)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value
+                    && Cards.Cards[i].Value == Cards.Cards[i + 2].Value
+                    && Cards.Cards[i].Value == Cards.Cards[i + 3].Value)
+                {
+                    return Cards.Cards[i];
+                }
+            }
+            return null;
         }
         public bool isFullHouse(CardsCollection Cards)//Full
         {
