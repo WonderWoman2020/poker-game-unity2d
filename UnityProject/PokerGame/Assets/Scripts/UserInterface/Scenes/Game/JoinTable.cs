@@ -215,6 +215,7 @@ public class JoinTable : MonoBehaviour
                     else
                     {
                         joinedTheTable = false;
+                        ShowPopup("Couldn't join table, the game is currently in progress");
                     }
                 }
                 Debug.Log("Joined bool value: " + joinedTheTable);
