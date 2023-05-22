@@ -43,9 +43,9 @@ namespace ClientTests
             string password = Console.ReadLine();
             //#############################################
             var rsaClient = new RSACryptoServiceProvider(1024);
-            rsa.PersistKeyInCsp = false;
+            rsaClient.PersistKeyInCsp = false;
 
-            byte[] keybuffer = new byte[8192];
+            byte[] keybuffer = new byte[1024];
             StringBuilder keyStringBuilder = new StringBuilder();
             int nobytes = ns.Read(keybuffer, 0, keybuffer.Length);
             keyStringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(keybuffer, 0, nobytes));

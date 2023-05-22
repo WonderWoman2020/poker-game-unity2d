@@ -364,6 +364,11 @@ namespace pGrServer
                             {
 
                             }
+                            //usun konto
+                            else if (request[1] == "10")
+                            {
+
+                            }
                             else
                             {
                                 Console.WriteLine(request);
