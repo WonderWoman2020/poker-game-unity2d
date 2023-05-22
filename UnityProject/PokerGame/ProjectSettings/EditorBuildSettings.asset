@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SignIn/CreatePlayer.unity
     guid: 40de24593eaa8b24bbe1e8ec692687dd
+  - enabled: 1
+    path: Assets/Scenes/SignIn/Login.unity
+    guid: ed79c9bc35b19834eacc4b31075dfa2d
   m_configObjects: {}
