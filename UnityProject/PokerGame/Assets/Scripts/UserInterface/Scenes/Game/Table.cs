@@ -32,11 +32,13 @@ public class Table : MonoBehaviour
      * - Nick
      * - Ile ma ¿etonów
      * - Ile postawi³ ¿etonów w tym rozdaniu
+     * - Jego ikona (GameObject)
      * - Jego karty (GameObject'y)
      */
     [SerializeField] private TMP_Text InfoMainPlayerName;
     [SerializeField] private TMP_Text InfoMainPlayerChips;
     [SerializeField] private TMP_Text InfoMainPlayerBid;
+    [SerializeField] private GameObject InfoMainPlayerIcon;
     [SerializeField] private GameObject[] MainPlayerCards;
 
 
@@ -48,6 +50,11 @@ public class Table : MonoBehaviour
     // sprite do przypisania do GameObject'u karty gracza
     [SerializeField]
     private CardsSprites collection;
+
+    // Lista sprite'ów ¿etonów, z której wybieramy odpowiedni
+    // sprite, ¿eby zwizualizowaæ ¿etony
+    [SerializeField]
+    private ChipsSprites chipsSprites;
 
     // Prze³¹cznik ustawiany na 'true', kiedy serwer przyœle do klienta zapytanie o wykonanie ruchu
     private bool readyToSendMove = false;
@@ -81,6 +88,7 @@ public class Table : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         ShowMenu(false); //zakrycie MENU na start
         ShowMenu(true);
         if (MyGameManager.Instance.MainPlayer == null)
@@ -96,41 +104,9 @@ public class Table : MonoBehaviour
         // wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
+        //TestHidingCards();
 
-        // Testowanie pokazywania i ukrywania odpowiednich kart u graczy
-        // oraz chowania i pokazywania tak¿e graczy
-        //
-        //HideAllPlayers();
-        //ShowPlayerOnTable(0, "Player1");
-        //ChangePlayerBet(100, 0);
-        //ChangePlayerMoney(200, 0);
-        //HidePlayerOnTable(2);
-
-        //Card card1 = new Card(CardSign.Heart, CardValue.Jack, 9);
-        //Card card2 = new Card(CardSign.Diamond, CardValue.Ace, 38);
-        //Card card3 = new Card(CardSign.Club, CardValue.Eight, 45);
-        //Card card4 = new Card(CardSign.Heart, CardValue.Four, 2);
-        //Card card5 = new Card(CardSign.Heart, CardValue.Five, 3);
-
-
-        //ShowCardOnDeck(card1, 0);
-        //ShowCardOnDeck(card2, 1);
-        //ShowCardOnDeck(card3, 2);
-        //ShowCardOnDeck(card4, 3);
-        //ShowCardOnDeck(card5, 4);
-        //List<Card> c = new List<Card>();
-        //c.Add(card1);
-        //c.Add(card2);
-
-        //CardsCollection cc = new CardsCollection(c);
-        //ShowPlayerCards(0, cc);
-        //ShowMainPlayerCards(cc);
-        //HidePlayerCards(0);
-        //HideMainPlayerCards();
-        //HideCardsOnDeck();
-        //
-
-        // Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
+        //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
 
@@ -138,6 +114,7 @@ public class Table : MonoBehaviour
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
         // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
         new System.Threading.Thread(CommunicateWithServer).Start();
+
     }
 
     public void CommunicateWithServer()
@@ -233,8 +210,237 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
+    //Usuwanie ¿etonów ze œrodka 
+    void DeleteChipsBitInGame()
+    {
+        GameObject chips = GameObject.FindGameObjectWithTag("Chips");
+        GameObject chipsContainer;
+        chipsContainer = chips.transform.Find("Chips").gameObject;
+        Destroy(chipsContainer);
+        GameObject chipsText = chips.transform.Find("Bet/BetText").gameObject;
+        chipsText.GetComponent<TMP_Text>().enabled = false;
+    }
+    //Utworzenie GameObject pojedynczego ¿etonu i przypisanie mu sprite'a oraz pozycji
+    void CreateChip(GameObject chipsContainer, Vector3 position, Sprite chipSprite)
+    {
+        GameObject chipsCanvas = GameObject.FindGameObjectWithTag("Chips");
+        GameObject chip = new("Chip");
+        chip.transform.parent = chipsContainer.transform;
+        UnityEngine.UI.Image imageOfChipComponent = chip.AddComponent<UnityEngine.UI.Image>();
+        imageOfChipComponent.sprite = chipSprite;
+        chip.transform.localScale = new Vector3(0.75f, 0.75f, 1.0f);
+        chip.transform.localPosition = position;
+    }
+
+    //Podzial liczby zetonow na kupki o odpowiednich wartosciach
+    Tuple<int,int[]> DivisionIntoChips(int amount)
+    {
+        int tempAmount = amount;
+
+        int[] chipsValue = { 1, 2, 5, 10, 20, 25, 50, 100, 250, 500, 1000 };
+        int[] amountOfChipsInStack = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        if (amount < 600)
+        {
+            for (int i = 8; i >= 0; i--)
+            {
+                while (tempAmount >= chipsValue[i])
+                {
+                    tempAmount = tempAmount - chipsValue[i];
+                    amountOfChipsInStack[i] = amountOfChipsInStack[i] + 1;
+                }
+            }
+        }
+        else if (amount < 1200)
+        {
+            for (int i = 9; i >= 0; i--)
+            {
+                while (tempAmount >= chipsValue[i])
+                {
+                    tempAmount = tempAmount - chipsValue[i];
+                    amountOfChipsInStack[i] = amountOfChipsInStack[i] + 1;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 10; i >= 0; i--)
+            {
+                while (tempAmount >= chipsValue[i])
+                {
+                    tempAmount = tempAmount - chipsValue[i];
+                    amountOfChipsInStack[i] = amountOfChipsInStack[i] + 1;
+                }
+            }
+        }
+        int numberOfStacks = 0;
+        for (int i = 0; i < amountOfChipsInStack.Length; i++)
+        {
+            if (amountOfChipsInStack[i] != 0)
+                numberOfStacks += 1;
+        }
+        return Tuple.Create(numberOfStacks, amountOfChipsInStack);
+    }
+
+    //Wyswietlanie tekstowe liczby zetonow oraz zarzadzanie wyswietlaniem zetonow
+    void ShowChipsBidInGame(int amount)
+    {
+        GameObject chips = GameObject.FindGameObjectWithTag("Chips");
+        GameObject chipsText = chips.transform.Find("Bet/BetText").gameObject;
+        GameObject bet = chips.transform.Find("Bet").gameObject;
+        chipsText.GetComponent<TMP_Text>().enabled = true;
+        chipsText.GetComponent<TMP_Text>().text = amount.ToString() +"$";
+        (int numberOfStacks, int[]amountOfChipsInStack) = DivisionIntoChips(amount);
+
+        float positionX = 0 - 75 * (numberOfStacks / 2) - 75;
+        float positionY = 0;
+        GameObject chipsContainer = new("Chips");
+        chipsContainer.transform.parent = chips.transform;
+        chipsContainer.transform.position = chips.transform.position;
+        for (int i = 0; i < amountOfChipsInStack.Length; i++)
+        {
+            positionY = -8;
+            if (amountOfChipsInStack[i] != 0)
+            {
+                positionX += 75;
+                Sprite chipSprite = chipsSprites.chipsSpriteSerialization[i]; //wybor sprite'a
+                for (int j = 0; j < amountOfChipsInStack[i]; j++)
+                {
+                    positionY += 8;
+                    CreateChip(chipsContainer,new Vector3(positionX, positionY, 0.0f), chipSprite);
+                }
+            }
+        }
+    }
+    // Testowanie pokazywania i ukrywania odpowiednich kart u graczy
+    // oraz chowania i pokazywania tak¿e graczy
+    //
+    public void TestHidingCards()
+    {
+        
+        HideAllPlayers();
+        ShowPlayerOnTable(0, "Player1");
+        ChangePlayerBet(100, 0);
+        ChangePlayerMoney(200, 0);
+        HidePlayerOnTable(2);
+
+        Card card1 = new Card(CardSign.Heart, CardValue.Jack, 9);
+        Card card2 = new Card(CardSign.Diamond, CardValue.Ace, 38);
+        Card card3 = new Card(CardSign.Club, CardValue.Eight, 45);
+        Card card4 = new Card(CardSign.Heart, CardValue.Four, 2);
+        Card card5 = new Card(CardSign.Heart, CardValue.Five, 3);
+
+
+        ShowCardOnDeck(card1, 0);
+        ShowCardOnDeck(card2, 1);
+        ShowCardOnDeck(card3, 2);
+        ShowCardOnDeck(card4, 3);
+        ShowCardOnDeck(card5, 4);
+        List<Card> c = new List<Card>();
+        c.Add(card1);
+        c.Add(card2);
+
+        CardsCollection cc = new CardsCollection(c);
+        ShowPlayerCards(0, cc);
+        ShowMainPlayerCards(cc);
+        HidePlayerCards(0);
+        HideMainPlayerCards();
+        HideCardsOnDeck();
+
+        ShowPlayerOnTable(1, "lala");
+        ShowPlayerOnTable(2, "baba");
+        HidePlayerCards(1);
+        GraphicPass(true, true);
+        GraphicPass(true, false, 1) ;
+        GraphicWaitingForGame(true, true);
+        GraphicWaitingForGame(true, false, 1);
+
+        ShowChipsBidInGame(585);
+        DeleteChipsBitInGame();
+        ShowChipsBidInGame(1203);
+    }
+
+
     // Metody od pokazywania i chowania kart, graczy i menu ruchów
     // TODO przenieœæ to do jakiejœ osobnej klasy?
+
+    //Funkcja pomocnicza dla GraphicPass
+    void ChangingPlayerVisibility(bool makeInvisible, GameObject avatar, GameObject nick, GameObject bet)
+    {
+        if (makeInvisible == true) //Pasowanie
+        {
+            avatar.GetComponent<UnityEngine.UI.Image>().color = new Color32(255, 255, 255, 100);
+            nick.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 100);
+            bet.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 100);
+        }
+        else //Odpasowywanie
+        {
+            avatar.GetComponent<UnityEngine.UI.Image>().color = new Color32(255, 255, 255, 255);
+            nick.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 255);
+            bet.GetComponent<TMP_Text>().color = new Color32(255, 255, 255, 255);
+        }
+    }
+
+    //Funkcja pokazujaca pasowanie lub cofajaca pasowanie, (ukrywanie lub pokazanie gracza, zostawienie kart)
+    //Dla glownego gracza
+    void GraphicPass(bool isPassing, bool isMainPlayerPassing)
+    {
+        GameObject avatar = InfoMainPlayerIcon;
+        GameObject nick = InfoMainPlayerName.gameObject;
+        GameObject bet = InfoMainPlayerBid.gameObject;
+        ChangingPlayerVisibility(isPassing, avatar, nick, bet);
+    }
+
+    //Funkcja pokazujaca pasowanie lub cofajaca pasowanie, (ukrywanie lub pokazanie gracza, zostawienie kart)
+    //Dla gracza o konkretnym numerze siedzenia
+    void GraphicPass(bool isPassing, bool isMainPlayerPassing, int seatNumber) 
+    {
+        GameObject avatar = Players[seatNumber].transform.Find("Icon").gameObject;
+        GameObject nick = Players[seatNumber].transform.Find("Informations/Name/NickText").gameObject;
+        GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
+        ChangingPlayerVisibility(isPassing, avatar, nick, bet);
+    }
+
+    //Funkcja pomocnicza dla GraphicWaitingForGame
+    void ChangingCardsVisibility(bool makeInvisible, GameObject card1, GameObject card2, GameObject bet)
+    {
+        if (makeInvisible == true) //Czekanie na gre - wylaczenie widocznosci kart
+        {
+            card1.GetComponent<UnityEngine.UI.Image>().enabled = false;
+            card2.GetComponent<UnityEngine.UI.Image>().enabled = false;
+            bet.GetComponent<TMP_Text>().enabled = false;
+        }
+        else //Odczekowywanie na gre - pokazanie widocznosci kart
+        {
+            card1.GetComponent<UnityEngine.UI.Image>().enabled = true;
+            card2.GetComponent<UnityEngine.UI.Image>().enabled = true;
+            bet.GetComponent<TMP_Text>().enabled = true;
+        }
+    }
+    //Funcja pokazujaca lub cofajaca pokazywanie czekania gracza na kolejna gre
+    //Dla gracza glownego
+    void GraphicWaitingForGame(bool isWaiting, bool isMainPlayerWaiting)
+    {
+        if (isMainPlayerWaiting == true)
+        {
+            GameObject card1 = MainPlayerCards[0];
+            GameObject card2 = MainPlayerCards[1];
+            GameObject bet = InfoMainPlayerBid.gameObject;
+            ChangingCardsVisibility(isWaiting, card1, card2, bet);
+        }
+    }
+    //Funcja pokazujaca lub cofajaca pokazywanie czekania gracza na kolejna gre
+    //Dla gracza o konkretnym numerze siedzenia
+    void GraphicWaitingForGame(bool isWaiting, bool isMainPlayerWaiting, int seatNumber)
+    {
+        if (isMainPlayerWaiting == false)
+        {
+            GameObject card1 = Players[seatNumber].transform.Find("Cards/Card 1").gameObject;
+            GameObject card2 = Players[seatNumber].transform.Find("Cards/Card 2").gameObject;
+            GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
+            ChangingCardsVisibility(isWaiting, card1, card2, bet);
+        } 
+    }
+
     void ShowCard(Card card, GameObject cardObject)
     {
         cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[card.Id];
@@ -281,21 +487,25 @@ public class Table : MonoBehaviour
     {
         ShowCard(card, CardsObject[cardIdToShow]);
     }
-    void HideCard(GameObject cardObject)
+    void HideCard(GameObject cardObject) //Funkcja pomocnicza, ukrywa karte
     {
         cardObject.GetComponent<UnityEngine.UI.Image>().sprite = collection.cardsSpriteSerialization[52];
     }
-    void HidePlayerCards(int seatNumber)
+    void HidePlayerCards(int seatNumber) //Ukrywanie kart gracza
     {
         HideCard(Players[seatNumber].transform.Find("Cards/Card 1").gameObject);
         HideCard(Players[seatNumber].transform.Find("Cards/Card 2").gameObject);
     }
-    void HideMainPlayerCards()
+    public void HidePlayerOnTable(int seatNumber) //Ukrywanie gracza i jego kart 
+    {
+        Players[seatNumber].transform.localScale = Vector3.zero;
+    }
+    void HideMainPlayerCards()//Ukrywanie kart glownego gracza (tego na srodku)
     {
         HideCard(MainPlayerCards[0]);
         HideCard(MainPlayerCards[1]);
     }
-    void HideCardsOnDeck()
+    void HideCardsOnDeck() //Karty na stole wylozone
     {
         for(int i = 0; i < CardsObject.Length; i++)
         {
@@ -303,7 +513,7 @@ public class Table : MonoBehaviour
         }
     }
 
-    void HideAllPlayers()
+    void HideAllPlayers() //Ukrywanie wszystkich graczy i ich kart
     { 
         foreach (GameObject player in Players)
         {
@@ -321,11 +531,6 @@ public class Table : MonoBehaviour
             nick.GetComponent<TMP_Text>().fontSize = 21.75f;    //nie dziala, bo autosize w unity
         }
         Players[seatNumber].transform.localScale = Vector3.one;
-    }
-
-    public void HidePlayerOnTable(int seatNumber)
-    {
-        Players[seatNumber].transform.localScale = Vector3.zero;
     }
 
     public void ShowMenu(bool isMenuToShow)
