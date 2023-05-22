@@ -27,9 +27,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Game/Table.unity
     guid: 8c31d4d8e0a374a41b616fa8e1b5908e
   - enabled: 1
-    path: Assets/Scenes/Menu/GetTokensMenu.unity
-    guid: 129f675d92203a04984925ab38417367
-  - enabled: 1
     path: Assets/Scenes/SignIn/SignInMenu.unity
     guid: 2eb9c5b2abac4d040bded7ec61a85295
   - enabled: 1
@@ -38,4 +35,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SignIn/Login.unity
     guid: ed79c9bc35b19834eacc4b31075dfa2d
+  - enabled: 1
+    path: Assets/Scenes/Game/TableSettings.unity
+    guid: 340903650164d8f49bdf0c86240e9412
+  - enabled: 1
+    path: Assets/Scenes/Menu/ChangeNameMenu.unity
+    guid: ea00d0af0dec86b41bc13241808d4714
+  - enabled: 1
+    path: Assets/Scenes/Menu/ChangePasswordMenu.unity
+    guid: 9da2539c66bbc494595a6c60e9e92e2a
+  - enabled: 1
+    path: Assets/Scenes/Menu/DeleteAccout.unity
+    guid: cc619d2d7df5deb40bf301a550d44517
+  - enabled: 1
+    path: Assets/Scenes/Menu/GetTokensMenu.unity
+    guid: 129f675d92203a04984925ab38417367
+  - enabled: 1
+    path: Assets/Scenes/Menu/SettingsMenu.unity
+    guid: 384a8b26b65e5be4786a5f490fdaa631
   m_configObjects: {}
