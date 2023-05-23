@@ -26,6 +26,9 @@ public class MyGameManager : MonoBehaviour
     // Token gracza, dostêpny po zalogowaniu
     public string clientToken;
 
+    public string ServerIP
+    { get; set; }
+
     void Awake()
     {
         // Wzorzec singleton (ma zawsze istnieæ tylko 1 instancja tej klasy)

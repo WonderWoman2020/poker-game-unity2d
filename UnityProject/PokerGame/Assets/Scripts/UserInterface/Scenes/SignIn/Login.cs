@@ -157,6 +157,7 @@ public class Login : MonoBehaviour
             return;
         }
         this.IP = IP;
+        MyGameManager.Instance.ServerIP = IP;
     }
     public void ReadPassword(string password)
     {

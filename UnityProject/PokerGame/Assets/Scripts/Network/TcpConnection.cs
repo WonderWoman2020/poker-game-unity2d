@@ -16,7 +16,8 @@ public class TcpConnection
     public void Start()
     {
         client = new TcpClient();
-        client.Connect("127.0.0.1", port);
+        //client.Connect("127.0.0.1", port);
+        client.Connect(MyGameManager.Instance.ServerIP, port);
         stream = client.GetStream();
     }
 
