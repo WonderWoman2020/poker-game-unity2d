@@ -60,13 +60,14 @@ namespace PokerGameClasses
         {
             for (int i = 0; i < 3; i++)
             {
-                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value - 1 && Cards.Cards[i].Sign == Cards.Cards[i + 1].Sign)
+                int valueOfTheBiggest = (int)Cards.Cards[i].Value;
+                if ((int)Cards.Cards[i + 1].Value == valueOfTheBiggest - 1 && Cards.Cards[i + 1].Sign == Cards.Cards[i].Sign)
                 {
-                    if (Cards.Cards[i + 1].Value == Cards.Cards[i + 2].Value - 1 && Cards.Cards[i + 1].Sign == Cards.Cards[i + 2].Sign)
+                    if ((int)Cards.Cards[i + 2].Value == valueOfTheBiggest - 2 && Cards.Cards[i + 2].Sign == Cards.Cards[i].Sign)
                     {
-                        if (Cards.Cards[i + 2].Value == Cards.Cards[i + 3].Value - 2 && Cards.Cards[i + 2].Sign == Cards.Cards[i + 3].Sign)
+                        if ((int)Cards.Cards[i + 3].Value == valueOfTheBiggest - 3 && Cards.Cards[i + 3].Sign == Cards.Cards[i].Sign)
                         {
-                            if (Cards.Cards[i + 3].Value == Cards.Cards[i + 4].Value - 3 && Cards.Cards[i + 3].Sign == Cards.Cards[i + 4].Sign)
+                            if ((int)Cards.Cards[i + 4].Value == valueOfTheBiggest - 4 && Cards.Cards[i + 4].Sign == Cards.Cards[i].Sign)
                             {
                                 return Cards.Cards[i];
                             }
@@ -80,13 +81,14 @@ namespace PokerGameClasses
         {
             for (int i = 0; i < 3; i++)
             {
-                if (Cards.Cards[i].Value == Cards.Cards[i + 1].Value - 1)
+                int valueOfTheBiggest = (int)Cards.Cards[i].Value;
+                if ((int)Cards.Cards[i + 1].Value == valueOfTheBiggest - 1 )
                 {
-                    if (Cards.Cards[i + 1].Value == Cards.Cards[i + 2].Value - 1)
+                    if ((int)Cards.Cards[i + 2].Value == valueOfTheBiggest - 2 )
                     {
-                        if (Cards.Cards[i + 2].Value == Cards.Cards[i + 3].Value - 2)
+                        if ((int)Cards.Cards[i + 3].Value == valueOfTheBiggest - 3 )
                         {
-                            if (Cards.Cards[i + 3].Value == Cards.Cards[i + 4].Value - 3)
+                            if ((int)Cards.Cards[i + 4].Value == valueOfTheBiggest - 4 )
                             {
                                 return Cards.Cards[i];
                             }
@@ -195,24 +197,24 @@ namespace PokerGameClasses
             int ClubCounter = 0;
             for (int i = 0; i < 7; i++)
             {
-                if ((int)Cards.Cards[i].Value == 0)
+                if (Cards.Cards[i].Sign == CardSign.Heart)
                 {
                     HeartCounter++;
                 }
-                else if ((int)Cards.Cards[i].Value == 1)
+                else if (Cards.Cards[i].Sign == CardSign.Spade)
                 {
                     SpadeCounter++;
                 }
-                else if ((int)Cards.Cards[i].Value == 2)
+                else if (Cards.Cards[i].Sign == CardSign.Diamond)
                 {
                     DiamondCounter++;
                 }
-                else if ((int)Cards.Cards[i].Value == 3)
+                else if (Cards.Cards[i].Sign == CardSign.Club)
                 {
                     ClubCounter++;
                 }
             }
-            if (HeartCounter >= 4 || SpadeCounter >= 4 || DiamondCounter >= 4 || ClubCounter >= 4)
+            if (HeartCounter >= 5 || SpadeCounter >= 5 || DiamondCounter >= 5 || ClubCounter >= 5)
             {
                 return true;
             }
