@@ -90,7 +90,7 @@ public class Table : MonoBehaviour
     {
 
         ShowMenu(false); //zakrycie MENU na start
-        ShowMenu(true);
+        //ShowMenu(true);
         if (MyGameManager.Instance.MainPlayer == null)
             return;
 
@@ -110,6 +110,7 @@ public class Table : MonoBehaviour
         //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
+        HideAllPlayers();
 
         // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
@@ -206,6 +207,7 @@ public class Table : MonoBehaviour
     {
         Debug.Log(splitted[0]);
         Debug.Log(splitted[1]);
+        ShowMenu(true);
         this.readyToSendMove = true;
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
@@ -575,10 +577,11 @@ public class Table : MonoBehaviour
         // (na razie tylko o zak³adach i posiadanych ¿etonach)
         // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
         int i = 0;
+        
         foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
         {
             PlayerState playerState = state.Value;
-
+            
             // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
             // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
             if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
@@ -596,7 +599,7 @@ public class Table : MonoBehaviour
             this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
             i++;
         }
-
+   
         // Wyœwietlanie kart na stoliku
         if (this.gameTableState.Cards != null)
         {
@@ -615,10 +618,12 @@ public class Table : MonoBehaviour
         // Wyœwietlanie Popupu o kolejnoœci ruchu
         if (this.displayPlayerTurnPopup && PopupWindow)
         {
+            ShowMenu(true);
             var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
             this.displayPlayerTurnPopup = false;
         }
+        
         // Wyœwietlanie Popupu o zwyciêzcy gry
         if (this.displayWinnerPopup && PopupWindow)
         {
@@ -651,6 +656,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "1 ");
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
     public void OnAllInButton()
@@ -661,6 +667,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "3 ");
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
     public void OnPassButton()
@@ -671,6 +678,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "0 ");
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
     // TODO (cz. PGGP-106) dodaæ sprawdzanie, czy podaliœmy jakiœ zak³ad w polu input 'Bid' i czy to liczba,
@@ -683,6 +691,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "2 " + this.betFieldText.ToString());
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
 
