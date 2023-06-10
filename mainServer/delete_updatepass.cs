@@ -15,7 +15,29 @@ namespace amazonWebServices
             //LoginUser("mat", "pass");
             //updateUserCoinsOrXP("mateLog", "coins", 10);
             //updatePasswd("test1", "value1", "pass1");
-            deleteAccount("test3", "pass3");
+            //deleteAccount("test3", "pass3");
+            updateUserCoinsOrXPbyNick("mate", "xp", 12);
+        }
+        public static void updateUserCoinsOrXPbyNick(string playerNick, string item, int value)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatevaluebynick");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = "{\"nick\":\"" + playerNick + "\"," +
+                                "\"toUpdate\":\"" + item + "\"," +
+                                "\"updatedValue\":\"" + value + "\"}";
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                var dataFromDatabase = result.Split("\"");
+            }
         }
         public static void deleteAccount(string login, string password)
         {
