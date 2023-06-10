@@ -103,7 +103,7 @@ public class Table : MonoBehaviour
         //(Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
 
         //wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
-        this.Players = GameObject.FindGameObjectsWithTag("Player");
+        this.Players = InitPlayers();
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
         //TestHidingCards();
 
@@ -369,7 +369,13 @@ public class Table : MonoBehaviour
         DeleteChipsBitInGame();
         ShowChipsBidInGame(1203);
     }
-
+    int CompareObNames(GameObject x, GameObject y) { return x.name.CompareTo(y.name); }
+    GameObject[] InitPlayers()
+    {
+        GameObject[] Players = GameObject.FindGameObjectsWithTag("Player");
+        Array.Sort(Players, CompareObNames);
+        return Players;
+    }
 
     // Metody od pokazywania i chowania kart, graczy i menu ruchów
     // TODO przenieœæ to do jakiejœ osobnej klasy?
