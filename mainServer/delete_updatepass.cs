@@ -6,20 +6,59 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace amazonWebServices
+namespace aws_2
 {
     class Program
     {
         static void Main(string[] args)
         {
+            var i = 0;
             //LoginUser("mat", "pass");
             //updateUserCoinsOrXP("mateLog", "coins", 10);
             //updatePasswd("test1", "value1", "pass1");
             //deleteAccount("test3", "pass3");
-            updateUserCoinsOrXPbyNick("mate", "xp", 12);
+            updateUserCoinsOrXPbyNick("niccccck", "xp", 12345);
+            //updateNick("test33333333", "niccccck");
+        }
+        public static void updateNick(string login, string newNick)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatenick");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = "{\"login\":\"" + login + "\"," +
+                                "\"nick\":\"" + newNick + "\"}";
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+                var dataFromDatabase = result.Split("\"");
+                var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
+                if (responseCode == "405")
+                {
+                    // nick istnieje
+                    Console.WriteLine("nick istnieje");
+                }
+                else if (responseCode == "200")
+                {
+                    // zmieniono
+                    Console.WriteLine("zmieniono");
+                }
+                else
+                {
+                    // server error
+                    Console.WriteLine("server error");
+                }
+            }
         }
         public static void updateUserCoinsOrXPbyNick(string playerNick, string item, int value)
         {
+            var a = 0;
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatevaluebynick");
             httpWebRequest.ContentType = "application/json";
             httpWebRequest.Method = "POST";
@@ -174,7 +213,7 @@ namespace amazonWebServices
                         string[] parts = temp.Split('\"');
                         string value = parts[0];
                     }
-                    var xp2 = Int32.Parse(Regex.Match(result, @".* (xp)(\D*)( ).*").Value); 
+                    var xp2 = Int32.Parse(Regex.Match(result, @".* (xp)(\D*)( ).*").Value);
                     var xp = Int32.Parse(Regex.Match(result, @"xp\d+").Value);
                     var coins = Int32.Parse(Regex.Match(dataFromDatabase[8], @"\d+").Value);
                     var login = dataFromDatabase[11];
