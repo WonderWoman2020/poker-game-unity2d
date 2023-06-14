@@ -48,6 +48,8 @@ public class MyGameManager : MonoBehaviour
 
         gameServerConnection = new TcpConnection();
         gameServerConnection.port = 6938;
+
+        this.ServerIP = null;
     }
 
     // Update is called once per frame
