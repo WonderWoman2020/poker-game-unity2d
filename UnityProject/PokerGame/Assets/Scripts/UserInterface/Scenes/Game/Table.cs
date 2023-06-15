@@ -88,7 +88,7 @@ public class Table : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
         ShowMenu(false); //zakrycie MENU na start
         ShowMenu(true);
         if (MyGameManager.Instance.MainPlayer == null)
@@ -99,9 +99,10 @@ public class Table : MonoBehaviour
         this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
         this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
-        // Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
-        // (Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
-        // wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
+        //Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
+        //(Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
+
+        //wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
         this.Players = GameObject.FindGameObjectsWithTag("Player");
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
         //TestHidingCards();
@@ -114,7 +115,6 @@ public class Table : MonoBehaviour
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
         // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
         new System.Threading.Thread(CommunicateWithServer).Start();
-
     }
 
     public void CommunicateWithServer()
@@ -210,13 +210,22 @@ public class Table : MonoBehaviour
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
 
+    void UpdateChipsBidInGame(int amount)
+    {
+        DeleteChipsBitInGame();
+        ShowChipsBidInGame(amount);
+    }
     //Usuwanie ¿etonów ze œrodka 
     void DeleteChipsBitInGame()
     {
         GameObject chips = GameObject.FindGameObjectWithTag("Chips");
         GameObject chipsContainer;
-        chipsContainer = chips.transform.Find("Chips").gameObject;
-        Destroy(chipsContainer);
+        try
+        {
+            chipsContainer = chips.transform.Find("Chips").gameObject;
+            Destroy(chipsContainer);
+        }
+        catch(Exception e) { }
         GameObject chipsText = chips.transform.Find("Bet/BetText").gameObject;
         chipsText.GetComponent<TMP_Text>().enabled = false;
     }
@@ -228,7 +237,7 @@ public class Table : MonoBehaviour
         chip.transform.parent = chipsContainer.transform;
         UnityEngine.UI.Image imageOfChipComponent = chip.AddComponent<UnityEngine.UI.Image>();
         imageOfChipComponent.sprite = chipSprite;
-        chip.transform.localScale = new Vector3(0.75f, 0.75f, 1.0f);
+        chip.transform.localScale = new Vector3(0.5f, 0.5f, 1.0f);
         chip.transform.localPosition = position;
     }
 
@@ -291,21 +300,21 @@ public class Table : MonoBehaviour
         chipsText.GetComponent<TMP_Text>().text = amount.ToString() +"$";
         (int numberOfStacks, int[]amountOfChipsInStack) = DivisionIntoChips(amount);
 
-        float positionX = 0 - 75 * (numberOfStacks / 2) - 75;
+        float positionX = 0 - 40 * (numberOfStacks / 2) - 50;
         float positionY = 0;
         GameObject chipsContainer = new("Chips");
         chipsContainer.transform.parent = chips.transform;
         chipsContainer.transform.position = chips.transform.position;
         for (int i = 0; i < amountOfChipsInStack.Length; i++)
         {
-            positionY = -8;
+            positionY = -6;
             if (amountOfChipsInStack[i] != 0)
             {
-                positionX += 75;
+                positionX += 50;
                 Sprite chipSprite = chipsSprites.chipsSpriteSerialization[i]; //wybor sprite'a
                 for (int j = 0; j < amountOfChipsInStack[i]; j++)
                 {
-                    positionY += 8;
+                    positionY += 5;
                     CreateChip(chipsContainer,new Vector3(positionX, positionY, 0.0f), chipSprite);
                 }
             }
@@ -595,11 +604,13 @@ public class Table : MonoBehaviour
                 ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
         }
         else
-        {
-            Card cardBackSprite = new Card(0, 0, 52);
-            for (int j = 0; j < CardsObject.Length; j++)
-                ShowCardOnDeck(cardBackSprite, j);
-        }
+            HideCardsOnDeck();
+
+        if (this.gameTableState.TokensInGame == 0)
+            DeleteChipsBitInGame();
+        else
+            UpdateChipsBidInGame(this.gameTableState.TokensInGame);
+
 
         // Wyœwietlanie Popupu o kolejnoœci ruchu
         if (this.displayPlayerTurnPopup && PopupWindow)
