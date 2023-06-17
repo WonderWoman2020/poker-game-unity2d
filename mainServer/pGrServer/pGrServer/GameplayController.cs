@@ -756,10 +756,6 @@ namespace PokerGameClasses
                     }
                 }
             }
-            //!!!!!!!!!!!!!!!!ODKOMENTOWAC PO TESTACH !!!!!!!!!!!!!!!!!!!!!!!
-            //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            Dealer.Deck.SortDesc();
-            Console.WriteLine(Dealer.Deck.ToString());
 
             return winners;
         }
