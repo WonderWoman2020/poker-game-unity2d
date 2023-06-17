@@ -696,4 +696,11 @@ public class Table : MonoBehaviour
         MyGameManager.Instance.mainServerConnection.stream.Flush();
         Thread.Sleep(1000);
     }
+
+    public void onNextGameButton()
+    {
+        NetworkHelper.WriteNetworkStream(MyGameManager.Instance.gameServerConnection.stream, "START");
+         // na kanale od wiadomoœci z gry, kiedy chcemy kolejn¹ turê gry
+        MyGameManager.Instance.gameServerConnection.stream.Flush();
+    }
 }

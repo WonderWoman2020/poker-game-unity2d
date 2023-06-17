@@ -636,11 +636,36 @@ namespace pGrServer
         {
             GameplayController controller = new GameplayController(table, new TexasHoldemDealer());
             // TODO poprawić, żeby gra była włączana np. co 10 sekund i nie n razy, tylko dopóki wszyscy gracze nie opuszczą stolika
-            for (int i = 0; i < table.Players.Count; i++)
+            /*for (int i = 0; i < table.Players.Count; i++)
             {
                 controller.playTheGame();
                 controller.ConcludeGame();
                 Thread.Sleep(10000);
+            }*/
+            bool startNextGame = true;
+            while (startNextGame)
+            {
+                if(startNextGame)
+                    controller.playTheGame();
+                    controller.ConcludeGame();
+
+                Thread.Sleep(10000); // TODO poprawić, żeby wątek gry się zakańczał, kiedy wszyscy odejdą lub włączą nową grę (nowy wątek)
+                // obecnie jeśli nikt w ciągu 10 s nie zgłosi, że chce kolejne rozdanie w tym samym wątku, wątek się zakończy
+
+                startNextGame = false;
+                for (int i = 0; i < table.Players.Count; i++)
+                {
+                    Player p = table.Players[i];
+                    if (p.GameRequestsStream.DataAvailable)
+                    {
+                        string message = NetworkHelper.ReadNetworkStream(p.GameRequestsStream);
+                        if (message == "START")
+                        {
+                            startNextGame = true;
+                            break;
+                        }
+                    }
+                }
             }
         }
         public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string min_tokens, string big_blind)
