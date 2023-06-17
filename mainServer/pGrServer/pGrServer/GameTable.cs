@@ -31,6 +31,9 @@ namespace PokerGameClasses
         public bool isGameActive
         { get; set; }
 
+        public bool alreadyHasGameThread
+        { get; set; }
+
         public GameTable(string name, HumanPlayer owner)
         {
             this.ChangeName(name);
@@ -42,6 +45,7 @@ namespace PokerGameClasses
             this.AddPlayer(owner);
             this.ChangeOwner(owner);
             this.isGameActive = false;
+            this.alreadyHasGameThread = false;
         }
 
         private bool CheckIfPlayerSitsAtTheTable(Player player)

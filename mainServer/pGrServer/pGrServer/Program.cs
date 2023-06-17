@@ -315,7 +315,7 @@ namespace pGrServer
                             {
                                 byte[] answear = null;
                                 Player client = loggedClients[token];
-                                if (client.Table != null)
+                                if (client.Table != null && client.Table.alreadyHasGameThread == false) // nie rozpoczynamy nowego wątky gry dla stolika, który już ma taki wątek
                                 {
                                     Thread gameThread = new Thread(() => Game(client.Table));
                                     allGameThreads.Add(gameThread);
@@ -571,6 +571,7 @@ namespace pGrServer
                     bool pt2 = (s.Available == 0);
                     if (pt1 && pt2)
                     {
+                        // nie usuwamy gracza ze stolika w trakcie trwania gry, musi zostać kopia gracza przy stoliku na potrzeby logiki gry do końca rozdania
                         //RemoveFromTable(loggedClients[token]);
                         LogOut(loggedClients[token], i);
                     }
@@ -591,8 +592,16 @@ namespace pGrServer
             //@@@@@@@@@@@@ Działa i szkoda odpalac przy testowaniu obecnie
             UpdateBoth(player);
         }
+
         public static void RemoveFromTable(Player player)
         {
+            // TODO dodać, żeby nie usuwało całkowicie gracza ze stolika w trakcie trwania gry (w GameTable sprawdzamy to przez bool isGameActive),
+            // tylko zostawiało przy nim dummy-gracza - jego kopię, nie posiadającą NetworkStream'ów od menu i gry
+            // (robić kopię gracza i podmieniać go w stoliku na kopię, a oryginał pozostaje zalogowany (jeśli tylko odszedł od stolika, a się nie wylogował),
+            // oryginał musi też spasować, bo inaczej w Player.MakeMove() będzie oczekiwanie na jego ruch na kanale wiadomości gameStream).
+            // To kopiowanie gracza jest na potrzeby logiki gry, która ma być niezależna od sieciowości i myśleć, że gracze nie mogą odejść od stolika w trakcie gry.
+            // Nie powinno przeszkadzać w ponownym dołączeniu tego gracza do tego samego stolika - nie może dołączyć tylko ten sam obiekt gracza,
+            // a gracz o takim samym nicku może (według metody GameTable.CheckIfPlayerSitsAtTheTable())
             openTablesAccess.WaitOne();
             if (player.Table != null)
             {
@@ -634,38 +643,51 @@ namespace pGrServer
         }
         public static void Game(GameTable table)
         {
+            table.alreadyHasGameThread = true;
             GameplayController controller = new GameplayController(table, new TexasHoldemDealer());
-            // TODO poprawić, żeby gra była włączana np. co 10 sekund i nie n razy, tylko dopóki wszyscy gracze nie opuszczą stolika
-            /*for (int i = 0; i < table.Players.Count; i++)
+            bool startNextGame = true; // co najmniej 1 rozdanie ma się wykonać, skoro ktoś wysłał zapytanie o włączenie gry
+            while (true)
             {
-                controller.playTheGame();
-                controller.ConcludeGame();
-                Thread.Sleep(10000);
-            }*/
-            bool startNextGame = true;
-            while (startNextGame)
-            {
-                if(startNextGame)
+                if (startNextGame)
+                {
                     controller.playTheGame();
                     controller.ConcludeGame();
+                }
 
-                Thread.Sleep(10000); // TODO poprawić, żeby wątek gry się zakańczał, kiedy wszyscy odejdą lub włączą nową grę (nowy wątek)
-                // obecnie jeśli nikt w ciągu 10 s nie zgłosi, że chce kolejne rozdanie w tym samym wątku, wątek się zakończy
+                // TODO dodać usuwanie graczy, którzy byli nieaktywni podczas gry (nie wykonali ruchu przez dany czas, wyszli itd.)
+                // TODO dodać też oznaczanie graczy jako niekatywnych podczas gry (limit czasowy na ruch w Plyer.MakeMove())
 
+                // zakończ wątek, jeśli nie ma już ludzkich graczy przy tym stoliku
+                if (table.GetPlayerTypeCount(PlayerType.Human) == 0)
+                {
+                    table.alreadyHasGameThread = false;
+                    return;
+                }
+
+                // sprawdzaj, czy na kanale od któregoś z graczy pojawiło się zapytanie o włączenie następnego rozdania
                 startNextGame = false;
                 for (int i = 0; i < table.Players.Count; i++)
                 {
                     Player p = table.Players[i];
-                    if (p.GameRequestsStream.DataAvailable)
+                    try
                     {
-                        string message = NetworkHelper.ReadNetworkStream(p.GameRequestsStream);
-                        string[] splitted = message.Split(new string(" "));
-                        int messageCode = Convert.ToInt32(splitted[0]);
-                        if (messageCode == 100)
+                        if (p.GameRequestsStream.DataAvailable)
                         {
-                            startNextGame = true;
-                            break;
+                            string message = NetworkHelper.ReadNetworkStream(p.GameRequestsStream);
+                            string[] splitted = message.Split(new string(" "));
+                            int messageCode = Convert.ToInt32(splitted[0]);
+                            if (messageCode == 100) // Kod oznaczający prośbę o następne rozdanie
+                            {
+                                startNextGame = true;
+                                break;
+                            }
                         }
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine("Couldn't read from player's " + p.Nick + " game stream. Assuming network failure and removing player from table.");
+                        Console.WriteLine(e);
+                        RemoveFromTable(p); // usuwanie gracza, którego połączenie się zerwało
                     }
                 }
             }
