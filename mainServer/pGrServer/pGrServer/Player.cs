@@ -255,7 +255,8 @@ namespace PokerGameClasses
                 + ":Hand:" + (withCards ? this.PlayerHand.ToString() : null)
                 + ":Tokens:" + this.TokensCount
                 + ":Current bet:" + this.PlayersCurrentBet
-                + ":XP: " + this.XP;
+                + ":XP: " + this.XP
+                + ":SeatNr:" + this.SeatNr;
         }
 
     }
