@@ -659,7 +659,9 @@ namespace pGrServer
                     if (p.GameRequestsStream.DataAvailable)
                     {
                         string message = NetworkHelper.ReadNetworkStream(p.GameRequestsStream);
-                        if (message == "START")
+                        string[] splitted = message.Split(new string(" "));
+                        int messageCode = Convert.ToInt32(splitted[0]);
+                        if (messageCode == 100)
                         {
                             startNextGame = true;
                             break;

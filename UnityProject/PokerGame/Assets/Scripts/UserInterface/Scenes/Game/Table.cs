@@ -699,7 +699,7 @@ public class Table : MonoBehaviour
 
     public void onNextGameButton()
     {
-        NetworkHelper.WriteNetworkStream(MyGameManager.Instance.gameServerConnection.stream, "START");
+        NetworkHelper.WriteNetworkStream(MyGameManager.Instance.gameServerConnection.stream, "100 ");
          // na kanale od wiadomoœci z gry, kiedy chcemy kolejn¹ turê gry
         MyGameManager.Instance.gameServerConnection.stream.Flush();
     }
