@@ -215,6 +215,7 @@ public class JoinTable : MonoBehaviour
                     else
                     {
                         joinedTheTable = false;
+                        ShowPopup("Couldn't join table, the game is currently in progress");
                     }
                 }
                 Debug.Log("Joined bool value: " + joinedTheTable);
@@ -222,7 +223,7 @@ public class JoinTable : MonoBehaviour
             if (!joinedTheTable)
             {
                 Debug.Log("Player " + player.Nick + " wasn't added to " + gameTable.Name);
-                this.ShowPopup("Joining the table failed. The game by it has already started or it is an error.");
+                //this.ShowPopup("Joining the table failed. The game by it has already started or it is an error.");
             }
             else
             {
