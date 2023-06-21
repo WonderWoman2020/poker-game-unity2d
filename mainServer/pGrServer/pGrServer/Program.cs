@@ -666,7 +666,8 @@ namespace pGrServer
 
                 // sprawdzaj, czy na kanale od któregoś z graczy pojawiło się zapytanie o włączenie następnego rozdania
                 startNextGame = false;
-                for (int i = 0; i < table.Players.Count; i++)
+                //for (int i = 0; i < table.Players.Count; i++)
+                for (int i = table.Players.Count - 1; i >= 0; i--) // odwrotna iteracja, bo usuwam elementy z listy, po której iteruję w tej pętli 
                 {
                     Player p = table.Players[i];
                     try
