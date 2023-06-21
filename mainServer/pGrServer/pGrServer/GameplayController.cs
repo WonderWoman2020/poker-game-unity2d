@@ -34,6 +34,8 @@ namespace PokerGameClasses
             this.gameTable.isGameActive = true;
             this.gameTable.SortPlayersBySeats();
 
+            this.SendIsGameOnStatus("Game started");
+
             this.MakeBlindsFirstMoves();
 
             while (CurrentRound < 4)
@@ -41,6 +43,22 @@ namespace PokerGameClasses
                 this.MakeNextRound();
                 if(CurrentRound < 4)
                     this.PositionOfPlayerWhoRaised = -1;
+            }
+
+            this.SendIsGameOnStatus("Game ended");
+        }
+
+        public void SendIsGameOnStatus(string status)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(":G:");
+            sb.Append("Status");
+            sb.Append("|");
+            sb.Append(status);
+            foreach (Player p in this.gameTable.Players)
+            {
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                p.GameRequestsStream.Flush();
             }
         }
 

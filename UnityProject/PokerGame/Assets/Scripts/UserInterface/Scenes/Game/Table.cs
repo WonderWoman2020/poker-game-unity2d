@@ -91,6 +91,10 @@ public class Table : MonoBehaviour
     // Zmienne od komunikacji z serwerem na kanale od zapytañ MENU
     bool gameStartedOnServer = false;
 
+    // Z kana³u GAME
+    bool isGameOn = false;
+    bool showStartGameButton = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -191,6 +195,16 @@ public class Table : MonoBehaviour
                     {
                         this.winnerNick = splitted[1];
                         this.displayWinnerPopup = true;
+                    }
+                    else if(splitted[0] == "Status") // komunikaty o statusie gry (zaczê³a siê, skoñczy³a)
+                    {
+                        if (splitted[1] == "Game started")
+                        {
+                            this.isGameOn = true;
+                            this.showStartGameButton = false;
+                        }
+                        else if (splitted[1] == "Game ended")
+                            this.isGameOn = false;
                     }
                 }
             }
@@ -673,16 +687,25 @@ public class Table : MonoBehaviour
             this.displayWinnerPopup = false;
         }
 
-        /*// Pokazywanie/chowanie przycisku 'start game' i 'next hand'
-        if(this.gameStartedOnServer)
+        // Pokazywanie/chowanie przycisku 'start game' i 'next hand'
+        if (this.isGameOn)
         {
-            this.startGameButton.transform.localScale = Vector3.zero;
             this.nextHandButton.transform.localScale = Vector3.zero;
+            this.startGameButton.transform.localScale = Vector3.zero;
         }
-        if(this.displayWinnerPopup)
+        else
         {
-            this.nextHandButton.transform.localScale = Vector3.one;
-        }*/
+            if (this.showStartGameButton)
+            {
+                this.startGameButton.transform.localScale = Vector3.one;
+                this.nextHandButton.transform.localScale = Vector3.zero;
+            }
+            else
+            {
+                this.nextHandButton.transform.localScale = Vector3.one;
+                this.startGameButton.transform.localScale = Vector3.zero;
+            }
+        }
 
     }
 
