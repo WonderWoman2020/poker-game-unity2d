@@ -207,7 +207,6 @@ public class Table : MonoBehaviour
     {
         Debug.Log(splitted[0]);
         Debug.Log(splitted[1]);
-        ShowMenu(true);
         this.readyToSendMove = true;
         //Czekamy teraz na klikniecie ktoregos z przyciskow. wyslanie kolejnego requesta do serwera jest wykonywane w metodach przyciskow
     }
@@ -625,7 +624,8 @@ public class Table : MonoBehaviour
         if (this.displayPlayerTurnPopup && PopupWindow)
         {
             ShowMenu(true);
-            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            Vector3 position = new Vector3(660.0f, 490.0f, 0.0f);
+            var popup = Instantiate(PopupWindow, position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
             this.displayPlayerTurnPopup = false;
         }
