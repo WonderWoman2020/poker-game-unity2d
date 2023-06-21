@@ -7510,6 +7510,8 @@ MonoBehaviour:
   menuCanvas: {fileID: 1036125299}
   collection: {fileID: 1116562636611478936, guid: 8ef059a2d9fa2334fa9b48235371c822, type: 3}
   chipsSprites: {fileID: 1128532891660659571, guid: 8deed98c6d6b8954488ead4e92ca9d83, type: 3}
+  startGameButton: {fileID: 1325458394}
+  nextHandButton: {fileID: 997995107}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1292243198
 GameObject:

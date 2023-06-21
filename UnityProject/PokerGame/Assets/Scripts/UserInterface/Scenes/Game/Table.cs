@@ -56,6 +56,10 @@ public class Table : MonoBehaviour
     [SerializeField]
     private ChipsSprites chipsSprites;
 
+    // przyciski 'start game' i 'next hand'
+    [SerializeField] private Button startGameButton;
+    [SerializeField] private Button nextHandButton;
+
     // Prze³¹cznik ustawiany na 'true', kiedy serwer przyœle do klienta zapytanie o wykonanie ruchu
     private bool readyToSendMove = false;
 
@@ -84,6 +88,8 @@ public class Table : MonoBehaviour
     // Nick zwyciêzcy gry, od serwera (wysy³a pod koniec gry)
     string winnerNick = null;
 
+    // Zmienne od komunikacji z serwerem na kanale od zapytañ MENU
+    bool gameStartedOnServer = false;
 
     // Start is called before the first frame update
     void Start()
@@ -115,6 +121,8 @@ public class Table : MonoBehaviour
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
         // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
         new System.Threading.Thread(CommunicateWithServer).Start();
+
+        new System.Threading.Thread(CommunicateWithServerOnMenu).Start();
     }
 
     public void CommunicateWithServer()
@@ -183,6 +191,44 @@ public class Table : MonoBehaviour
                     {
                         this.winnerNick = splitted[1];
                         this.displayWinnerPopup = true;
+                    }
+                }
+            }
+        }
+    }
+
+    // analogiczna pêtla odbierania komunikatów od serwera jak CommunicateWithServer, tylko na porcie od zapytañ z Menu
+    public void CommunicateWithServerOnMenu()
+    {
+        NetworkStream menuStream = MyGameManager.Instance.mainServerConnection.stream;
+        bool running = true;
+
+        while (running)
+        {
+            if (menuStream.DataAvailable)
+            {
+                UnityEngine.Debug.Log("sa dane na strumieniu MENU");
+                string menuRequest = NetworkHelper.ReadNetworkStream(menuStream);
+                menuStream.Flush();
+
+                Debug.Log(menuRequest);
+                string[] splittedRequests = menuRequest.Split(new string("answear"));
+                
+                foreach (string singleRequest in splittedRequests)
+                {
+                    Debug.Log(singleRequest);
+
+                    if (singleRequest == null || singleRequest == "") // pomiñ pusty
+                        continue;
+
+                    string[] splitted = singleRequest.Split(new string(" "));
+
+                    // przed pierwsz¹ spacj¹ jest pusty element, dlatego od indeksu 1 jedziemy
+                    if (splitted[1] == "6") // odpowiedŸ na zapytanie o w³¹czenie gry
+                    {
+                        if (splitted[2] == "0") // OK
+                            //gameStartedOnServer = true;
+                            ;
                     }
                 }
             }
@@ -626,6 +672,18 @@ public class Table : MonoBehaviour
             popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
             this.displayWinnerPopup = false;
         }
+
+        /*// Pokazywanie/chowanie przycisku 'start game' i 'next hand'
+        if(this.gameStartedOnServer)
+        {
+            this.startGameButton.transform.localScale = Vector3.zero;
+            this.nextHandButton.transform.localScale = Vector3.zero;
+        }
+        if(this.displayWinnerPopup)
+        {
+            this.nextHandButton.transform.localScale = Vector3.one;
+        }*/
+
     }
 
     // Wczytanie stawki z pola input 'Bid'
