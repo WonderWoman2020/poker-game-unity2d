@@ -178,19 +178,19 @@ namespace pGrServer
                                         loggedClients[token].Table = gameTable;
                                         ChangeTableSettings(gameTable, player, request[3], request[4], request[5], request[6], request[7]);
                                         openTables.Add(gameTable);
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 0 "); // odpowiedź OK
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 0 "); // odpowiedź OK
                                     }
                                     else
                                     {
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 2 "); // juz jest taka nazwa
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 2 "); // juz jest taka nazwa
                                     }
                                 }
                                 else
                                 {
                                     if(!valid)
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 9 "); // błąd w walidacji
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 9 "); // błąd w walidacji
                                     else
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 0 1 "); // gracz przy stole
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 1 "); // gracz przy stole
                                 }
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
@@ -224,24 +224,24 @@ namespace pGrServer
                                         if (git)
                                         {
                                             client.Table = table;
-                                            answear = System.Text.Encoding.ASCII.GetBytes("answear 1 0 "); // odpowiedź OK
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
                                            
                                         }
                                         else
                                         {
                                             client.Table = null;
-                                            answear = System.Text.Encoding.ASCII.GetBytes("answear 1 3 "); // odpowiedź FAILED
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 1 3 "); // odpowiedź FAILED
                                         }
                                     }
                                     else
                                     {
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 1 2 "); // odpowiedź FAILED
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 1 2 "); // odpowiedź FAILED
                                     }
 
                                 }
                                 else
                                 {
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 1 1 "); // odpowiedź FAILED
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 1 1 "); // odpowiedź FAILED
                                 }
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
@@ -268,14 +268,14 @@ namespace pGrServer
                             {
                                 RemoveFromTable(player);
                                 LogOut(player, i);
-                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answear 3 0 "); // odpowiedź OK
+                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answer 3 0 "); // odpowiedź OK
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //Odejscie od stołu
                             else if (request[1] == "4")
                             {
                                 RemoveFromTable(player);
-                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answear 4 0 "); // odpowiedź OK
+                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //Zmiana ustawień
@@ -298,14 +298,14 @@ namespace pGrServer
                                 if (client.Table != null && valid)
                                 {
                                     ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5], request[6]);
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 5 0 "); // odpowiedź OK
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 5 0 "); // odpowiedź OK
                                 }
                                 else
                                 {
                                     if (!valid)
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 5 9 "); // odpowiedź Failed
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 5 9 "); // odpowiedź Failed
                                     else
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answear 5 1 "); // odpowiedź Failed
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 5 1 "); // odpowiedź Failed
                                 }
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
@@ -320,11 +320,11 @@ namespace pGrServer
                                     Thread gameThread = new Thread(() => Game(client.Table));
                                     allGameThreads.Add(gameThread);
                                     gameThread.Start();
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 6 0 "); // odpowiedź OK
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 6 0 "); // odpowiedź OK
                                 }
                                 else
                                 {
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 6 1 "); // odpowiedź Failed
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 6 1 "); // odpowiedź Failed
                                 }
 
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
@@ -345,34 +345,163 @@ namespace pGrServer
                                     NetworkHelper.WriteNetworkStream(client.MenuRequestsStream, "1" + ' ' + client.TokensCount.ToString());
                                     client.MenuRequestsStream.Flush();
                                     UpdateUserCoinsOrXP(client.Login, "coins", player.TokensCount);
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 7 0 "); // odpowiedź OK
-                                    player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 7 0 "); // odpowiedź OK
                                 }
                                 else
                                 {
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answear 7 9 "); // odpowiedź Failed
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 7 9 "); // odpowiedź Failed
                                 }
-                                
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //zmiana nicku
                             else if(request[1] == "8")
                             {
-
+                                byte[] answear = null;
+                                var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatenick");
+                                httpWebRequest.ContentType = "application/json";
+                                httpWebRequest.Method = "POST";
+                                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                                {
+                                    string json = "{\"login\":\"" + player.Login + "\"," +
+                                                    "\"nick\":\"" + request[2] + "\"}";
+                                    streamWriter.Write(json);
+                                    streamWriter.Flush();
+                                    streamWriter.Close();
+                                }
+                                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                {
+                                    var result = streamReader.ReadToEnd();
+                                    var dataFromDatabase = result.Split("\"");
+                                    var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
+                                    if (responseCode == "200")
+                                    {
+                                        player.Login = request[2];
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 8 0 ");
+                                    }
+                                    else if (responseCode == "405")
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 8 1 ");
+                                    }
+                                    else
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 8 2 ");
+                                    }
+                                }
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //zmiana hasla
                             else if (request[1] == "9")
                             {
-
+                                byte[] answear = null;
+                                
+                                var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatepasswd");
+                                httpWebRequest.ContentType = "application/json";
+                                httpWebRequest.Method = "POST";
+                                var currPass = request[2];
+                                var newPass = request[3];
+                                var confPass = request[4];
+                                if(newPass == confPass)
+                                {
+                                    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                                    {
+                                        string json = "{\"login\":\"" + player.Login + "\"," +
+                                                      "\"currentPassword\":\"" + currPass + "\"," +
+                                                      "\"newPassword\":\"" + newPass + "\"}";
+                                        streamWriter.Write(json);
+                                        streamWriter.Flush();
+                                        streamWriter.Close();
+                                    }
+                                    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                    {
+                                        var result = streamReader.ReadToEnd();
+                                        var dataFromDatabase = result.Split("\"");
+                                        var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
+                                        if (responseCode == "200")
+                                        {
+                                            //poprawnie zmienione
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 9 0 ");
+                                        }
+                                        else if (responseCode == "401")
+                                        {
+                                            //wyslij info uzytkownikowi o zlym hasle
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 9 2 ");
+                                        }
+                                        else
+                                        {
+                                            //wyslij info uzytkownikowi o bledzie innym niz wymienione (np server error)
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 9 3 ");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 9 1 ");
+                                }
+                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //usun konto
                             else if (request[1] == "10")
                             {
+                                byte[] answear = null;
+                                
 
+                                var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/deleteaccount");
+                                httpWebRequest.ContentType = "application/json";
+                                httpWebRequest.Method = "POST";
+                                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                                {
+                                    string json = "{\"login\":\"" + player.Login + "\"," +
+                                                  "\"password\":\"" + request[2] + "\"}";
+                                    streamWriter.Write(json);
+                                    streamWriter.Flush();
+                                    streamWriter.Close();
+                                }
+                                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                {
+                                    var result = streamReader.ReadToEnd();
+                                    var dataFromDatabase = result.Split("\"");
+                                    var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
+                                    if (responseCode == "200")
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer A 0 ");
+
+                                        loggedClientsAccess.WaitOne();
+                                        Socket s = loggedClients[token].MenuRequestsStream.Socket;
+                                        bool pt1 = s.Poll(1000, SelectMode.SelectRead);
+                                        bool pt2 = (s.Available == 0);
+                                        if (pt1 && pt2)
+                                        {
+                                            player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                            player.MenuRequestsTcp.Close();
+                                            player.MenuRequestsStream.Dispose();
+                                            player.GameRequestsTcp.Close();
+                                            player.GameRequestsStream.Dispose();
+                                            loggedClients.Remove(player.Token);
+                                            loggedTokens.RemoveAt(i);
+                                        }
+                                        loggedClientsAccess.ReleaseMutex();
+                                        Thread.Sleep(10000);
+                                    }
+                                    else if (responseCode == "401")
+                                    {
+                                        // zle haslo
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer A 1 ");
+                                        player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                    }
+                                    else
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer A 2 ");
+                                        player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                    }
+                                }
                             }
                             else
                             {
                                 Console.WriteLine(request);
-                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answear 100 1 "); // odpowiedź Failed
+                                byte[] answear = System.Text.Encoding.ASCII.GetBytes("answer 100 1 "); // odpowiedź Failed
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                                
