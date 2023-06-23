@@ -697,12 +697,12 @@ public class Table : MonoBehaviour
         {
             if (this.showStartGameButton)
             {
-                this.startGameButton.transform.localScale = Vector3.one;
+                this.startGameButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
                 this.nextHandButton.transform.localScale = Vector3.zero;
             }
             else
             {
-                this.nextHandButton.transform.localScale = Vector3.one;
+                this.nextHandButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
                 this.startGameButton.transform.localScale = Vector3.zero;
             }
         }
