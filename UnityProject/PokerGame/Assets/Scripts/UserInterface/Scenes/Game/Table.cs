@@ -678,6 +678,12 @@ public class Table : MonoBehaviour
         {
             for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
                 ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
+
+            //  Ustawianie pozosta³ych kart ty³em do góry - ¿eby mieæ pewnoœæ, ¿e nie wyœwietlamy jakiejœ starej karty,
+            // jeœli wczeœniej np. mieliœmy 4 karty, a teraz mamy 3 i nigdzie nie ukryliœmy tej czwartej
+            int cardsOnTableLeft = CardsObject.Length - this.gameTableState.Cards.Cards.Count;
+            for (int k = 0; k < cardsOnTableLeft; k++)
+                HideCard(CardsObject[this.gameTableState.Cards.Cards.Count + k]);
         }
         else
             HideCardsOnDeck();
