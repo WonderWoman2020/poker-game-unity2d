@@ -117,6 +117,19 @@ public class Table : MonoBehaviour
         //wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
         this.Players = InitPlayers();
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
+        // posortowanie kart po ich numerkach
+        for (int i=0; i<this.CardsObject.Length; i++)
+        {
+            for (int j = 0; j < this.CardsObject.Length-1; j++)
+            {
+                if(String.Compare(this.CardsObject[j].name, this.CardsObject[j+1].name) > 0)
+                {
+                    GameObject cardTemp = this.CardsObject[j];
+                    this.CardsObject[j] = this.CardsObject[j + 1];
+                    this.CardsObject[j + 1] = cardTemp;
+                }
+            }
+        }
         //TestHidingCards();
 
         //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze

@@ -3892,7 +3892,7 @@ GameObject:
   - component: {fileID: 586324212}
   - component: {fileID: 586324216}
   m_Layer: 5
-  m_Name: Card 1
+  m_Name: Card 3
   m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8558,7 +8558,7 @@ GameObject:
   - component: {fileID: 1426201460}
   - component: {fileID: 1426201461}
   m_Layer: 5
-  m_Name: Card 3
+  m_Name: Card 1
   m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
