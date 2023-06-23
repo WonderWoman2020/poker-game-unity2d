@@ -94,6 +94,7 @@ public class Table : MonoBehaviour
     // Z kana³u GAME
     bool isGameOn = false;
     bool showStartGameButton = true;
+    bool resetScene = false;
 
     // Start is called before the first frame update
     void Start()
@@ -202,6 +203,7 @@ public class Table : MonoBehaviour
                         {
                             this.isGameOn = true;
                             this.showStartGameButton = false;
+                            this.resetScene = true;
                         }
                         else if (splitted[1] == "Game ended")
                             this.isGameOn = false;
@@ -628,9 +630,23 @@ public class Table : MonoBehaviour
         }
     }
 
+    public void ResetScene()
+    {
+        HideCardsOnDeck();
+        DeleteChipsBitInGame();
+        HideAllPlayers();
+        HideMainPlayerCards();
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if(this.resetScene)
+        {
+            this.ResetScene();
+            this.resetScene = false;
+        }
+
         // Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
         // (na razie tylko o zak³adach i posiadanych ¿etonach)
         // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
