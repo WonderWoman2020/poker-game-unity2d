@@ -560,6 +560,8 @@ public class Table : MonoBehaviour
 
     void setPlayersOnTable(IDictionary<string, PlayerState> playersStates)
     {
+        if (playersStates == null || playersStates.Count == 0)
+            return;
 
         List<PlayerState> players = new List<PlayerState>(); // Lista playerow
         int amountOfPlayers = 0; //Liczba bez gracza glownego
