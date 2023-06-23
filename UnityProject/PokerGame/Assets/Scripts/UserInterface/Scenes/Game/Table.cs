@@ -230,7 +230,7 @@ public class Table : MonoBehaviour
                 menuStream.Flush();
 
                 Debug.Log(menuRequest);
-                string[] splittedRequests = menuRequest.Split(new string("answear"));
+                string[] splittedRequests = menuRequest.Split(new string("answer"));
                 
                 foreach (string singleRequest in splittedRequests)
                 {
