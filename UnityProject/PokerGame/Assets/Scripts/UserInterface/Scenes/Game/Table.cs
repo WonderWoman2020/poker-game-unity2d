@@ -14,6 +14,7 @@ using System.Net.Sockets;
 
 
 using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 
 // G³ówny ekran gry - widok stolika, kart i graczy
 public class Table : MonoBehaviour
@@ -101,7 +102,7 @@ public class Table : MonoBehaviour
     {
 
         ShowMenu(false); //zakrycie MENU na start
-        ShowMenu(true);
+        //ShowMenu(true);
         if (MyGameManager.Instance.MainPlayer == null)
             return;
 
@@ -114,13 +115,14 @@ public class Table : MonoBehaviour
         //(Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
 
         //wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
-        this.Players = GameObject.FindGameObjectsWithTag("Player");
+        this.Players = InitPlayers();
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
         //TestHidingCards();
 
         //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
+        HideAllPlayers();
 
         // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
@@ -429,7 +431,51 @@ public class Table : MonoBehaviour
         DeleteChipsBitInGame();
         ShowChipsBidInGame(1203);
     }
-
+    void TestSetPlayers()
+    {
+        PlayerState p1 = new PlayerState("P1",null,10,10,10,0);
+        PlayerState p2 = new PlayerState("P2",null,10,10,10,1);
+        PlayerState p3 = new PlayerState("P3",null,10,10,10,2);
+        PlayerState p4 = new PlayerState("P4",null,10,10,10,3);
+        PlayerState p5 = new PlayerState("P5",null,10,10,10,4);
+        PlayerState p6 = new PlayerState("P6",null,10,10,10,5);
+        PlayerState p7 = new PlayerState("P7",null,10,10,10,6);
+        PlayerState p8 = new PlayerState("P8",null,10,10,10,7);
+        PlayerState p9 = new PlayerState("P9",null,10,10,10,8);
+        List<PlayerState> players = new List<PlayerState>();
+        players.Add(p1);
+        players.Add(p2);
+        players.Add(p3);
+        players.Add(p4);
+        players.Add(p5);
+        players.Add(p6);
+        players.Add(p7);
+        players.Add(p8);
+        players.Add(p9);
+        IDictionary<string, PlayerState> playersStates = new Dictionary<string, PlayerState>();
+        playersStates[p1.Nick] = p1;
+        playersStates[p2.Nick] = p2;
+        playersStates[p3.Nick] = p3;
+        playersStates[p4.Nick] = p4;
+        playersStates[p5.Nick] = p5;
+        playersStates[p6.Nick] = p6;
+        playersStates[p7.Nick] = p7;
+        playersStates[p8.Nick] = p8;
+        playersStates[p9.Nick] = p9;
+        setPlayersOnTable(playersStates);
+    }
+    int CompareObNames(GameObject x, GameObject y) { return x.name.CompareTo(y.name); }
+    GameObject[] InitPlayers()
+    {
+        GameObject[] Players = GameObject.FindGameObjectsWithTag("Player");
+        Array.Sort(Players, CompareObNames);
+        for(int i = 0; i < 8; i++)
+        {
+            Debug.Log(Players[i]);
+        }
+        
+        return Players;
+    }
 
     // Metody od pokazywania i chowania kart, graczy i menu ruchów
     // TODO przenieœæ to do jakiejœ osobnej klasy?
@@ -510,6 +556,85 @@ public class Table : MonoBehaviour
             GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
             ChangingCardsVisibility(isWaiting, card1, card2, bet);
         } 
+    }
+
+    void setPlayersOnTable(IDictionary<string, PlayerState> playersStates)
+    {
+
+        List<PlayerState> players = new List<PlayerState>(); // Lista playerow
+        int amountOfPlayers = 0; //Liczba bez gracza glownego
+        int mainPlayerSeat = -1;
+        foreach (KeyValuePair<string, PlayerState> state in playersStates)
+        {
+            PlayerState player = state.Value;
+            if (player.Nick == MyGameManager.Instance.MainPlayer.Nick)
+            {
+                this.InfoMainPlayerName.text = player.Nick;
+                this.InfoMainPlayerChips.text = Convert.ToString(player.TokensCount) + " $";
+                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(player.CurrentBet) + " $";
+                this.ShowMainPlayerCards(state.Value.Hand); // karty g³ównego gracza
+                mainPlayerSeat = player.SeatNr;
+                players.Add(player);
+                continue;
+            }
+            players.Add(player);
+            amountOfPlayers++;
+        }
+        List<PlayerState> sortedPlayersState = players.OrderBy(o=>o.SeatNr).ToList(); //sorted by seat number 
+        int mainPlayerTemp = amountOfPlayers / 2;
+        List<PlayerState> leftSide = new List<PlayerState>();
+        List<PlayerState> rightSide = new List<PlayerState>();
+        int i = 0;
+      
+        foreach(PlayerState state in sortedPlayersState.ToList())
+        {
+            if (state.SeatNr!=mainPlayerSeat)
+            {
+                PlayerState temp = state;
+                sortedPlayersState.Add(temp); // Przeniesienie poczatku na koniec listy
+                sortedPlayersState.RemoveAt(0); // Usuniecie z poczatku
+            }
+            else
+            {
+                break; //Glowny gracz
+            }
+            i++;
+        }
+        sortedPlayersState.RemoveAt(0); //Usiniecie main playera z listy
+        int amountOnRight = 0;
+        foreach(PlayerState state in sortedPlayersState)
+        {
+            if(amountOnRight< mainPlayerTemp)
+            {
+                leftSide.Add(state);
+                amountOnRight++;
+            }
+            else
+            {
+                rightSide.Add(state);
+            }
+        }
+        rightSide.Reverse();
+        i = 4;
+        foreach ( PlayerState state in rightSide)
+        {
+            this.ShowPlayerOnTable(i, state.Nick);
+            this.ChangePlayerBet(state.CurrentBet, i);
+            this.ChangePlayerMoney(state.TokensCount, i);
+            this.ShowPlayerCards(i, state.Hand); // karty wspó³graczy
+            i++;
+        }
+        i = 0;
+        foreach (PlayerState state in leftSide)
+        {
+            this.ShowPlayerOnTable(i, state.Nick);
+            this.ChangePlayerBet(state.CurrentBet, i);
+            this.ChangePlayerMoney(state.TokensCount, i);
+            this.ShowPlayerCards(i, state.Hand); // karty wspó³graczy
+            i++;
+        }
+
+        
     }
 
     void ShowCard(Card card, GameObject cardObject)
@@ -650,28 +775,29 @@ public class Table : MonoBehaviour
         // Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
         // (na razie tylko o zak³adach i posiadanych ¿etonach)
         // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
-        int i = 0;
-        foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
-        {
-            PlayerState playerState = state.Value;
+        setPlayersOnTable(this.playersStates);
 
-            // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
-            // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
-            if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
-            {
-                this.InfoMainPlayerName.text = playerState.Nick;
-                this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
-                this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
-                this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
-                continue;
-            }
+        //foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
+        //{
+        //    PlayerState playerState = state.Value;
 
-            this.ShowPlayerOnTable(i, playerState.Nick);
-            this.ChangePlayerBet(playerState.CurrentBet, i);
-            this.ChangePlayerMoney(playerState.TokensCount, i);
-            this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
-            i++;
-        }
+        //    // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
+        //    // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
+        //    if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
+        //    {
+        //        this.InfoMainPlayerName.text = playerState.Nick;
+        //        this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
+        //        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
+        //        this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
+        //        continue;
+        //    }
+
+        //    this.ShowPlayerOnTable(i, playerState.Nick);
+        //    this.ChangePlayerBet(playerState.CurrentBet, i);
+        //    this.ChangePlayerMoney(playerState.TokensCount, i);
+        //    this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
+        //    i++;
+        //}
 
         // Wyœwietlanie kart na stoliku
         if (this.gameTableState.Cards != null)
@@ -697,10 +823,13 @@ public class Table : MonoBehaviour
         // Wyœwietlanie Popupu o kolejnoœci ruchu
         if (this.displayPlayerTurnPopup && PopupWindow)
         {
-            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+            ShowMenu(true);
+            Vector3 position = new Vector3(660.0f, 490.0f, 0.0f);
+            var popup = Instantiate(PopupWindow, position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
             this.displayPlayerTurnPopup = false;
         }
+
         // Wyœwietlanie Popupu o zwyciêzcy gry
         if (this.displayWinnerPopup && PopupWindow)
         {
@@ -754,6 +883,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "1 ");
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
     public void OnAllInButton()
@@ -764,6 +894,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "3 ");
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
     public void OnPassButton()
@@ -774,6 +905,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "0 ");
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
     // TODO (cz. PGGP-106) dodaæ sprawdzanie, czy podaliœmy jakiœ zak³ad w polu input 'Bid' i czy to liczba,
@@ -786,6 +918,7 @@ public class Table : MonoBehaviour
             NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
             NetworkHelper.WriteNetworkStream(gameStream, "2 " + this.betFieldText.ToString());
             this.readyToSendMove = false;
+            ShowMenu(false);
         }
     }
 
