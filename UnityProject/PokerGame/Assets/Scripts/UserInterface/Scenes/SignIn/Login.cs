@@ -52,6 +52,12 @@ public class Login : MonoBehaviour
 
     public void OnLoginButton()
     {
+        if (!this.ValidateIP(this.IP))
+        {
+            this.ShowPopup("Incorrect IP. Input valid IP");
+            return;
+        }
+
         // Nawi¹zanie po³¹czenia z serwerem na porcie od zdarzeñ w menu aplikacji
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
         mainServer.Start();
@@ -138,6 +144,18 @@ public class Login : MonoBehaviour
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
         popup.GetComponent<TextMeshProUGUI>().text = text;
     }
+
+    public bool ValidateIP(string IP)
+    {
+        // funkcja systemowa do parsowania IP interpretuje pojedyncz¹ liczbê równie¿ jako adres, np. 3 = 0.0.0.3
+        // po to sprawdzamy, czy zosta³y podane kropki, ¿eby wykluczyæ pojedyncz¹ liczbê jako dobry input
+        System.Net.IPAddress parsedIP; // tê zmienn¹ ignorujê, i tak chcê po prostu daæ string'a do TcpConnection, a nie obiekt tej klasy
+        if (IP.Contains("."))
+            return System.Net.IPAddress.TryParse(IP, out parsedIP);
+
+        return false;
+    }
+
     public void ReadLogin(string login)
     {
         if (login.Length == 0)
