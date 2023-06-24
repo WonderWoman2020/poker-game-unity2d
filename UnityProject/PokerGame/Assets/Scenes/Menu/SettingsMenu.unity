@@ -885,9 +885,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241600}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: OnExitButton
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: SettingsMenu, Assembly-CSharp
+        m_MethodName: OnBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1230,7 +1230,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: OnSettingsButton
         m_Mode: 1
@@ -1427,7 +1427,7 @@ GameObject:
   - component: {fileID: 994241596}
   - component: {fileID: 994241595}
   - component: {fileID: 994241594}
-  - component: {fileID: 994241600}
+  - component: {fileID: 994241598}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1517,7 +1517,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &994241600
+--- !u!114 &994241598
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1526,12 +1526,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 994241593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 99d49ae0fd775e742b8112056c1c8b52, type: 3}
+  m_Script: {fileID: 11500000, guid: af59c8e2bdf186047be403014f657158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exitButton: {fileID: 716606195}
-  settingsButton: {fileID: 1694380610}
-  playButton: {fileID: 1571997390}
+  changePasswordButton: {fileID: 1739262998}
+  changeNameButton: {fileID: 1694380610}
+  deleteAccountButton: {fileID: 1571997390}
+  logoutButton: {fileID: 945147928}
+  backButton: {fileID: 716606195}
+  PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1187072271
 GameObject:
   m_ObjectHideFlags: 0
@@ -1927,7 +1930,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: OnPlayButton
         m_Mode: 1
@@ -2274,7 +2277,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: OnSettingsButton
         m_Mode: 1
@@ -2526,7 +2529,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241600}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
         m_MethodName: OnPlayButton
         m_Mode: 1
