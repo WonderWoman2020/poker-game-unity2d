@@ -45,7 +45,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu/ChangePasswordMenu.unity
     guid: 9da2539c66bbc494595a6c60e9e92e2a
   - enabled: 1
-    path: Assets/Scenes/Menu/DeleteAccout.unity
+    path: Assets/Scenes/Menu/DeleteAccount.unity
     guid: cc619d2d7df5deb40bf301a550d44517
   - enabled: 1
     path: Assets/Scenes/Menu/GetTokensMenu.unity

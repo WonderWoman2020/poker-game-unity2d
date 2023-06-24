@@ -160,7 +160,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000040054, y: 0}
+  m_AnchoredPosition: {x: 0.000061035156, y: 0}
   m_SizeDelta: {x: -1022.395, y: -958.6643}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &260972091
@@ -208,8 +208,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: LoginPlayer, Assembly-CSharp
-        m_MethodName: OnLoginButton
+        m_TargetAssemblyTypeName: DeleteAccount, Assembly-CSharp
+        m_MethodName: OnDeleteAccountButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -575,8 +575,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: LoginPlayer, Assembly-CSharp
-        m_MethodName: OnBackToMenuButton
+        m_TargetAssemblyTypeName: DeleteAccount, Assembly-CSharp
+        m_MethodName: OnBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -921,7 +921,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 55.2
+  m_fontSize: 38.8
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1082,11 +1082,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 994241593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 293df984303773649b5a54d0e9dd8574, type: 3}
+  m_Script: {fileID: 11500000, guid: 700730f7f79eacd4cb8593bed69a4eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginButton: {fileID: 260972091}
-  backToMenuButton: {fileID: 716606195}
+  deleteAccountButton: {fileID: 260972091}
+  backButton: {fileID: 716606195}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1564000074
 GameObject:
