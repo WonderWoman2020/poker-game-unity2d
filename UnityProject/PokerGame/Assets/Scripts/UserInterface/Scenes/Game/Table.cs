@@ -41,6 +41,7 @@ public class Table : MonoBehaviour
     [SerializeField] private TMP_Text InfoMainPlayerBid;
     [SerializeField] private GameObject InfoMainPlayerIcon;
     [SerializeField] private GameObject[] MainPlayerCards;
+    [SerializeField] private GameObject InfoTurnPointer;
 
 
     // Obiekt menu ruchów gracza, u¿ywamy go do chowania lub pokazywania tego menu
@@ -101,6 +102,9 @@ public class Table : MonoBehaviour
     bool isGameOn = false;
     bool showStartGameButton = true;
     bool resetScene = false;
+
+    // którego gracza ruch (nick)
+    string whichPlayerTurn = null;
 
     // Start is called before the first frame update
     void Start()
@@ -195,6 +199,7 @@ public class Table : MonoBehaviour
                         if(!this.displayPlayerTurnPopup)
                         {
                             CommunicatePlayersTurn(splitted[1]);
+                            this.whichPlayerTurn = splitted[1];
                         }
                     }
                     else if (splitted[0] == "Move request") // zapytanie o wykonanie ruchu
@@ -810,12 +815,32 @@ public class Table : MonoBehaviour
         this.InfoRound.text = roundText;
     }
 
+    public void ShowTurnPointer(int seatNumber)
+    {
+        GameObject pointer = Players[seatNumber].transform.Find("Turn pointer").gameObject;
+        if (pointer != null)
+            pointer.transform.localScale = Vector3.one;
+    }
+
+    public void HideAllTurnPointers()
+    {
+        for (int i=0; i<Players.Length; i++)
+        {
+            GameObject pointer = Players[i].transform.Find("Turn pointer").gameObject;
+            if (pointer != null)
+                pointer.transform.localScale = Vector3.zero;
+        }
+        if(this.InfoTurnPointer != null)
+            this.InfoTurnPointer.transform.localScale = Vector3.zero;
+    }
+
     public void ResetScene()
     {
         HideCardsOnDeck();
         DeleteChipsBitInGame();
         HideAllPlayers();
         HideMainPlayerCards();
+        HideAllTurnPointers();
     }
 
     // Update is called once per frame
@@ -876,6 +901,22 @@ public class Table : MonoBehaviour
 
         // Updatowanie tekstu na górze ekranu z numerem rundy
         this.UpdateRoundInfo(this.round);
+
+        // Pokazywanie czyj ruch
+        HideAllTurnPointers();
+        for (int i=0; i<Players.Length; i++)
+        {
+            GameObject nickText = Players[i].transform.Find("Informations/Name/NickText").gameObject;
+            if (nickText != null)
+            {
+                if(this.whichPlayerTurn == nickText.GetComponent<TMP_Text>().text)
+                {
+                    this.ShowTurnPointer(i);
+                }
+            }
+        }
+        if (this.whichPlayerTurn == this.InfoMainPlayerName.text)
+            this.InfoTurnPointer.transform.localScale = Vector3.one;
 
         // Wyœwietlanie Popupu o kolejnoœci ruchu
         if (this.displayPlayerTurnPopup && PopupWindow)
