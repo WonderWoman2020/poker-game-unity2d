@@ -35,7 +35,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnChangePasswordButton()
     {
-
+        SceneManager.LoadScene("ChangePasswordMenu");
     }
 
     public void OnChangeNameButton()
