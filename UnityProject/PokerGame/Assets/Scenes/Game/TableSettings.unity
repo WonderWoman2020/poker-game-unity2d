@@ -208,8 +208,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: OnCreateButton
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: OnChangeSettingsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -608,7 +608,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
         m_MethodName: OnModeNoBotsButton
         m_Mode: 1
         m_Arguments:
@@ -694,8 +694,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1250.4745, y: -654}
-  m_SizeDelta: {x: 1049.27, y: 78.4069}
+  m_AnchoredPosition: {x: 730, y: -654}
+  m_SizeDelta: {x: 0, y: 78.4069}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &180745549
 MonoBehaviour:
@@ -838,8 +838,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: ReadGameTableName
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: ReadBigBlind
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1305,8 +1305,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -172.21086, y: 0.00000047684}
-  m_SizeDelta: {x: 580.7015, y: 78}
+  m_AnchoredPosition: {x: -360, y: 0.00000047684}
+  m_SizeDelta: {x: 260, y: 78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &492865083
 MonoBehaviour:
@@ -1355,7 +1355,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45
+  m_fontSize: 44.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1638,8 +1638,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTable, Assembly-CSharp
-        m_MethodName: ReadBotsNumber
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: ReadMaxMoveTime
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1910,12 +1910,12 @@ RectTransform:
   - {fileID: 569278512}
   - {fileID: 1400307079}
   m_Father: {fileID: 705352246}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1684.8745, y: -654}
-  m_SizeDelta: {x: 1049.27, y: 78.4069}
+  m_AnchoredPosition: {x: 1150, y: -654}
+  m_SizeDelta: {x: 0, y: 78.4069}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &655192389
 MonoBehaviour:
@@ -2200,9 +2200,9 @@ RectTransform:
   - {fileID: 518239043}
   - {fileID: 674996003}
   - {fileID: 555433691}
-  - {fileID: 655192388}
-  - {fileID: 180745548}
   - {fileID: 1985573570}
+  - {fileID: 180745548}
+  - {fileID: 655192388}
   - {fileID: 1892120466}
   - {fileID: 736895246}
   - {fileID: 1531021633}
@@ -2340,8 +2340,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: OnBackToMenuButton
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: OnBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2861,7 +2861,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 55.2
+  m_fontSize: 38.8
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3022,14 +3022,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 994241593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db8d8a50db13db84eaecd06f8563f2c3, type: 3}
+  m_Script: {fileID: 11500000, guid: 59ff1ea7501cd9549967b11bc5e54ab3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createButton: {fileID: 28378473}
-  backToMenuButton: {fileID: 716606195}
-  modeNoBotsButton: {fileID: 0}
-  modeYouAndBotsButton: {fileID: 0}
-  modeMixedButton: {fileID: 0}
+  changeSettingsButton: {fileID: 28378473}
+  backButton: {fileID: 716606195}
+  modeNoBotsButton: {fileID: 147774935}
+  modeYouAndBotsButton: {fileID: 1074646056}
+  modeMixedButton: {fileID: 1167118296}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1003981621
 GameObject:
@@ -3143,8 +3143,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -172.21086, y: 0.00000047684}
-  m_SizeDelta: {x: 580.7015, y: 78}
+  m_AnchoredPosition: {x: -400, y: 0.00000047684}
+  m_SizeDelta: {x: 160, y: 78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1008540224
 MonoBehaviour:
@@ -3690,7 +3690,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
         m_MethodName: OnYouAndBotsButton
         m_Mode: 1
         m_Arguments:
@@ -4169,7 +4169,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
         m_MethodName: OnMixedButton
         m_Mode: 1
         m_Arguments:
@@ -4321,8 +4321,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: ReadGameTableName
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: ReadMinPlayers
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4509,8 +4509,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: ReadGameTableName
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: ReadMaxPlayers
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5452,7 +5452,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 55.2
+  m_fontSize: 38.8
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5976,7 +5976,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTable, Assembly-CSharp
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
         m_MethodName: ReadBotsNumber
         m_Mode: 0
         m_Arguments:
@@ -6761,8 +6761,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: ReadGameTableName
+        m_TargetAssemblyTypeName: TableSettings, Assembly-CSharp
+        m_MethodName: ReadMinTokens
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7150,12 +7150,12 @@ RectTransform:
   - {fileID: 1003981622}
   - {fileID: 88526229}
   m_Father: {fileID: 705352246}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 915, y: -654}
-  m_SizeDelta: {x: 989.019, y: 78.407}
+  m_AnchoredPosition: {x: 400, y: -654}
+  m_SizeDelta: {x: 0, y: 78.407}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1985573571
 MonoBehaviour:
@@ -7365,8 +7365,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -172.21086, y: 0.00000047684}
-  m_SizeDelta: {x: 580.7015, y: 78}
+  m_AnchoredPosition: {x: -400, y: 0.00000047684}
+  m_SizeDelta: {x: 160, y: 78}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2108977900
 MonoBehaviour:
