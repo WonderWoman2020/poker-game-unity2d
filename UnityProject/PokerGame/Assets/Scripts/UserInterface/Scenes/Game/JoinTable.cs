@@ -14,6 +14,7 @@ using System.Threading;
 using pGrServer;
 using System.Text;
 
+
 // Ekran do wyboru stolika do do³¹czenia, z list¹ istniej¹cych na serwerze stolików
 public class JoinTable : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class JoinTable : MonoBehaviour
     [SerializeField] private Button table2Button;
     [SerializeField] private Button table3Button;
     [SerializeField] private Button table4Button;
+
+    [SerializeField] private GameObject tableTemplate;
 
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
@@ -53,14 +56,25 @@ public class JoinTable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (MyGameManager.Instance.GameTableList == null)
-            return;
+        //if (MyGameManager.Instance.GameTableList == null)
+        //    return;
 
-        InvokeRepeating("loadTables", 0.0f, 10.0f);
+        //InvokeRepeating("loadTables", 0.0f, 10.0f);
 
         // Domyœlnie nie wybrano stolika
         this.chosenTable = -1;
 
+        GameObject table = GameObject.FindGameObjectWithTag("TablesList");
+        int tablesToShow = 5;
+        for(int i = 0; i < tablesToShow; i++)
+        {
+            table = Instantiate(tableTemplate, GameObject.FindGameObjectWithTag("TablesList").transform);
+            GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
+            tableNameGameObject.GetComponent<TMP_Text>().text = "Table" + i;
+            Button tableButton = table.transform.Find("Button").gameObject.GetComponent<Button>();
+            Debug.Log(tableButton);
+            tableButton.AddEventListener(i, OnTableButton);
+        }
     }
 
     // TODO dodaæ kiedyœ do osobnej klasy
@@ -120,23 +134,26 @@ public class JoinTable : MonoBehaviour
         // Jeœli stolików jest wiêcej ni¿ tyle ile siê zmieœci w naszym menu (obecnie 4 opcje),
         // wyœwietlamy tylko 4 pierwsze z listy
         // (TODO (cz. PGGP-34) mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
+        GameObject table = GameObject.FindGameObjectWithTag("TablesList");
         int tablesToShow = MyGameManager.Instance.GameTableList.Count;
-        if (tablesToShow > 4)
-            tablesToShow = 4;
+        for (int i = 0; i < tablesToShow; i++)
+        {
+            table = Instantiate(tableTemplate, GameObject.FindGameObjectWithTag("TablesList").transform);
+            GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
+            // Pokazywanie nazwy danego stoliku obok przycisku wyboru
+            tableNameGameObject.GetComponent<TMP_Text>().text = MyGameManager.Instance.GameTableList[i].Name;
+            Button tableButton = table.transform.Find("Button").gameObject.GetComponent<Button>();
+            tableButton.AddEventListener(i, OnTableButton);
+        }
 
-        // Pokazywanie nazwy danego stoliku obok przycisku wyboru
-        // (TODO (cz. PGGP-34) dlatego warto by zamieniæ to na tablicê tekstów o stolikach,
-        // ¿eby nie by³o tylu if'ów na przypadki ile mamy dostêpnych stolików)
-        if (tablesToShow >= 1)
-            this.Table1.text = MyGameManager.Instance.GameTableList[0].Name;
-        if (tablesToShow >= 2)
-            this.Table2.text = MyGameManager.Instance.GameTableList[1].Name;
-        if (tablesToShow >= 3)
-            this.Table3.text = MyGameManager.Instance.GameTableList[2].Name;
-        if (tablesToShow >= 4)
-            this.Table4.text = MyGameManager.Instance.GameTableList[3].Name;
     }
 
+    void OnTableButton(int index)
+    {
+        Debug.Log(index);
+        this.chosenTable = index;
+       // this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
+    }
     // Update is called once per frame
     void Update()
     {
