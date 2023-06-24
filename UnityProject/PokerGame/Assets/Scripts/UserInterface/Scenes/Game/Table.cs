@@ -61,6 +61,9 @@ public class Table : MonoBehaviour
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button nextHandButton;
 
+    // tekst na górze ekranu która runda trwa
+    [SerializeField] private TMP_Text InfoRound;
+
     // Prze³¹cznik ustawiany na 'true', kiedy serwer przyœle do klienta zapytanie o wykonanie ruchu
     private bool readyToSendMove = false;
 
@@ -69,6 +72,8 @@ public class Table : MonoBehaviour
     // Stany wszystkich graczy, odebrane od serwera (wysy³a po ka¿dym ruchu kogokolwiek).
     // S³ownik: klucz - Nick danego gracza (odczytywany z PlayerState), wartoœæ - PlayerState
     private IDictionary<string, PlayerState> playersStates;
+    // informacja o numerze rundy odebrana z serwera
+    private int round;
 
     // informacje o b³êdach, komunikaty dla gracza
     // m.in. komunikat o tym czyj ruch jest teraz
@@ -136,6 +141,8 @@ public class Table : MonoBehaviour
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
         HideAllPlayers();
+        // inicjalizacja numeru rundy
+        this.round = -1;
 
         // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
@@ -222,6 +229,10 @@ public class Table : MonoBehaviour
                         }
                         else if (splitted[1] == "Game ended")
                             this.isGameOn = false;
+                    }
+                    else if(splitted[0] == "Round")
+                    {
+                        this.round = Convert.ToInt32(splitted[1]);
                     }
                 }
             }
@@ -770,6 +781,35 @@ public class Table : MonoBehaviour
         }
     }
 
+    public void UpdateRoundInfo(int round)
+    {
+        string roundName = "";
+        switch (round)
+        {
+            case 0:
+                roundName = "Preflop";
+                break;
+            case 1:
+                roundName = "Flop";
+                break;
+            case 2:
+                roundName = "Turn";
+                break;
+            case 3:
+                roundName = "River";
+                break;
+            default:
+                roundName = "-";
+                break;
+        }
+        string roundText = "Round:";
+        if (round >= 0 && round <= 3)
+            roundText = roundText + " " + (round + 1);
+
+        roundText = roundText + " " + "(" + roundName + ")";
+        this.InfoRound.text = roundText;
+    }
+
     public void ResetScene()
     {
         HideCardsOnDeck();
@@ -834,6 +874,8 @@ public class Table : MonoBehaviour
         else
             UpdateChipsBidInGame(this.gameTableState.TokensInGame);
 
+        // Updatowanie tekstu na górze ekranu z numerem rundy
+        this.UpdateRoundInfo(this.round);
 
         // Wyœwietlanie Popupu o kolejnoœci ruchu
         if (this.displayPlayerTurnPopup && PopupWindow)
