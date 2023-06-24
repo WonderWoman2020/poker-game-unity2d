@@ -11,15 +11,16 @@ using UnityEngine.SceneManagement;
 //using PokerGameClasses;
 //using pGrServer;
 
-public class SettingsMenu : MonoBehaviour
+
+public class ChangeNameMenu : MonoBehaviour
 {
-    [SerializeField] private Button changePasswordButton;
+
     [SerializeField] private Button changeNameButton;
-    [SerializeField] private Button deleteAccountButton;
-    [SerializeField] private Button logoutButton;
     [SerializeField] private Button backButton;
 
     public GameObject PopupWindow;
+
+    private string newName;
 
     // Start is called before the first frame update
     void Start()
@@ -33,35 +34,34 @@ public class SettingsMenu : MonoBehaviour
         
     }
 
-    public void OnChangePasswordButton()
-    {
-        SceneManager.LoadScene("ChangePasswordMenu");
-    }
-
     public void OnChangeNameButton()
     {
-        SceneManager.LoadScene("ChangeNameMenu");
-    }
-
-    public void OnDeleteAccountButton()
-    {
-        // TODO sprawdzaæ, czy gracz jest zalogowany i nie wpuszczaæ go tu jeœli nie jest (+ Popup z odpowiednim info czemu nie móg³ wejœæ)
-        SceneManager.LoadScene("DeleteAccount");
-    }
-
-    public void OnLogoutButton()
-    {
-
+        Debug.Log("Change");
     }
 
     public void OnBackButton()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("SettingsMenu");
     }
+
+
+    public void ReadNewName(string newName)
+    {
+        if (newName.Length == 0)
+        {
+            this.newName = null;
+            return;
+        }
+
+        this.newName = newName;
+        Debug.Log(this.newName);
+    }
+
 
     void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
         popup.GetComponent<TextMeshProUGUI>().text = text;
     }
+
 }
