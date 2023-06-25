@@ -55,26 +55,6 @@ public class JoinTable : MonoBehaviour
         // Domyœlnie nie wybrano stolika
         this.chosenTable = -1;
 
-        //GameObject tableList = GameObject.FindGameObjectWithTag("TablesList");
-        //Debug.Log(tableList.transform.childCount);
-        //GameObject table;
-        //Instantiate(tablesContainer, tableList.transform);
-
-        //// GameObject tableContainer = table.transform.Find()
-        //int tablesToShow = 4;
-        //for (int i = 0; i < tablesToShow; i++)
-        //{
-        //    table = Instantiate(tableTemplate, tableList.transform.Find("TablesContainer(Clone)"));
-        //    GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
-        //    tableNameGameObject.GetComponent<TMP_Text>().text = "Table" + i;
-        //    Button tableButton = table.transform.Find("Button").gameObject.GetComponent<Button>();
-        //    tableButton.AddEventListener(i, OnTableButton);
-        //}
-        //if (tablesToShow == 0)
-        //{
-        //    table = Instantiate(noTableText, tableList.transform.Find("TablesContainer(Clone)"));
-        //}
-        //DeleteTablesOnCanva();
     }
 
     // TODO dodaæ kiedyœ do osobnej klasy
@@ -146,7 +126,6 @@ public class JoinTable : MonoBehaviour
         {
             
             table = Instantiate(tableTemplate, tableContainer.transform);
-            Debug.Log("TABLEcONTAINER" + table);
             GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
             // Pokazywanie nazwy danego stoliku obok przycisku wyboru
             tableNameGameObject.GetComponent<TMP_Text>().text = MyGameManager.Instance.GameTableList[i].Name;
