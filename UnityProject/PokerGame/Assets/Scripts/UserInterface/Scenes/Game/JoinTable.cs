@@ -51,6 +51,7 @@ public class JoinTable : MonoBehaviour
         InvokeRepeating("loadTables", 0.0f, 10.0f);
 
 
+
         // Domyœlnie nie wybrano stolika
         this.chosenTable = -1;
 
@@ -136,15 +137,16 @@ public class JoinTable : MonoBehaviour
         // wyœwietlamy tylko 4 pierwsze z listy
         // (TODO (cz. PGGP-34) mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
         DeleteTablesOnCanva();
+        int tablesToShow = MyGameManager.Instance.GameTableList.Count;
         GameObject table;
         GameObject tableList = GameObject.FindGameObjectWithTag("TablesList");
-        if (tableList.transform.childCount == 0)
-            Instantiate(tablesContainer, tableList.transform);
-        int tablesToShow = MyGameManager.Instance.GameTableList.Count;
+        GameObject tableContainer = Instantiate(tablesContainer, tableList.transform);
 
         for (int i = 0; i < tablesToShow; i++)
         {
-            table = Instantiate(tableTemplate, tableList.transform.Find("TablesContainer(Clone)"));
+            
+            table = Instantiate(tableTemplate, tableContainer.transform);
+            Debug.Log("TABLEcONTAINER" + table);
             GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
             // Pokazywanie nazwy danego stoliku obok przycisku wyboru
             tableNameGameObject.GetComponent<TMP_Text>().text = MyGameManager.Instance.GameTableList[i].Name;
