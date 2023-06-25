@@ -104,7 +104,7 @@ public class JoinTable : MonoBehaviour
 
         if (name == this.chosenTableName) 
         {
-            this.chosenTableStillExists = false;
+            this.chosenTableStillExists = true;
         }
 
         GameTableInfo table = new GameTableInfo(name, owner, humanCount, botCount, minXp, minChips);
