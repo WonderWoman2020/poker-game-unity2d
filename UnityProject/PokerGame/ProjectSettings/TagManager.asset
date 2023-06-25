@@ -8,6 +8,7 @@ TagManager:
   - Avatar
   - Chips
   - Pointer
+  - TablesList
   layers:
   - Default
   - TransparentFX
