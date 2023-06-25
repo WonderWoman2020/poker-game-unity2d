@@ -56,7 +56,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnBackButton()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("PlayMenu");
     }
 
     void ShowPopup(string text)

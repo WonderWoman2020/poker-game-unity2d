@@ -140,4 +140,9 @@ public class PlayMenu : MonoBehaviour
         // TODO dodaæ nie wpuszczanie do tego ekranu, jeœli nie siedzimy przy ¿adnym stoliku i odpowiedni Popup z info
         SceneManager.LoadScene("TableSettings");
     }
+
+    public void OnAccountSettingsButton()
+    {
+        SceneManager.LoadScene("SettingsMenu");
+    }
 }
