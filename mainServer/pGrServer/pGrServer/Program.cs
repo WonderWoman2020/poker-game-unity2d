@@ -820,6 +820,12 @@ namespace pGrServer
                         RemoveFromTable(p); // usuwanie gracza, którego połączenie się zerwało
                     }
                 }
+
+                // Reset gry wołamy dopiero po odebraniu zapytania o kolejne rozdanie
+                // (podczas czekania na kolejne rozdanie mogli dojść nowi gracze (lub opuścić grę), a poprawny reset gry zależy od poprawnej liczby graczy
+                // dla określenia poprawnie kolejnej pozycji Dealer'a
+                if (startNextGame)
+                    controller.ResetGame();
             }
         }
         public static void ChangeTableSettings(GameTable table, Player player, string mode, string nrOfBots, string minXp, string min_tokens, string big_blind)

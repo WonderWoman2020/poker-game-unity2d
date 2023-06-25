@@ -30,6 +30,7 @@ namespace PokerGameClasses
 
         public void playTheGame()
         {
+            //this.ResetGame();
             Console.WriteLine("Next hand is on");
             this.gameTable.isGameActive = true;
             this.gameTable.SortPlayersBySeats();
@@ -164,7 +165,7 @@ namespace PokerGameClasses
                     if (this.PositionOfPlayerWhoRaised == -1 || player.PlayersCurrentBet > this.gameTable.CurrentBid)
                     {
                         this.gameTable.CurrentBid = player.PlayersCurrentBet;
-                        this.PositionOfPlayerWhoRaised = player.SeatNr;
+                        this.PositionOfPlayerWhoRaised = currentPlayer;//player.SeatNr;
                     }
                 }
                 if (this.CheckIfAllFolded())
@@ -267,7 +268,7 @@ namespace PokerGameClasses
                 p.GameRequestsStream.Flush();
             }
 
-            this.ResetGame();
+            //this.ResetGame(); // Reset gry bêdzie odt¹d PRZED gr¹ (przy starcie gry), ¿eby u¿ywaæ zaktualizowanej miêdzy rozdaniami listy graczy
         }
         public List<Player> determineWinner()
         {
@@ -778,7 +779,7 @@ namespace PokerGameClasses
             return winners;
         }
 
-        private void ResetGame()
+        public void ResetGame()
         {
             this.Dealer.TakeBackCards(this.gameTable);
             this.Dealer.ChangePosition(this.gameTable);
