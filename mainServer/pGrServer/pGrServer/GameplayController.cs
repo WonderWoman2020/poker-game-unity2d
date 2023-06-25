@@ -165,7 +165,7 @@ namespace PokerGameClasses
                     if (this.PositionOfPlayerWhoRaised == -1 || player.PlayersCurrentBet > this.gameTable.CurrentBid)
                     {
                         this.gameTable.CurrentBid = player.PlayersCurrentBet;
-                        this.PositionOfPlayerWhoRaised = currentPlayer;//player.SeatNr;
+                        this.PositionOfPlayerWhoRaised = currentPlayer;//player.SeatNr; // numer miejsca przy stoliku jest tylko na potrzeby ³adnego wyœwietlania gry w Unity
                     }
                 }
                 if (this.CheckIfAllFolded())
