@@ -269,6 +269,7 @@ namespace PokerGameClasses
             }
 
             //this.ResetGame(); // Reset gry bêdzie odt¹d PRZED gr¹ (przy starcie gry), ¿eby u¿ywaæ zaktualizowanej miêdzy rozdaniami listy graczy
+            this.gameTable.isGameActive = false;
         }
         public List<Player> determineWinner()
         {
