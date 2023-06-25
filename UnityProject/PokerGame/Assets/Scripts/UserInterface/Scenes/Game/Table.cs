@@ -228,6 +228,7 @@ public class Table : MonoBehaviour
                     {
                         if (splitted[1] == "Game started")
                         {
+                            playersStates.Clear(); // czyszczenie listy graczy na pocz¹tku ka¿dego rozdania
                             this.isGameOn = true;
                             this.showStartGameButton = false;
                             this.resetScene = true;
