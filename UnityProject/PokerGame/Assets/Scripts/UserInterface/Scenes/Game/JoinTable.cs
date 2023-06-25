@@ -22,14 +22,9 @@ public class JoinTable : MonoBehaviour
     [SerializeField] private Button joinButton;
     [SerializeField] private Button backToMenuButton;
 
-    // Przyciski obok stolików do wyboru
-    [SerializeField] private Button table1Button;
-    [SerializeField] private Button table2Button;
-    [SerializeField] private Button table3Button;
-    [SerializeField] private Button table4Button;
-
     [SerializeField] private GameObject tableTemplate;
-
+    [SerializeField] private GameObject noTableText;
+    [SerializeField] private GameObject tablesContainer;
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
@@ -40,46 +35,51 @@ public class JoinTable : MonoBehaviour
     // Zmienna sprawdzajaca, czy wybrany stolik wciaz istnieje
     private bool chosenTableStillExists;
 
-    // Nazwy stolików obok przycisków do ich wybierania
-    //TODO (cz. PGGP-34) zrobiæ z tego kiedyœ tablicê zamiast oddzielnych zmiennych
-    [SerializeField] private TMP_Text Table1;
-    [SerializeField] private TMP_Text Table2;
-    [SerializeField] private TMP_Text Table3;
-    [SerializeField] private TMP_Text Table4;
 
     // Informacje o wstêpnie zaznaczonym stoliku, wyœwietlane w lewym dolnym rogu ekranu
     [SerializeField] private TMP_Text InfoPlayersCount;
     [SerializeField] private TMP_Text InfoBotsCount;
     [SerializeField] private TMP_Text InfoMinChips;
     [SerializeField] private TMP_Text InfoMinXP;
-
+    private int id = 0;
     // Start is called before the first frame update
     void Start()
     {
-        //if (MyGameManager.Instance.GameTableList == null)
-        //    return;
+        if (MyGameManager.Instance.GameTableList == null)
+            return;
+        DeleteTablesOnCanva();
+        InvokeRepeating("loadTables", 0.0f, 10.0f);
 
-        //InvokeRepeating("loadTables", 0.0f, 10.0f);
 
         // Domyœlnie nie wybrano stolika
         this.chosenTable = -1;
 
-        GameObject table = GameObject.FindGameObjectWithTag("TablesList");
-        int tablesToShow = 5;
-        for(int i = 0; i < tablesToShow; i++)
-        {
-            table = Instantiate(tableTemplate, GameObject.FindGameObjectWithTag("TablesList").transform);
-            GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
-            tableNameGameObject.GetComponent<TMP_Text>().text = "Table" + i;
-            Button tableButton = table.transform.Find("Button").gameObject.GetComponent<Button>();
-            Debug.Log(tableButton);
-            tableButton.AddEventListener(i, OnTableButton);
-        }
+        //GameObject tableList = GameObject.FindGameObjectWithTag("TablesList");
+        //Debug.Log(tableList.transform.childCount);
+        //GameObject table;
+        //Instantiate(tablesContainer, tableList.transform);
+
+        //// GameObject tableContainer = table.transform.Find()
+        //int tablesToShow = 4;
+        //for (int i = 0; i < tablesToShow; i++)
+        //{
+        //    table = Instantiate(tableTemplate, tableList.transform.Find("TablesContainer(Clone)"));
+        //    GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
+        //    tableNameGameObject.GetComponent<TMP_Text>().text = "Table" + i;
+        //    Button tableButton = table.transform.Find("Button").gameObject.GetComponent<Button>();
+        //    tableButton.AddEventListener(i, OnTableButton);
+        //}
+        //if (tablesToShow == 0)
+        //{
+        //    table = Instantiate(noTableText, tableList.transform.Find("TablesContainer(Clone)"));
+        //}
+        //DeleteTablesOnCanva();
     }
 
     // TODO dodaæ kiedyœ do osobnej klasy
     public void loadTables()
     {
+        
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
         byte[] request = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "2");
         mainServer.stream.Write(request, 0, request.Length);
@@ -106,6 +106,7 @@ public class JoinTable : MonoBehaviour
                 this.chosenTable = -1;
             }
             displayTables();
+
         }
     }
 
@@ -134,34 +135,52 @@ public class JoinTable : MonoBehaviour
         // Jeœli stolików jest wiêcej ni¿ tyle ile siê zmieœci w naszym menu (obecnie 4 opcje),
         // wyœwietlamy tylko 4 pierwsze z listy
         // (TODO (cz. PGGP-34) mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
-        GameObject table = GameObject.FindGameObjectWithTag("TablesList");
+        DeleteTablesOnCanva();
+        GameObject table;
+        GameObject tableList = GameObject.FindGameObjectWithTag("TablesList");
+        if (tableList.transform.childCount == 0)
+            Instantiate(tablesContainer, tableList.transform);
         int tablesToShow = MyGameManager.Instance.GameTableList.Count;
+
         for (int i = 0; i < tablesToShow; i++)
         {
-            table = Instantiate(tableTemplate, GameObject.FindGameObjectWithTag("TablesList").transform);
+            table = Instantiate(tableTemplate, tableList.transform.Find("TablesContainer(Clone)"));
             GameObject tableNameGameObject = table.transform.Find("Button/TableName").gameObject;
             // Pokazywanie nazwy danego stoliku obok przycisku wyboru
             tableNameGameObject.GetComponent<TMP_Text>().text = MyGameManager.Instance.GameTableList[i].Name;
             Button tableButton = table.transform.Find("Button").gameObject.GetComponent<Button>();
-            tableButton.AddEventListener(i, OnTableButton);
+            tableButton.AddEventListener(id, OnTableButton);
+            id++;
         }
-
     }
 
     void OnTableButton(int index)
     {
         Debug.Log(index);
         this.chosenTable = index;
-       // this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
+        this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
     }
     // Update is called once per frame
     void Update()
     {
         
     }
+    void DeleteTablesOnCanva()
+    {
+        id = 0;
+        GameObject tables = GameObject.FindGameObjectWithTag("TablesList");
+        GameObject tablesContainer;
+        try
+        {
+            tablesContainer = tables.transform.Find("TablesContainer(Clone)").gameObject;
+            Destroy(tablesContainer);
+        }
+        catch (Exception e) { }
+    }
 
     public void OnJoinButton()
     {
+
         // Jeœli nie ma dostêpnych stolików, cofa do ekranu PlayMenu
         if(MyGameManager.Instance.GameTableList.Count == 0)
         {
@@ -276,39 +295,39 @@ public class JoinTable : MonoBehaviour
 
     // Zapisanie numeru wybranego stolika po klikniêciu przycisku obok niego, ze sprawdzaniem,
     // czy numer wybranego stolika nie jest wiêkszy, ni¿ liczba dostêpnych stolików
-    public void OnTable1Button()
-    {
-        if (MyGameManager.Instance.GameTableList.Count >= 1)
-        {
-            this.chosenTable = 0;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
-        }
-    }
+    //public void OnTable1Button()
+    //{
+    //    if (MyGameManager.Instance.GameTableList.Count >= 1)
+    //    {
+    //        this.chosenTable = 0;
+    //        this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
+    //    }
+    //}
 
-    public void OnTable2Button()
-    {
-        if (MyGameManager.Instance.GameTableList.Count >= 2)
-        {
-            this.chosenTable = 1;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
-        }
-    }
+    //public void OnTable2Button()
+    //{
+    //    if (MyGameManager.Instance.GameTableList.Count >= 2)
+    //    {
+    //        this.chosenTable = 1;
+    //        this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
+    //    }
+    //}
 
-    public void OnTable3Button()
-    {
-        if (MyGameManager.Instance.GameTableList.Count >= 3)
-        {
-            this.chosenTable = 2;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
-        }
-    }
+    //public void OnTable3Button()
+    //{
+    //    if (MyGameManager.Instance.GameTableList.Count >= 3)
+    //    {
+    //        this.chosenTable = 2;
+    //        this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
+    //    }
+    //}
 
-    public void OnTable4Button()
-    {
-        if (MyGameManager.Instance.GameTableList.Count >= 4)
-        {
-            this.chosenTable = 3;
-            this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
-        }
-    }
+    //public void OnTable4Button()
+    //{
+    //    if (MyGameManager.Instance.GameTableList.Count >= 4)
+    //    {
+    //        this.chosenTable = 3;
+    //        this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
+    //    }
+    //}
 }
