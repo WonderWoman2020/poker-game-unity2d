@@ -58,9 +58,10 @@ public class Table : MonoBehaviour
     [SerializeField]
     private ChipsSprites chipsSprites;
 
-    // przyciski 'start game' i 'next hand'
+    // przyciski 'start game' i 'next hand', 'quit table'
     [SerializeField] private Button startGameButton;
     [SerializeField] private Button nextHandButton;
+    [SerializeField] private Button quitTableButton;
 
     // tekst na górze ekranu która runda trwa
     [SerializeField] private TMP_Text InfoRound;
@@ -942,6 +943,7 @@ public class Table : MonoBehaviour
         {
             this.nextHandButton.transform.localScale = Vector3.zero;
             this.startGameButton.transform.localScale = Vector3.zero;
+            this.quitTableButton.transform.localScale = Vector3.zero;
         }
         else
         {
@@ -955,6 +957,7 @@ public class Table : MonoBehaviour
                 this.nextHandButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
                 this.startGameButton.transform.localScale = Vector3.zero;
             }
+            this.quitTableButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
         }
 
     }
@@ -1037,5 +1040,10 @@ public class Table : MonoBehaviour
         NetworkHelper.WriteNetworkStream(MyGameManager.Instance.gameServerConnection.stream, "100 ");
          // na kanale od wiadomoœci z gry, kiedy chcemy kolejn¹ turê gry
         MyGameManager.Instance.gameServerConnection.stream.Flush();
+    }
+
+    public void onQuitTableButton()
+    {
+        Debug.Log("Quit table button");
     }
 }
