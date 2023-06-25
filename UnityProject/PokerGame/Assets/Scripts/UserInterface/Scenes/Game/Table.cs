@@ -107,6 +107,12 @@ public class Table : MonoBehaviour
     // którego gracza ruch (nick)
     string whichPlayerTurn = null;
 
+    // odpowiedŸ od serwera, czy uda³o siê odejœæ od stolika
+    bool leftTableSuccess = false;
+
+    Thread serverCommunicationMenu;
+    Thread serverCommunicationGame;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,9 +158,14 @@ public class Table : MonoBehaviour
         // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
         // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
         // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
-        new System.Threading.Thread(CommunicateWithServer).Start();
 
-        new System.Threading.Thread(CommunicateWithServerOnMenu).Start();
+        // TODO !!!!!!!!!!! dodaæ zamykanie tych w¹tków po wyjœciu z ekranu Table
+
+        this.serverCommunicationGame = new System.Threading.Thread(CommunicateWithServer);
+        this.serverCommunicationGame.Start();
+
+        this.serverCommunicationMenu = new System.Threading.Thread(CommunicateWithServerOnMenu);
+        this.serverCommunicationMenu.Start();
     }
 
     public void CommunicateWithServer()
@@ -243,7 +254,13 @@ public class Table : MonoBehaviour
                     }
                 }
             }
+
+            if (this.leftTableSuccess)
+                running = false;
         }
+
+        // dodatkowo po wyjœciu czyszczenie strumienia od komunikatów z gry, ¿eby nie zosta³a na nim stara proœba o wykonanie ruchu
+        gameStream.Flush();
     }
 
     // analogiczna pêtla odbierania komunikatów od serwera jak CommunicateWithServer, tylko na porcie od zapytañ z Menu
@@ -273,14 +290,16 @@ public class Table : MonoBehaviour
                     string[] splitted = singleRequest.Split(new string(" "));
 
                     // przed pierwsz¹ spacj¹ jest pusty element, dlatego od indeksu 1 jedziemy
-                    if (splitted[1] == "6") // odpowiedŸ na zapytanie o w³¹czenie gry
+                    if (splitted[1] == "4") // odpowiedŸ na zapytanie o odejœcie od stolika
                     {
                         if (splitted[2] == "0") // OK
-                            //gameStartedOnServer = true;
-                            ;
+                            this.leftTableSuccess = true;
                     }
                 }
             }
+
+            if (this.leftTableSuccess)
+                running = false;
         }
     }
 
@@ -960,6 +979,18 @@ public class Table : MonoBehaviour
             this.quitTableButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
         }
 
+        // sprawdzanie, czy na klikniêcie przycisku 'quit table' dostaliœmy odpowiedŸ OK
+        // i wyjœcie, jeœli tak
+        if (this.leftTableSuccess)
+        {
+            this.leftTableSuccess = false;
+            // wy³¹czenie w¹tków od komunikacji z serwerem w ekranie Table
+            this.serverCommunicationMenu.Join();
+            this.serverCommunicationGame.Join();
+
+            SceneManager.LoadScene("PlayMenu");
+        }
+
     }
 
     // Wczytanie stawki z pola input 'Bid'
@@ -1044,6 +1075,10 @@ public class Table : MonoBehaviour
 
     public void onQuitTableButton()
     {
-        Debug.Log("Quit table button");
+        //Debug.Log("Quit table button");
+        string token = MyGameManager.Instance.clientToken;
+        byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4" + ' ');
+        MyGameManager.Instance.mainServerConnection.stream.Write(tosend, 0, tosend.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
     }
 }

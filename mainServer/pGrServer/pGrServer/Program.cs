@@ -777,6 +777,13 @@ namespace pGrServer
             bool startNextGame = true; // co najmniej 1 rozdanie ma się wykonać, skoro ktoś wysłał zapytanie o włączenie gry
             while (true)
             {
+                // zakończ wątek, jeśli nie ma już ludzkich graczy przy tym stoliku
+                if (table.GetPlayerTypeCount(PlayerType.Human) == 0)
+                {
+                    table.alreadyHasGameThread = false;
+                    return;
+                }
+
                 if (startNextGame)
                 {
                     controller.playTheGame();
@@ -785,13 +792,6 @@ namespace pGrServer
 
                 // TODO dodać usuwanie graczy, którzy byli nieaktywni podczas gry (nie wykonali ruchu przez dany czas, wyszli itd.)
                 // TODO dodać też oznaczanie graczy jako niekatywnych podczas gry (limit czasowy na ruch w Plyer.MakeMove())
-
-                // zakończ wątek, jeśli nie ma już ludzkich graczy przy tym stoliku
-                if (table.GetPlayerTypeCount(PlayerType.Human) == 0)
-                {
-                    table.alreadyHasGameThread = false;
-                    return;
-                }
 
                 // sprawdzaj, czy na kanale od któregoś z graczy pojawiło się zapytanie o włączenie następnego rozdania
                 startNextGame = false;
