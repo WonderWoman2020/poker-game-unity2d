@@ -17,6 +17,7 @@ namespace PokerGameClasses
         public int CurrentBet { get; set; }
         public int Xp { get; set; }
         public int SeatNr { get; set; }
+        public string LastMove { get; set; }
 
         public PlayerState()
         {
@@ -26,6 +27,7 @@ namespace PokerGameClasses
             this.CurrentBet = 0;
             this.Xp = 0;
             this.SeatNr = 0;
+            this.LastMove = null;
         }
 
         public PlayerState(string nick, CardsCollection hand, int tokensCount, int currentBet, int xp, int seatNr)
@@ -36,6 +38,7 @@ namespace PokerGameClasses
             this.CurrentBet = currentBet;
             this.Xp = xp;
             this.SeatNr = seatNr;
+            this.LastMove = null;
         }
 
         public void UnpackGameState(string[] splitted)
@@ -49,6 +52,7 @@ namespace PokerGameClasses
             this.CurrentBet = Convert.ToInt32(playerState[8]);
             this.Xp = Convert.ToInt32(playerState[10]);
             this.SeatNr = Convert.ToInt32(playerState[12]);
+            this.LastMove = playerState[14];
         }
 
         public override string ToString()
@@ -57,8 +61,9 @@ namespace PokerGameClasses
                 "\nHand: " + this.Hand +
                 "\nTokens: " + this.TokensCount +
                 "\nCurrent Bet: " + this.CurrentBet +
-                "\nXP: " + this.Xp + 
-                "\nSeatNr: "+this.SeatNr+"\n";
+                "\nXP: " + this.Xp +
+                "\nSeatNr: " + this.SeatNr +
+                "\nLast Move: " + this.LastMove + "\n";
         }
     }
 }

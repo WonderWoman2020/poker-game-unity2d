@@ -46,6 +46,9 @@ namespace PokerGameClasses
 
         public bool AllInMade
         { get; set; }
+
+        public string LastMove
+        { get; set; }
         public void UpdateData(int xp, int coins, string login)
         {
             this.XP = xp;
@@ -65,6 +68,7 @@ namespace PokerGameClasses
             this.AllInMade = false;
             this.PlayersCurrentBet = 0;
             this.SeatNr = 0;
+            this.LastMove = null;
         }
 
         override public string ToString()
@@ -109,6 +113,8 @@ namespace PokerGameClasses
                 }
 
                 string[] splitted = moveResponse.Split(new string(" "));
+
+                this.LastMove = splitted[0]; // sam rodzaj ruchu, bez wartości stawki
 
                 switch (Convert.ToInt32(splitted[0]))
                 {
@@ -238,6 +244,7 @@ namespace PokerGameClasses
             this.Folded = false;
             this.AllInMade = false;
             this.PlayersCurrentBet = 0;
+            this.LastMove = null;
         }
 
         public string PlayerGameState()
@@ -256,7 +263,8 @@ namespace PokerGameClasses
                 + ":Tokens:" + this.TokensCount
                 + ":Current bet:" + this.PlayersCurrentBet
                 + ":XP: " + this.XP
-                + ":SeatNr:" + this.SeatNr;
+                + ":SeatNr:" + this.SeatNr
+                + ":LastMove:" + this.LastMove;
         }
 
     }

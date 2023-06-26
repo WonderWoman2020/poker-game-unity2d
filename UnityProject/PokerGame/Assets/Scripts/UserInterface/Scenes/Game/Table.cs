@@ -627,6 +627,10 @@ public class Table : MonoBehaviour
                 this.ShowMainPlayerCards(state.Value.Hand); // karty g³ównego gracza
                 mainPlayerSeat = player.SeatNr;
                 players.Add(player);
+                if (player.LastMove == "0")
+                    this.GraphicPass(true, true);
+                else
+                    this.GraphicPass(false, false);
                 continue;
             }
             players.Add(player);
@@ -674,6 +678,10 @@ public class Table : MonoBehaviour
             this.ChangePlayerBet(state.CurrentBet, i);
             this.ChangePlayerMoney(state.TokensCount, i);
             this.ShowPlayerCards(i, state.Hand); // karty wspó³graczy
+            if (state.LastMove == "0")
+                this.GraphicPass(true, false, i);
+            else
+                this.GraphicPass(false, false, i);
             i++;
         }
         i = 0;
@@ -683,6 +691,10 @@ public class Table : MonoBehaviour
             this.ChangePlayerBet(state.CurrentBet, i);
             this.ChangePlayerMoney(state.TokensCount, i);
             this.ShowPlayerCards(i, state.Hand); // karty wspó³graczy
+            if (state.LastMove == "0")
+                this.GraphicPass(true, false, i);
+            else
+                this.GraphicPass(false, false, i);
             i++;
         }
 
@@ -862,6 +874,12 @@ public class Table : MonoBehaviour
         HideAllPlayers();
         HideMainPlayerCards();
         HideAllTurnPointers();
+        for (int i=0; i<this.Players.Length; i++)
+        {
+            this.GraphicPass(false, false, i);
+        }
+        this.GraphicPass(false, false);
+        
     }
 
     // Update is called once per frame
