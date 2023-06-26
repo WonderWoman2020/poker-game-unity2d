@@ -953,7 +953,7 @@ public class Table : MonoBehaviour
         // Wyœwietlanie Popupu o zwyciêzcy gry
         if (this.displayWinnerPopup && PopupWindow)
         {
-            Vector3 position = new Vector3(590.0f, 650.0f, 0.0f);
+            Vector3 position = new Vector3(625.0f, 650.0f, 0.0f);
             var popup = Instantiate(PopupWindow, position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
             popup.GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 255);
