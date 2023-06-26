@@ -30,13 +30,16 @@ public class Login : MonoBehaviour
     [SerializeField] private Button loginButton;
     [SerializeField] private Button backToMenuButton;
 
+    [SerializeField] private TMP_InputField passwordField;
+
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        this.passwordField.contentType = TMP_InputField.ContentType.Password;
+        this.passwordField.asteriskChar = '*';
     }
 
     // Update is called once per frame

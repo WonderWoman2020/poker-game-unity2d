@@ -16,6 +16,9 @@ public class CreatePlayer : MonoBehaviour
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
 
+    [SerializeField] private TMP_InputField newPasswordField;
+    [SerializeField] private TMP_InputField confirmPasswordField;
+
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
@@ -32,6 +35,12 @@ public class CreatePlayer : MonoBehaviour
         this.password1 = null;
         this.password2 = null;
         this.login = null;
+
+        this.newPasswordField.contentType = TMP_InputField.ContentType.Password;
+        this.newPasswordField.asteriskChar = '*';
+
+        this.confirmPasswordField.contentType = TMP_InputField.ContentType.Password;
+        this.confirmPasswordField.asteriskChar = '*';
     }
 
     // Update is called once per frame

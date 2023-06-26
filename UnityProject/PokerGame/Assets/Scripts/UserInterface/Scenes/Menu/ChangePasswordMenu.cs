@@ -19,6 +19,10 @@ public class ChangePasswordMenu : MonoBehaviour
     [SerializeField] private Button changePasswordButton;
     [SerializeField] private Button backButton;
 
+    [SerializeField] private TMP_InputField currentPasswordField;
+    [SerializeField] private TMP_InputField newPasswordField;
+    [SerializeField] private TMP_InputField confirmPasswordField;
+
     public GameObject PopupWindow;
 
     private string currentPassword;
@@ -28,7 +32,14 @@ public class ChangePasswordMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.currentPasswordField.contentType = TMP_InputField.ContentType.Password;
+        this.currentPasswordField.asteriskChar = '*';
+
+        this.newPasswordField.contentType = TMP_InputField.ContentType.Password;
+        this.newPasswordField.asteriskChar = '*';
+
+        this.confirmPasswordField.contentType = TMP_InputField.ContentType.Password;
+        this.confirmPasswordField.asteriskChar = '*';
     }
 
     // Update is called once per frame
