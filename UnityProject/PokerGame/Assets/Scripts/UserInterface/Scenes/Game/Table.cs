@@ -943,9 +943,10 @@ public class Table : MonoBehaviour
         if (this.displayPlayerTurnPopup && PopupWindow)
         {
             ShowMenu(true);
-            Vector3 position = new Vector3(660.0f, 490.0f, 0.0f);
+            /*Vector3 position = new Vector3(660.0f, 490.0f, 0.0f);
             var popup = Instantiate(PopupWindow, position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "It's your turn, make a move";
+            */
             this.displayPlayerTurnPopup = false;
         }
 
