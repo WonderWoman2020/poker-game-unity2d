@@ -115,7 +115,7 @@ public class CreateTable : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + "20" + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
@@ -128,11 +128,11 @@ public class CreateTable : MonoBehaviour
             mainServer.stream.Flush();
             menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
             string[] response = menuRequestStr.ToString().Split(new string(":T:"));
-            for (int i = 0; i < response.Length; i++)
+            if (response[0] == "answer Z 1 ")
             {
-                Debug.Log(i + ": " + response[i]); 
+                ShowPopup("Error: bad request");
             }
-            if (response[0] == "answer 0 1 ") {
+            else if (response[0] == "answer 0 1 ") {
                 ShowPopup("You are already sitting at a table!");
                 return;
             }
@@ -143,7 +143,7 @@ public class CreateTable : MonoBehaviour
             }
             else if (response[0] == "answer 0 9 ")
             {
-                ShowPopup("Validation error! Please check if table name is valid and try again");
+                ShowPopup("Validation error! Please check if table name and other data is valid");
                 return;
             }
             else if (response[0] == "answer 0 A ")
