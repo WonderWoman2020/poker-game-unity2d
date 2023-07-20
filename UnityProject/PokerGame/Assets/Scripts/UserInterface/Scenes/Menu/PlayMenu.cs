@@ -113,25 +113,26 @@ public class PlayMenu : MonoBehaviour
     // TODO (cz. PGGP-107) ekran Get Chips, przenieœæ t¹ metodê tam i poprawiæ, ¿eby nie pobiera³o zahardkodowanej wartoœci ¿etonów
     public void OnGetChipsButton()
     {
-        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
-        NetworkHelper.WriteNetworkStream(mainServer.stream, MyGameManager.Instance.clientToken + ' ' + "7" +' '+ "1000");
-        mainServer.stream.Flush();
-        Thread.Sleep(1000);
-        if (mainServer.stream.DataAvailable)
-        {
-            string response = NetworkHelper.ReadNetworkStream(mainServer.stream);
-            mainServer.stream.Flush();
-            string[] splitted = response.Split(' ');
-            // arg 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
-            if(splitted[0] == "1")
-            {
-                // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
-                int coins = Convert.ToInt32(splitted[1]);
-                MyGameManager.Instance.MainPlayer.TokensCount = coins;
-                this.ChangePlayerInfo();
-            }
-        }
-        Debug.Log("Get Chips");
+        SceneManager.LoadScene("GetTokensMenu");
+        //TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        //NetworkHelper.WriteNetworkStream(mainServer.stream, MyGameManager.Instance.clientToken + ' ' + "7" +' '+ "1000");
+        //mainServer.stream.Flush();
+        //Thread.Sleep(1000);
+        //if (mainServer.stream.DataAvailable)
+        //{
+        //    string response = NetworkHelper.ReadNetworkStream(mainServer.stream);
+        //    mainServer.stream.Flush();
+        //    string[] splitted = response.Split(' ');
+        //    // arg 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
+        //    if(splitted[0] == "1")
+        //    {
+        //        // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
+        //        int coins = Convert.ToInt32(splitted[1]);
+        //        MyGameManager.Instance.MainPlayer.TokensCount = coins;
+        //        this.ChangePlayerInfo();
+        //    }
+        //}
+        //Debug.Log("Get Chips");
     }
 
     // TODO (cz. PGGP-107) ekran Settings od zmieniania ustawieñ stolika/rozgrywki
