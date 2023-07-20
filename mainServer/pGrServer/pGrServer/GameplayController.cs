@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,15 +10,15 @@ namespace PokerGameClasses
 {
     public class GameplayController
     {
-        public GameTable gameTable
+        private GameTable gameTable
         { get; set; }
-        public ICardsDealer Dealer
+        private ICardsDealer Dealer
+        {  get;  set; }
+
+        private int CurrentRound
         { get; set; }
 
-        public int CurrentRound
-        { get; set; }
-
-        public int PositionOfPlayerWhoRaised
+        private int PositionOfPlayerWhoRaised
         { get; set; }
         public GameplayController(GameTable gameTable, ICardsDealer cardsDealer)
         {
@@ -29,9 +30,12 @@ namespace PokerGameClasses
 
         public void playTheGame()
         {
+            //this.ResetGame();
             Console.WriteLine("Next hand is on");
             this.gameTable.isGameActive = true;
             this.gameTable.SortPlayersBySeats();
+
+            this.SendIsGameOnStatus("Game started");
 
             this.MakeBlindsFirstMoves();
 
@@ -40,6 +44,22 @@ namespace PokerGameClasses
                 this.MakeNextRound();
                 if(CurrentRound < 4)
                     this.PositionOfPlayerWhoRaised = -1;
+            }
+
+            this.SendIsGameOnStatus("Game ended");
+        }
+
+        public void SendIsGameOnStatus(string status)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(":G:");
+            sb.Append("Status");
+            sb.Append("|");
+            sb.Append(status);
+            foreach (Player p in this.gameTable.Players)
+            {
+                NetworkHelper.WriteNetworkStream(p.GameRequestsStream, sb.ToString());
+                p.GameRequestsStream.Flush();
             }
         }
 
@@ -107,7 +127,7 @@ namespace PokerGameClasses
             return (basePlayerPosition + otherPlayerRelativePosition) % this.gameTable.Players.Count;
         }
         // ze stolika
-        public void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
+        private void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
         {
             Console.WriteLine("It's round nr " + this.CurrentRound);
             bool equalBets = false;
@@ -145,7 +165,7 @@ namespace PokerGameClasses
                     if (this.PositionOfPlayerWhoRaised == -1 || player.PlayersCurrentBet > this.gameTable.CurrentBid)
                     {
                         this.gameTable.CurrentBid = player.PlayersCurrentBet;
-                        this.PositionOfPlayerWhoRaised = player.SeatNr;
+                        this.PositionOfPlayerWhoRaised = currentPlayer;//player.SeatNr; // numer miejsca przy stoliku jest tylko na potrzeby ³adnego wyœwietlania gry w Unity
                     }
                 }
                 if (this.CheckIfAllFolded())
@@ -153,7 +173,7 @@ namespace PokerGameClasses
             }
         }
 
-        public bool CheckIfAllFolded()
+        private bool CheckIfAllFolded()
         {
             bool folded = true;
             foreach(Player p in this.gameTable.Players)
@@ -163,7 +183,7 @@ namespace PokerGameClasses
             }
             return folded;
         }
-        public void MakeNextRound()
+        private void MakeNextRound()
         {
             switch(this.CurrentRound)
             {
@@ -185,25 +205,25 @@ namespace PokerGameClasses
             this.CurrentRound++;
         }
 
-        public void PreFlopRound()
+        private void PreFlopRound()
         {
             this.Dealer.DealCards(this.gameTable, 0);
             this.MakeTurn(this.GetPositionOfPlayerOffBy(this.GetBigBlindPosition(), 1), this.gameTable.Players.Count);
         }
 
-        public void FlopRound()
+        private void FlopRound()
         {
             this.Dealer.DealCards(gameTable, 1);
             this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
-        public void TurnRound()
+        private void TurnRound()
         {
             this.Dealer.DealCards(gameTable, 2);
             this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
         }
 
-        public void RiverRound()
+        private void RiverRound()
         {
             this.Dealer.DealCards(gameTable, 3);
             this.MakeTurn(this.GetSmallBlindPosition(), this.gameTable.Players.Count);
@@ -211,7 +231,18 @@ namespace PokerGameClasses
 
         public void ConcludeGame()
         {
-            Player winner = determineWinner();
+            List<Player> winners = determineWinner();
+            //if (winners != null)
+            //{
+            //    int countOfWinners = winners.Count;
+            //    int totalCoins = this.gameTable.TokensInGame;
+            //    foreach (Player player in winners)
+            //    {
+            //        player.TokensCount += totalCoins / countOfWinners;
+            //        player.XP += 100 / player.TokensCount;
+            //    }
+            //}
+            Player winner = winners[0];
             if (winner != null)
             {
                 winner.TokensCount = winner.TokensCount + this.gameTable.TokensInGame;
@@ -237,13 +268,14 @@ namespace PokerGameClasses
                 p.GameRequestsStream.Flush();
             }
 
-            this.ResetGame();
+            //this.ResetGame(); // Reset gry bêdzie odt¹d PRZED gr¹ (przy starcie gry), ¿eby u¿ywaæ zaktualizowanej miêdzy rozdaniami listy graczy
+            this.gameTable.isGameActive = false;
         }
-        public Player determineWinner()
+        public List<Player> determineWinner()
         {
             HandsComparer handsComparer = new HandsComparer();
             int biggestScore = 11;//gorzej niz najwyzsza karta
-            Player winner = (this.gameTable.Players.Count > 0) ? this.gameTable.Players[0] : null;
+            List<Player> winners = (this.gameTable.Players.Count > 0) ? new List<Player> { this.gameTable.Players[0] } : null;
             foreach (Player player in gameTable.Players)
             {
                 if (player.Folded)
@@ -251,16 +283,501 @@ namespace PokerGameClasses
                 // Karty gracza i 5 wspolnych lezacych na stole
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
                 PlayerCards.SortDesc();
-
+                PlayerCards.SortDesc();
+                Console.WriteLine(PlayerCards);
                 int playerScore = handsComparer.valueOfCards(PlayerCards);
-                if (playerScore <= biggestScore)
+                if (playerScore < biggestScore)
                 {
-                    winner = player;
-                    biggestScore = playerScore;                    
+                    //wygrana
+                    winners.Clear();
+                    winners.Add(player);
+                    biggestScore = playerScore;
+                }
+                else if (playerScore == biggestScore)
+                {
+                    CardsCollection ActualWinnerCards = winners[0].PlayerHand + gameTable.shownHelpingCards;
+                
+                    if (playerScore == 1)//royal poker nie wymaga sprawdzenia, tylko jeden jest
+                    {
+                        winners.Add(player);
+                    }
+                    else if (playerScore == 2)//poker sprawdzic wyzsza karte
+                    {
+                        PlayerCards.SortDesc();
+                        ActualWinnerCards.SortDesc();
+                        Card highestPokerCardActual = handsComparer.HighestCardOfPoker(ActualWinnerCards);
+                        Card highestPokerCard = handsComparer.HighestCardOfPoker(PlayerCards);
+                        if (highestPokerCard.Value > highestPokerCardActual.Value)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if (highestPokerCard.Value < highestPokerCardActual.Value)
+                        {
+                            //przegrana
+                            continue;
+                        }
+                        else
+                        {
+                            //TODO remis
+                            winners.Add(player);
+                        }
+                    }
+                    else if (playerScore == 3)//kareta sprawdzic wyzsza karete a potem wyzsza karte
+                    {
+                        Card QuadsCardActual = handsComparer.CardOfQuads(ActualWinnerCards);
+                        Card QuadsCard = handsComparer.CardOfQuads(PlayerCards);
+                        if (QuadsCard.Value > QuadsCardActual.Value)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if (QuadsCard.Value == QuadsCardActual.Value)
+                        {
+                            //sprawdzam 5 karte kto ma wyzsza
+                            CardsCollection copyofActualWinnerCards = new CardsCollection(new List<Card>(ActualWinnerCards.Cards));//ActualWinnerCards.Cards);
+                            CardsCollection copyOfPlayerCards = new CardsCollection(new List<Card>(PlayerCards.Cards));
+                            foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                            {
+                                if (card.Value == QuadsCard.Value)
+                                {
+                                    copyofActualWinnerCards.Cards.Remove(card);//TakeOutCard(card.Sign, card.Value);//!!!!
+                                }
+                            }
+                            foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                            {
+                                if (card.Value == QuadsCardActual.Value)
+                                {
+                                    copyOfPlayerCards.Cards.Remove(card);
+                                }
+                            }
+                            copyofActualWinnerCards.SortDesc();
+                            copyOfPlayerCards.SortDesc();
+                            if (copyOfPlayerCards.Cards[0].Value > copyofActualWinnerCards.Cards[0].Value)
+                            {
+                                //wygrana
+                                winners.Clear();
+                                winners.Add(player);
+                                biggestScore = playerScore;
+                            }
+                            else if (copyOfPlayerCards.Cards[0].Value < copyofActualWinnerCards.Cards[0].Value)
+                            {
+                                //przegrywa
+                                continue;
+                            }
+                            else
+                            {
+                                //remis TODO
+                                winners.Add(player);
+                            }
+                        }
+                    }
+                    else if (playerScore == 4)//full sprawdzic wieksza trojke, jak rowne to mniejsza
+                    {
+                        //tworze kopie kart gracza i najwyzszego wyniku
+                        CardsCollection copyofActualWinnerCards = new CardsCollection(new List<Card>(ActualWinnerCards.Cards));
+                        CardsCollection copyOfPlayerCards = new CardsCollection(new List<Card>(PlayerCards.Cards));
+                        //sortuje
+                        copyofActualWinnerCards.SortDesc();
+                        copyOfPlayerCards.SortDesc();
+                        //sprawdz trojke od gory, zapisuje jaka karta i usuwam z kolekcji
+                        CardValue cardValueofThreePlayer = handsComparer.GiveCardOfTree(copyOfPlayerCards).Value;
+                        CardValue cardValueofThreeActualWinner = handsComparer.GiveCardOfTree(copyofActualWinnerCards).Value;
+                        if (cardValueofThreePlayer > cardValueofThreeActualWinner)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if (cardValueofThreePlayer < cardValueofThreeActualWinner)
+                        {
+                            //przegrywa
+                            continue;
+                        }
+                        else
+                        {
+                            //usuwam 3
+                            foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueofThreePlayer)
+                                {
+                                    copyofActualWinnerCards.Cards.Remove(card);
+                                }
+                            }
+                            foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueofThreeActualWinner)
+                                {
+                                    copyOfPlayerCards.Cards.Remove(card);
+                                }
+                            }
+                            //sortuje
+                            copyofActualWinnerCards.SortDesc();
+                            copyOfPlayerCards.SortDesc();
+                            //sprawdzam dwojki, zapisuje jaka karta
+                            CardValue cardValueofTwoPlayer = handsComparer.GiveCardOfTwo(copyOfPlayerCards).Value;
+                            CardValue cardValueofTwoActualWinner = handsComparer.GiveCardOfTwo(copyofActualWinnerCards).Value;
+                            if (cardValueofTwoPlayer > cardValueofTwoActualWinner)
+                            {
+                                //wygrana
+                                winners.Clear();
+                                winners.Add(player);
+                                biggestScore = playerScore;
+                            }
+                            else if (cardValueofTwoPlayer < cardValueofTwoActualWinner)
+                            {
+                                //przegrywa
+                                continue;
+                            }
+                            else
+                            {
+                                //remis TODO
+                                winners.Add(player);
+                            }
+                        }
+                    }
+                    else if (playerScore == 5)//kolor sprawdzic na jakiej karcie siedzi kolor 
+                    {
+                        //tworze kopie kart gracza i najwyzszego wyniku
+                        CardsCollection copyofActualWinnerCards = new CardsCollection(new List<Card>(ActualWinnerCards.Cards));
+                        CardsCollection copyOfPlayerCards = new CardsCollection(new List<Card>(PlayerCards.Cards));
+                        int kier = 0, karo = 0, pik = 0, trefl = 0;
+                        foreach (Card card in copyOfPlayerCards.Cards)
+                        {
+                            if (card.Sign == CardSign.Heart)
+                                kier++;
+                            else if (card.Sign == CardSign.Spade)
+                                pik++;
+                            else if (card.Sign == CardSign.Diamond)
+                                karo++;
+                            else if (card.Sign == CardSign.Club)
+                                trefl++;
+                        }
+                        CardSign cardSignOfColour;
+                        if (kier >= 5)
+                            cardSignOfColour = CardSign.Heart;
+                        else if (pik >= 5)
+                            cardSignOfColour = CardSign.Spade;
+                        else if (karo >= 5)
+                            cardSignOfColour = CardSign.Diamond;
+                        else
+                            cardSignOfColour = CardSign.Club;
+
+                        foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                            if (card.Sign != cardSignOfColour)
+                                copyOfPlayerCards.Cards.Remove(card);
+
+                        foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                            if (card.Sign != cardSignOfColour)
+                                copyofActualWinnerCards.Cards.Remove(card);
+
+                        copyofActualWinnerCards.SortDesc();
+                        copyOfPlayerCards.SortDesc();
+
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (copyOfPlayerCards.Cards[i].Value > copyofActualWinnerCards.Cards[i].Value)
+                            {
+                                //wygrana
+                                winners.Clear();
+                                winners.Add(player);
+                                biggestScore = playerScore;
+                                break;
+                            }
+                            else if (copyOfPlayerCards.Cards[i].Value < copyofActualWinnerCards.Cards[i].Value)
+                            {
+                                //przegrana
+                                break;
+                            }
+                            else if (i == 4 && copyOfPlayerCards.Cards[i].Value == copyofActualWinnerCards.Cards[i].Value)
+                            {
+                                //remis TODO
+                                winners.Add(player);
+                                break;
+                            }
+                        }
+                    }
+                    else if (playerScore == 6)//strit sprawdzic na jakiej karcie siedzi strit
+                    {
+                        ActualWinnerCards.SortDesc();
+                        PlayerCards.SortDesc();
+                        Card highestStraightCardActual = handsComparer.HighestCardOfStraigth(ActualWinnerCards);
+                        Card highestStraightCardPlayer = handsComparer.HighestCardOfStraigth(PlayerCards);
+                        if ((int)highestStraightCardPlayer.Value > (int)highestStraightCardActual.Value)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if ((int)highestStraightCardPlayer.Value < (int)highestStraightCardActual.Value)
+                        {
+                            //przegrana
+                            continue;
+                        }
+                        else
+                        {
+                            //TODO remis
+                            winners.Add(player);
+                        }
+                    }
+                    else if (playerScore == 7)//trojka sprawdzic na jakiej karcie siedzi trojka, a potem najwyzsza karte
+                    {
+                        //tworze kopie kart gracza i najwyzszego wyniku
+                        CardsCollection copyofActualWinnerCards = new CardsCollection(new List<Card>(ActualWinnerCards.Cards));
+                        CardsCollection copyOfPlayerCards = new CardsCollection(new List<Card>(PlayerCards.Cards));
+                        //sortuje
+                        copyofActualWinnerCards.SortDesc();
+                        copyOfPlayerCards.SortDesc();
+                        //sprawdz trojke od gory, zapisuje jaka karta i usuwam z kolekcji
+                        CardValue cardValueofThreePlayer = handsComparer.GiveCardOfTree(copyOfPlayerCards).Value;
+                        CardValue cardValueofThreeActualWinner = handsComparer.GiveCardOfTree(copyofActualWinnerCards).Value;
+                        if (cardValueofThreePlayer > cardValueofThreeActualWinner)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if (cardValueofThreePlayer < cardValueofThreeActualWinner)
+                        {
+                            //przegrywa
+                            continue;
+                        }
+                        else
+                        {
+                            //trojki te same
+                            foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueofThreePlayer)
+                                {
+                                    copyOfPlayerCards.Cards.Remove(card);
+                                }
+                            }
+                            foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueofThreeActualWinner)
+                                {
+                                    copyofActualWinnerCards.Cards.Remove(card);
+                                }
+                            }
+                            copyofActualWinnerCards.SortDesc();
+                            copyOfPlayerCards.SortDesc();
+                            if (copyOfPlayerCards.Cards[0].Value > copyofActualWinnerCards.Cards[0].Value)
+                            {
+                                //wygrywa
+                                winners.Clear();
+                                winners.Add(player);
+                                biggestScore = playerScore;
+                            }
+                            else if (copyOfPlayerCards.Cards[0].Value < copyofActualWinnerCards.Cards[0].Value)
+                            {
+                                //przegrywa
+                                continue;
+                            }
+                            else
+                            {
+                                if (copyOfPlayerCards.Cards[1].Value > copyofActualWinnerCards.Cards[1].Value)
+                                {
+                                    //wygrywa
+                                    winners.Clear();
+                                    winners.Add(player);
+                                    biggestScore = playerScore;
+                                }
+                                else if (copyOfPlayerCards.Cards[1].Value < copyofActualWinnerCards.Cards[1].Value)
+                                {
+                                    //przegrywa
+                                    continue;
+                                }
+                                else
+                                {
+                                    //remis TODO
+                                    winners.Add(player);
+                                }
+                            }
+                        }
+                    }
+                    else if (playerScore == 8)//2 pary sprawdzic wyzsza pare, potem mniejsza, potem
+                    {
+                        //tworze kopie kart gracza i najwyzszego wyniku
+                        CardsCollection copyofActualWinnerCards = new CardsCollection(new List<Card>(ActualWinnerCards.Cards));
+                        CardsCollection copyOfPlayerCards = new CardsCollection(new List<Card>(PlayerCards.Cards));
+                        //sortuje
+                        copyofActualWinnerCards.SortDesc();
+                        copyOfPlayerCards.SortDesc();
+                        CardValue cardValueOfFirstTwoPlayer = handsComparer.GiveCardOfTwo(copyOfPlayerCards).Value;
+                        CardValue cardValueOfFirstTwoActualWinner = handsComparer.GiveCardOfTwo(copyofActualWinnerCards).Value;
+                        if (cardValueOfFirstTwoPlayer > cardValueOfFirstTwoActualWinner)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if (cardValueOfFirstTwoPlayer < cardValueOfFirstTwoActualWinner)
+                        {
+                            //przegrana
+                            continue;
+                        }
+                        else
+                        {
+                            foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueOfFirstTwoPlayer)
+                                    copyOfPlayerCards.Cards.Remove(card);
+                            }
+                            foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueOfFirstTwoActualWinner)
+                                    copyofActualWinnerCards.Cards.Remove(card);
+                            }
+                            copyofActualWinnerCards.SortDesc();
+                            copyOfPlayerCards.SortDesc();
+                            CardValue cardValueOfSecondTwoPlayer = handsComparer.GiveCardOfTwo(copyOfPlayerCards).Value;
+                            CardValue cardValueOfSecondTwoActualWinner = handsComparer.GiveCardOfTwo(copyofActualWinnerCards).Value;
+                            if (cardValueOfSecondTwoPlayer > cardValueOfSecondTwoActualWinner)
+                            {
+                                //wygrana
+                                winners.Clear();
+                                winners.Add(player);
+                                biggestScore = playerScore;
+                            }
+                            else if (cardValueOfSecondTwoPlayer < cardValueOfSecondTwoActualWinner)
+                            {
+                                //przegrana
+                                continue;
+                            }
+                            else
+                            {//sprawdzam 5-ta karte
+                                foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                                {
+                                    if (card.Value == cardValueOfSecondTwoPlayer)
+                                        copyOfPlayerCards.Cards.Remove(card);
+                                }
+                                foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                                {
+                                    if (card.Value == cardValueOfSecondTwoActualWinner)
+                                        copyofActualWinnerCards.Cards.Remove(card);
+                                }
+                                copyofActualWinnerCards.SortDesc();
+                                copyOfPlayerCards.SortDesc();
+                                if (copyOfPlayerCards.Cards[0].Value > copyofActualWinnerCards.Cards[0].Value)
+                                {
+                                    //wygrana
+                                    winners.Clear();
+                                    winners.Add(player);
+                                    biggestScore = playerScore;
+                                }
+                                else if (copyOfPlayerCards.Cards[0].Value < copyofActualWinnerCards.Cards[0].Value)
+                                {
+                                    //przegrana
+                                    continue;
+                                }
+                                else
+                                {
+                                    //remis TODO
+                                    winners.Add(player);
+                                }
+                            }
+                        }
+                    }
+                    else if (playerScore == 9)//1 para sprawdzic na jakiej karcie siedzi 2, a potem najwyzsza karta
+                    {
+                        //tworze kopie kart gracza i najwyzszego wyniku
+                        CardsCollection copyofActualWinnerCards = new CardsCollection(new List<Card>(ActualWinnerCards.Cards));
+                        CardsCollection copyOfPlayerCards = new CardsCollection(new List<Card>(PlayerCards.Cards));
+                        //sortuje
+                        copyofActualWinnerCards.SortDesc();
+                        copyOfPlayerCards.SortDesc();
+                        CardValue cardValueOfTwoPlayer = handsComparer.GiveCardOfTwo(copyOfPlayerCards).Value;
+                        CardValue cardValueOfTwoActualWinner = handsComparer.GiveCardOfTwo(copyofActualWinnerCards).Value;
+                        if ((int)cardValueOfTwoPlayer > (int)cardValueOfTwoActualWinner)
+                        {
+                            //wygrana
+                            winners.Clear();
+                            winners.Add(player);
+                            biggestScore = playerScore;
+                        }
+                        else if ((int)cardValueOfTwoPlayer < (int)cardValueOfTwoActualWinner)
+                        {
+                            //przegrana
+                            continue;
+                        }
+                        else
+                        {
+                            foreach (Card card in copyOfPlayerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueOfTwoPlayer)
+                                    copyOfPlayerCards.Cards.Remove(card);
+                            }
+                            foreach (Card card in copyofActualWinnerCards.Cards.ToList())
+                            {
+                                if (card.Value == cardValueOfTwoActualWinner)
+                                    copyofActualWinnerCards.Cards.Remove(card);
+                            }
+                            copyofActualWinnerCards.SortDesc();
+                            copyOfPlayerCards.SortDesc();
+                            for (int i = 0; i < 3; i++)
+                            {
+                                if (copyOfPlayerCards.Cards[i].Value > copyofActualWinnerCards.Cards[i].Value)
+                                {
+                                    //wygrana
+                                    winners.Clear();
+                                    winners.Add(player);
+                                    biggestScore = playerScore;
+                                    break;
+                                }
+                                else if (copyOfPlayerCards.Cards[i].Value < copyofActualWinnerCards.Cards[i].Value)
+                                {
+                                    //przegrana
+                                    break;
+                                }
+                                else if (copyOfPlayerCards.Cards[i].Value == copyofActualWinnerCards.Cards[i].Value && i == 2)
+                                {
+                                    //remis
+                                    winners.Add(player);
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+                    else if (playerScore == 10)//najwyzsza karta
+                    {
+                        ActualWinnerCards.SortDesc();
+                        //po kolei sprawdzam tych 5 posortowanych karty
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (PlayerCards.Cards[i].Value > ActualWinnerCards.Cards[i].Value)
+                            {
+                                //wygrana
+                                winners.Clear();
+                                winners.Add(player);
+                                biggestScore = playerScore;
+                                break;
+                            }
+                            else if (PlayerCards.Cards[i].Value < ActualWinnerCards.Cards[i].Value)
+                            {
+                                //przegrana
+                                break;
+                            }
+                            else if (PlayerCards.Cards[i].Value == ActualWinnerCards.Cards[i].Value && i == 4)
+                            {
+                                //remis
+                                winners.Add(player);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
-            return winner;
+            return winners;
         }
 
         public void ResetGame()
@@ -273,7 +790,7 @@ namespace PokerGameClasses
             this.CurrentRound = 0;
         }
 
-        public string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)
+        private string MessageGameState(Player currentPlayer, Player fromWhichPerspective, bool allPlayersCards)
         {
             StringBuilder sb = new StringBuilder();
 

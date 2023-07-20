@@ -28,15 +28,17 @@ namespace PokerGameClasses
         { get; set; }
         public int MinPlayersXP
         { get; set; }
-        public int MinPlayersTokenCount
-        { get; set; }
+        public int BigBlind
+        { get; private set; }
+        public int MinTokens { get; private set; }
         public GameTableSettings()
         {
             this.Mode = GameMode.Mixed;
             this.MaxPlayersCountInGame = MaxPlayersCountByRules;
             this.BotsNumberOnStart = 0;
             this.MinPlayersXP = 0;
-            this.MinPlayersTokenCount = 0;
+            this.BigBlind = 0;
+            this.MinTokens = 0;
         }
 
         override public string ToString()
@@ -45,7 +47,8 @@ namespace PokerGameClasses
                 + "Max player count: " + this.MaxPlayersCountInGame + "\n"
                 + "Bots starting number: " + this.BotsNumberOnStart + "\n"
                 + "Min XP: " + this.MinPlayersXP + "\n"
-                + "Min Chips: " + this.MinPlayersTokenCount + "\n";
+                + "Min Chips: " + this.MinTokens + "\n"
+                + "Big Blind: " + this.BigBlind + "\n";
         }
 
         public bool changeMode(GameMode mode)
@@ -111,7 +114,12 @@ namespace PokerGameClasses
 
         public bool changeMinTokens(int minTokens)
         {
-            this.MinPlayersTokenCount = minTokens;
+            this.MinTokens = minTokens;
+            return true;
+        }
+        public bool changeBigBlind(int bigBlind)
+        {
+            this.BigBlind = bigBlind;
             return true;
         }
     }

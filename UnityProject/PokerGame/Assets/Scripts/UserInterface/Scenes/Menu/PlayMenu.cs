@@ -137,6 +137,12 @@ public class PlayMenu : MonoBehaviour
     // TODO (cz. PGGP-107) ekran Settings od zmieniania ustawieñ stolika/rozgrywki
     public void OnChangeSettingsButton()
     {
-        Debug.Log("Settings");
+        // TODO dodaæ nie wpuszczanie do tego ekranu, jeœli nie siedzimy przy ¿adnym stoliku i odpowiedni Popup z info
+        SceneManager.LoadScene("TableSettings");
+    }
+
+    public void OnAccountSettingsButton()
+    {
+        SceneManager.LoadScene("SettingsMenu");
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 
@@ -40,12 +41,23 @@ namespace ClientTests
             string username = Console.ReadLine();
             Console.WriteLine("Password: ");
             string password = Console.ReadLine();
+            //#############################################
+            var rsaClient = new RSACryptoServiceProvider(1024);
+            rsaClient.PersistKeyInCsp = false;
 
+            byte[] keybuffer = new byte[1024];
+            StringBuilder keyStringBuilder = new StringBuilder();
+            int nobytes = ns.Read(keybuffer, 0, keybuffer.Length);
+            keyStringBuilder.AppendFormat("{0}", Encoding.ASCII.GetString(keybuffer, 0, nobytes));
+            rsaClient.FromXmlString(keyStringBuilder.ToString());
+
+            
             byte[] message = System.Text.Encoding.ASCII.GetBytes(username + ' ' + password);
-            ns.Write(message, 0, message.Length);
+            var encryptedData = rsaClient.Encrypt(message, false);
+            ns.Write(encryptedData, 0, encryptedData.Length);
 
 
-            byte[] myReadBuffer = new byte[1024];
+            byte[] myReadBuffer = new byte[2048];
             int numberOfBytesRead = 0;
             StringBuilder myCompleteMessage = new StringBuilder();
             numberOfBytesRead = ns.Read(myReadBuffer, 0, myReadBuffer.Length);
@@ -221,7 +233,7 @@ namespace ClientTests
                         }
                         if (cki.Key == ConsoleKey.A) //Dodaj nowy stolik
                         {
-                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "0" + ' ' + "16" + ' ');
+                            byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + login + nr.ToString() + ' ' + "1" + ' ' + "3" + ' ' + "0" + ' ' + "100"+ "16" + ' ');
                             ns.Write(tosend, 0, tosend.Length);
                             nr++;
 

@@ -15,6 +15,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 using PokerGameClasses;
+using System.Security.Cryptography;
 
 
 // Ekran do podawania danych logowania
@@ -29,13 +30,16 @@ public class Login : MonoBehaviour
     [SerializeField] private Button loginButton;
     [SerializeField] private Button backToMenuButton;
 
+    [SerializeField] private TMP_InputField passwordField;
+
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        this.passwordField.contentType = TMP_InputField.ContentType.Password;
+        this.passwordField.asteriskChar = '*';
     }
 
     // Update is called once per frame
@@ -51,9 +55,27 @@ public class Login : MonoBehaviour
 
     public void OnLoginButton()
     {
+        if (!this.ValidateIP(this.IP))
+        {
+            this.ShowPopup("Incorrect IP. Input valid IP");
+            return;
+        }
+
         // Nawi¹zanie po³¹czenia z serwerem na porcie od zdarzeñ w menu aplikacji
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
         mainServer.Start();
+
+        byte[] myReadBuffer = new byte[1024];
+        int numberOfBytesRead = 0;
+        StringBuilder publicKeyMessage = new StringBuilder();
+        numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
+        publicKeyMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
+        string[] request = publicKeyMessage.ToString().Split(new char[] { ' ' });
+        string publicKeyXml = request[0];
+
+        var rsa = new RSACryptoServiceProvider();
+        rsa.PersistKeyInCsp = false;
+        rsa.FromXmlString(publicKeyXml);
 
         if (this.playerLogin == null)
         {
@@ -69,18 +91,17 @@ public class Login : MonoBehaviour
 
         // TODO dodaæ kiedyœ do osobnej klasy
         //////////////
-        // wyœlij zapytanie o logowanie do serwerze
-        byte[] message = System.Text.Encoding.ASCII.GetBytes(this.playerLogin + ' ' + this.playerPassword);
-        mainServer.stream.Write(message, 0, message.Length);
+        // wyœlij zapytanie o logowanie do serwera
+        string message = this.playerLogin + ' ' + this.playerPassword;
+        byte[] encryptedMessage = rsa.Encrypt(Encoding.ASCII.GetBytes(message), false);
+        mainServer.stream.Write(encryptedMessage, 0, encryptedMessage.Length);
         mainServer.stream.Flush();
 
         // odbierz odpowiedŸ
-        byte[] myReadBuffer = new byte[1024];
-        int numberOfBytesRead = 0;
         StringBuilder myCompleteMessage = new StringBuilder();
         numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
         myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-        string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
+        request = myCompleteMessage.ToString().Split(new char[] { ' ' });
         string token = request[0];
 
         if (token == "##&&@@0000")
@@ -109,7 +130,7 @@ public class Login : MonoBehaviour
             var coins = Int32.Parse(request[2]);
             var nick = request[3];
             // stwórz g³ównego gracza
-            PlayerState player = new PlayerState(nick, null, coins, 0, xp);
+            PlayerState player = new PlayerState(nick, null, coins, 0, xp, 0);
             ///////////////
 
             // zapamiêtaj g³ównego gracza na ca³y czas dzia³ania aplikacji
@@ -126,6 +147,18 @@ public class Login : MonoBehaviour
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
         popup.GetComponent<TextMeshProUGUI>().text = text;
     }
+
+    public bool ValidateIP(string IP)
+    {
+        // funkcja systemowa do parsowania IP interpretuje pojedyncz¹ liczbê równie¿ jako adres, np. 3 = 0.0.0.3
+        // po to sprawdzamy, czy zosta³y podane kropki, ¿eby wykluczyæ pojedyncz¹ liczbê jako dobry input
+        System.Net.IPAddress parsedIP; // tê zmienn¹ ignorujê, i tak chcê po prostu daæ string'a do TcpConnection, a nie obiekt tej klasy
+        if (IP.Contains("."))
+            return System.Net.IPAddress.TryParse(IP, out parsedIP);
+
+        return false;
+    }
+
     public void ReadLogin(string login)
     {
         if (login.Length == 0)
@@ -145,6 +178,7 @@ public class Login : MonoBehaviour
             return;
         }
         this.IP = IP;
+        MyGameManager.Instance.ServerIP = IP;
     }
     public void ReadPassword(string password)
     {

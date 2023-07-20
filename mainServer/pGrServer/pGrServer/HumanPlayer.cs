@@ -28,12 +28,17 @@ namespace PokerGameClasses
                     settings.MinPlayersXP = this.XP;
                 }
 
-                if (settings.MinPlayersTokenCount > this.TokensCount)
+                if (settings.BigBlind > this.TokensCount)
                 {
                     //Console.WriteLine("Not enough tokens for this table setting - tokens count of your table will be lowered");
-                    settings.MinPlayersTokenCount = this.TokensCount;
+                    settings.changeBigBlind(this.TokensCount);
                 }
-                    
+                if (settings.MinTokens > this.TokensCount)
+                {
+                    //Console.WriteLine("Not enough tokens for this table setting - tokens count of your table will be lowered");
+                    settings.changeMinTokens(this.TokensCount);
+                }
+
             }
             table.ChangeSettings(this, settings);
 
