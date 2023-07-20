@@ -9,10 +9,7 @@ using System;
 
 using PokerGameClasses;
 using System.Text;
-<<<<<<< HEAD
-=======
 using System.Linq;
->>>>>>> main
 
 // Ekran do podawania danych do stworzenia stolika
 public class CreateTable : MonoBehaviour
@@ -103,7 +100,6 @@ public class CreateTable : MonoBehaviour
         GameModeSelection();
         SendTableToServer();
         // TODO (cz. PGGP-56) dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
-        SceneManager.LoadScene("Table");
     }
 
     // TODO (cz. PGGP-106) dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika,
@@ -124,21 +120,41 @@ public class CreateTable : MonoBehaviour
         mainServer.stream.Flush();
 
         // odbierz odpowiedŸ
-        Debug.Log("penis0");
-        byte[] myReadBuffer = new byte[1024];
-        int numberOfBytesRead = 0;
-        Debug.Log("penis1");
-        StringBuilder myCompleteMessage = new StringBuilder();
-        Debug.Log("penis2");
-        numberOfBytesRead = mainServer.stream.Read(myReadBuffer, 0, myReadBuffer.Length);
-        Debug.Log("penis3");
-        myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-        Debug.Log("penis4");
-        string[] request = myCompleteMessage.ToString().Split(new char[] { ' ' });
-        Debug.Log("penis5");
-        foreach (string s in request)
+        if (mainServer.stream.DataAvailable)
         {
-            Debug.Log(s);
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            mainServer.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            for (int i = 0; i < response.Length; i++)
+            {
+                Debug.Log(i + ": " + response[i]); 
+            }
+            if (response[0] == "answer 0 1 ") {
+                ShowPopup("You are already sitting at a table!");
+                return;
+            }
+            else if (response[0] == "answer 0 2 ")
+            {
+                ShowPopup("A table of this name already exists!");
+                return;
+            }
+            else if (response[0] == "answer 0 9 ")
+            {
+                ShowPopup("Validation error! Please check if table name is valid and try again");
+                return;
+            }
+            else if (response[0] == "answer 0 A ")
+            {
+                ShowPopup("Something went wrong, please try again later");
+                return;
+            }
+            else if (response[0] == "answer 0 0 ")
+            {
+                SceneManager.LoadScene("Table");
+            }
         }
     }
 
