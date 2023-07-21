@@ -208,8 +208,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: LoginPlayer, Assembly-CSharp
-        m_MethodName: OnLoginButton
+        m_TargetAssemblyTypeName: GetChipsMenu, Assembly-CSharp
+        m_MethodName: onGetChipsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -575,8 +575,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: LoginPlayer, Assembly-CSharp
-        m_MethodName: OnBackToMenuButton
+        m_TargetAssemblyTypeName: GetChipsMenu, Assembly-CSharp
+        m_MethodName: onBackToMenuButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -921,7 +921,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.15
+  m_fontSize: 51.4
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1082,12 +1082,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 994241593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 293df984303773649b5a54d0e9dd8574, type: 3}
+  m_Script: {fileID: 11500000, guid: 4dc4f6b6ae7f2234daaceac1be5cf2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginButton: {fileID: 260972091}
+  getChipsButton: {fileID: 260972091}
   backToMenuButton: {fileID: 716606195}
-  passwordField: {fileID: 0}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1564000074
 GameObject:
