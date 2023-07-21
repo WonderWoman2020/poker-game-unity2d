@@ -131,6 +131,7 @@ public class CreateTable : MonoBehaviour
             if (response[0] == "answer Z 1 ")
             {
                 ShowPopup("Error: bad request");
+                return;
             }
             else if (response[0] == "answer 0 1 ") {
                 ShowPopup("You are already sitting at a table!");

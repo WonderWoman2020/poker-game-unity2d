@@ -47,12 +47,6 @@ public class GetChipsMenu : MonoBehaviour
             menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
             string[] response = menuRequestStr.ToString().Split(new string(":T:"));
             string[] splitResponse = response[0].Split(' ');
-            if (splitted[0] == "1")
-            {
-                // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
-                int coins = Convert.ToInt32(splitted[1]);
-                MyGameManager.Instance.MainPlayer.TokensCount = coins;
-            }
             if (response[0] == "answer Z 1 ")
             {
                 ShowPopup("Error: bad request");
