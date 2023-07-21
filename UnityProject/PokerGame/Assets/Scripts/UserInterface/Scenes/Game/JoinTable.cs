@@ -229,10 +229,30 @@ public class JoinTable : MonoBehaviour
                     {
                         joinedTheTable = true;
                     }
-                    else
+                    else if (splitted[2] == "1")
                     {
                         joinedTheTable = false;
-                        ShowPopup("Couldn't join table, the game is currently in progress");
+                        ShowPopup("Couldn't join the game, you are already sitting at a table");
+                    }
+                    else if (splitted[2] == "2")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Couldn't find a table with this name");
+                    }
+                    else if (splitted[2] == "3")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Couldn't join the game, please try again later");
+                    }
+                    else if (splitted[2] == "A")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Something went wrong with sending information to the server, please try again later");
+                    }
+                    else if (response == "answer Z 1 ")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Error: bad request");
                     }
                 }
                 Debug.Log("Joined bool value: " + joinedTheTable);

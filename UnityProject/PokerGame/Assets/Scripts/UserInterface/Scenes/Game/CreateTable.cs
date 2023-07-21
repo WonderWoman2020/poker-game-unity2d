@@ -148,7 +148,7 @@ public class CreateTable : MonoBehaviour
             }
             else if (response[0] == "answer 0 A ")
             {
-                ShowPopup("Something went wrong, please try again later");
+                ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
             else if (response[0] == "answer 0 0 ")
