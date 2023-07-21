@@ -33,28 +33,48 @@ public class GetChipsMenu : MonoBehaviour
     //TODO after the communication protocol is changed
     public void onGetChipsButton()
     {
-        //TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
-        //NetworkHelper.WriteNetworkStream(mainServer.stream, MyGameManager.Instance.clientToken + ' ' + "7" + ' ' + "1000");
-        //mainServer.stream.Flush();
-        //Thread.Sleep(1000);
-        //if (mainServer.stream.DataAvailable)
-        //{
-        //    string response = NetworkHelper.ReadNetworkStream(mainServer.stream);
-        //    mainServer.stream.Flush();
-        //    string[] splitted = response.Split(' ');
-        //    for (int i = 0; i < splitted.Length; i++)
-        //    {
-        //        Debug.Log(splitted[i]);
-        //    }
-        //    // arg 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
-        //    if (splitted[0] == "1")
-        //    {
-        //        // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
-        //        int coins = Convert.ToInt32(splitted[1]);
-        //        MyGameManager.Instance.MainPlayer.TokensCount = coins;
-        //    }
-        //}
-        //Debug.Log("Get Chips");
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        string token = MyGameManager.Instance.clientToken;
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "7" + ' ');
+        mainServer.stream.Write(toSend, 0, toSend.Length);
+        mainServer.stream.Flush();
+        if (mainServer.stream.DataAvailable)
+        {
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            mainServer.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            string[] splitResponse = response[0].Split(' ');
+            if (splitted[0] == "1")
+            {
+                // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
+                int coins = Convert.ToInt32(splitted[1]);
+                MyGameManager.Instance.MainPlayer.TokensCount = coins;
+            }
+            if (response[0] == "answer Z 1 ")
+            {
+                ShowPopup("Error: bad request");
+            }
+            else if (splitResponse[2] == "1")
+            {
+                ShowPopup("You can't receive more chips now! You'll be able to collect more in " + splitResponse[3] + " hours");
+                return;
+            }
+            else if (splitResponse[0] == "0")
+            {
+                ShowPopup("Received " + splitResponse[3] + " chips!");
+                int coins = Convert.ToInt32(splitResponse[3]);
+                MyGameManager.Instance.MainPlayer.TokensCount += coins;
+                return;
+            }
+            else if (response[0] == "answer 7 A ")
+            {
+                ShowPopup("Something went wrong with sending information to the server, please try again later");
+                return;
+            }
+        }
     }
 
     public void onBackToMenuButton ()
