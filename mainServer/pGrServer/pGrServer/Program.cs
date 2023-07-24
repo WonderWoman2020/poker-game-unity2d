@@ -155,43 +155,51 @@ namespace pGrServer
                                 else if (!ValidateStringIfPositiveInt(request[7]))
                                     valid = false;
 
-
                                 openTablesAccess.WaitOne();
-                                //Tylko dla clienta ktory nie jest przy stole
-                                if (player.Table == null && valid)
+                                if (request.Length > 8)
                                 {
-                                    string name = request[2];
-                                    bool found = false;
-                                    //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
-                                    foreach (GameTable table in openTables)
-                                        if (table.Name == name)
-                                        {
-                                            found = true;
-                                        }
-                                            
-
-                                    if (!found)
+                                    
+                                    //Tylko dla clienta ktory nie jest przy stole
+                                    if (player.Table == null && valid)
                                     {
-                                        //Utworzenie stołu
-                                        GameTable gameTable = new GameTable(name, (HumanPlayer)player);
-                                        //Ustawienie przy jakim stole jest Client
-                                        loggedClients[token].Table = gameTable;
-                                        ChangeTableSettings(gameTable, player, request[3], request[4], request[5], request[6], request[7]);
-                                        openTables.Add(gameTable);
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 0 "); // odpowiedź OK
+                                        string name = request[2];
+                                        bool found = false;
+                                        //Przeszukanie czy podana nazwa nie jest juz zajeta przez inny stół (Name to ID stołu)
+                                        foreach (GameTable table in openTables)
+                                            if (table.Name == name)
+                                            {
+                                                found = true;
+                                            }
+
+
+                                        if (!found)
+                                        {
+                                            //Utworzenie stołu
+                                            GameTable gameTable = new GameTable(name, (HumanPlayer)player);
+                                            //Ustawienie przy jakim stole jest Client
+                                            loggedClients[token].Table = gameTable;
+                                            ChangeTableSettings(gameTable, player, request[3], request[4], request[5], request[6], request[7]);
+                                            openTables.Add(gameTable);
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 0 0 "); // odpowiedź OK
+                                        }
+                                        else
+                                        {
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 0 2 "); // juz jest taka nazwa
+                                        }
                                     }
                                     else
                                     {
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 2 "); // juz jest taka nazwa
+                                        if (!valid)
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 0 9 "); // błąd w walidacji
+                                        else if (player.Table != null)
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 0 1 "); // gracz przy stole
                                     }
                                 }
                                 else
                                 {
-                                    if(!valid)
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 9 "); // błąd w walidacji
-                                    else
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 0 1 "); // gracz przy stole
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 0 A "); // błąd pakietu
                                 }
+                                
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
@@ -204,45 +212,55 @@ namespace pGrServer
                                 byte[] answear = null;
 
                                 Player client = player;
-                                if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
+                                if(request.Length > 3)
                                 {
-                                    string name = request[2];
-                                    
-                                    bool found = false;
-                                    GameTable table = null;
-                                    //Szukanie nazwy stołu do którego chce sie dolaczyc
-                                    foreach (GameTable tab in openTables)
-                                        if (tab.Name == name)
-                                        {
-                                            found = true;
-                                            table = tab;
-                                        }
-                                    if (found)
+                                    if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
                                     {
-                                        //jesli udalo sie dodac gracza do stołu
-                                        bool git = table.AddPlayer(client);
-                                        if (git)
+                                        string name = request[2];
+
+                                        bool found = false;
+                                        GameTable table = null;
+                                        //Szukanie nazwy stołu do którego chce sie dolaczyc
+                                        foreach (GameTable tab in openTables)
+                                            if (tab.Name == name)
+                                            {
+                                                found = true;
+                                                table = tab;
+                                            }
+                                        if (found)
                                         {
-                                            client.Table = table;
-                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
-                                           
+                                            //jesli udalo sie dodac gracza do stołu
+                                            bool git = table.AddPlayer(client);
+                                            if (git)
+                                            {
+                                                client.Table = table;
+                                                answear = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
+
+                                            }
+                                            else
+                                            {
+                                                client.Table = null;
+                                                answear = System.Text.Encoding.ASCII.GetBytes("answer 1 3 "); // odpowiedź FAILED
+                                            }
                                         }
                                         else
                                         {
-                                            client.Table = null;
-                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 1 3 "); // odpowiedź FAILED
+                                            //Kiedy nie znaleziono
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 1 2 "); // odpowiedź FAILED
                                         }
+
                                     }
                                     else
                                     {
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 1 2 "); // odpowiedź FAILED
+                                        //Kiedy juz jestesmy przy stoliku
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 1 1 "); // odpowiedź FAILED
                                     }
-
                                 }
                                 else
                                 {
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 1 1 "); // odpowiedź FAILED
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 1 A "); // za krótki pakiet
                                 }
+                               
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
@@ -250,26 +268,41 @@ namespace pGrServer
                             else if (request[1] == "2")
                             {
                                 //Uwaga! Nie wysyła informacji o stolikach, kiedy się przy jakimś siedzi --> dlatego pojedynczy klient nigdy nie dostaje listy stolików
+                                openTablesAccess.WaitOne();
+                                StringBuilder completeMessage = new StringBuilder();
                                 if (player.Table == null)
                                 {
-                                    StringBuilder completeMessage = new StringBuilder();
-                                    openTablesAccess.WaitOne();
-                                    foreach (GameTable table in openTables)
+                                    if(openTables.Count > 0)
                                     {
-                                        completeMessage.Append(table.toMessage());
+                                        completeMessage.Append("answer 2 0 ");
+                                        foreach (GameTable table in openTables)
+                                        {
+                                            completeMessage.Append(table.toMessage());
+                                        }
                                     }
-                                    byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
-                                    player.MenuRequestsStream.Write(message, 0, message.Length);
-                                    openTablesAccess.ReleaseMutex();
+                                    else
+                                    {
+                                        completeMessage.Append("answer 2 1 ");
+                                    }
+                                    
+                                    
                                 }
+                                else
+                                {
+                                    completeMessage.Append("answer 2 2 ");
+                                }
+                                byte[] message = System.Text.Encoding.ASCII.GetBytes(completeMessage.ToString());
+                                player.MenuRequestsStream.Write(message, 0, message.Length);
+                                openTablesAccess.ReleaseMutex();
                             }
                             //wylogowanie
                             else if (request[1] == "3")
                             {
-                                RemoveFromTable(player);
-                                LogOut(player, i);
                                 byte[] answear = System.Text.Encoding.ASCII.GetBytes("answer 3 0 "); // odpowiedź OK
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                RemoveFromTable(player);
+                                LogOut(player, i);
+                                
                             }
                             //Odejscie od stołu
                             else if (request[1] == "4")
@@ -295,17 +328,36 @@ namespace pGrServer
                                 if (!ValidateStringIfPositiveInt(request[6]))
                                     valid = false;
 
-                                if (client.Table != null && valid)
+                                if(request.Length > 7)
                                 {
-                                    ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5], request[6]);
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 5 0 "); // odpowiedź OK
+                                    if (client.Table != null)
+                                    {
+                                        if (!client.Table.alreadyHasGameThread)
+                                        {
+                                            if (valid)
+                                            {
+                                                ChangeTableSettings(client.Table, client, request[2], request[3], request[4], request[5], request[6]);
+                                                answear = System.Text.Encoding.ASCII.GetBytes("answer 5 0 "); // odpowiedź OK
+                                            }
+                                            else
+                                            {
+                                                answear = System.Text.Encoding.ASCII.GetBytes("answer 5 9 "); // odpowiedź Failed
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            answear = System.Text.Encoding.ASCII.GetBytes("answer 5 2 ");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 5 1 ");
+                                    }
                                 }
                                 else
                                 {
-                                    if (!valid)
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 5 9 "); // odpowiedź Failed
-                                    else
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 5 1 "); // odpowiedź Failed
+                                    answear = System.Text.Encoding.ASCII.GetBytes("answer 5 A ");
                                 }
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 openTablesAccess.ReleaseMutex();
@@ -624,6 +676,8 @@ namespace pGrServer
                                 byte[] message = System.Text.Encoding.ASCII.GetBytes(token + ' ' + xp + ' ' + coins + ' ' + nick);
                                 clientStream.Write(message, 0, message.Length);
 
+                                
+
                                 //(akceptuje drugi port)
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
                                 Console.WriteLine("Accepted game client");
@@ -712,13 +766,14 @@ namespace pGrServer
         }
         public static void LogOut(Player player, int i)
         {
+            if (player.Table != null)
+                RemoveFromTable(player);
             player.MenuRequestsTcp.Close();
             player.MenuRequestsStream.Dispose();
             player.GameRequestsTcp.Close();
             player.GameRequestsStream.Dispose();
             loggedClients.Remove(player.Token);
             loggedTokens.RemoveAt(i);
-            //@@@@@@@@@@@@ Działa i szkoda odpalac przy testowaniu obecnie
             UpdateBoth(player);
         }
 
