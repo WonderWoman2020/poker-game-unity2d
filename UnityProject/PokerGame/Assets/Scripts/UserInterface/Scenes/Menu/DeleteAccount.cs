@@ -17,15 +17,15 @@ public class DeleteAccount : MonoBehaviour
 
     [SerializeField] private Button deleteAccountButton;
     [SerializeField] private Button backButton;
+    [SerializeField] private TMP_InputField passwordField;
 
     public GameObject PopupWindow;
-
-    private string password;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.passwordField.contentType = TMP_InputField.ContentType.Password;
+        this.passwordField.asteriskChar = '*';
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class DeleteAccount : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + this.password + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + passwordField + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 

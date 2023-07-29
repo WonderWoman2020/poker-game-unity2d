@@ -60,7 +60,7 @@ public class TableSettings : MonoBehaviour
 
     public void OnChangeSettingsButton()
     {
-        int mode = (int)this.chosenMode
+        int mode = (int)this.chosenMode;
 
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
