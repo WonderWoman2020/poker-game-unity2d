@@ -1,0 +1,15 @@
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ClientMenuTests.exe
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ClientMenuTests.deps.json
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ClientMenuTests.runtimeconfig.json
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ClientMenuTests.runtimeconfig.dev.json
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ClientMenuTests.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ref\ClientMenuTests.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\bin\Debug\net5.0\ClientMenuTests.pdb
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.AssemblyInfoInputs.cache
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.AssemblyInfo.cs
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.csproj.CoreCompileInputs.cache
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ref\ClientMenuTests.dll
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.pdb
+C:\Users\Lukas\source\repos\pGrServer\poker-game-unity2d\ClientMenuTests\ClientMenuTests\obj\Debug\net5.0\ClientMenuTests.genruntimeconfig.cache
