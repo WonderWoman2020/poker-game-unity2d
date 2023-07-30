@@ -56,6 +56,11 @@ public class GetChipsMenu : MonoBehaviour
                 ShowPopup("You can't receive more chips now! You'll be able to collect more in " + splitResponse[3] + " hours");
                 return;
             }
+            else if (splitResponse[2] == "2")
+            {
+                ShowPopup("You can't get more tokens while sitting at a table!");
+                return;
+            }
             else if (splitResponse[0] == "0")
             {
                 ShowPopup("Received " + splitResponse[3] + " chips!");
