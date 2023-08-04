@@ -9,6 +9,7 @@ TagManager:
   - Chips
   - Pointer
   - TablesList
+  - GameMusic
   layers:
   - Default
   - TransparentFX
