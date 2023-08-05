@@ -354,7 +354,19 @@ MonoBehaviour:
   m_Group: {fileID: 1478250039}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1719665083}
+        m_TargetAssemblyTypeName: OptionClickAudio, Assembly-CSharp
+        m_MethodName: PlaySoundEffect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &135365642
 GameObject:
@@ -1810,7 +1822,19 @@ MonoBehaviour:
   m_Group: {fileID: 1478250039}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1719665083}
+        m_TargetAssemblyTypeName: OptionClickAudio, Assembly-CSharp
+        m_MethodName: PlaySoundEffect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &674996002
 GameObject:
@@ -1974,7 +1998,19 @@ MonoBehaviour:
   m_Group: {fileID: 1478250039}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1719665083}
+        m_TargetAssemblyTypeName: OptionClickAudio, Assembly-CSharp
+        m_MethodName: PlaySoundEffect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &704289230
 GameObject:
@@ -4306,6 +4342,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1391303736}
   m_CullTransparentMesh: 1
+--- !u!1001 &1422407001
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2375275483896796738, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_Name
+      value: OptionClickAudio
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 593.44366
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 395.1614
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -6.6568937
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886093055830139060, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+--- !u!82 &1422407002 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7628726463643229171, guid: 75a31047936967f4c8c2d39ff3a55e84, type: 3}
+  m_PrefabInstance: {fileID: 1422407001}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1463691052
 GameObject:
   m_ObjectHideFlags: 0
@@ -5490,6 +5588,7 @@ GameObject:
   - component: {fileID: 1719665078}
   - component: {fileID: 1719665081}
   - component: {fileID: 1719665082}
+  - component: {fileID: 1719665083}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5609,6 +5708,19 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &1719665083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1719665077}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ab1f6a52be72d14aa82813a50ba3f91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  optionSound: {fileID: 1422407002}
 --- !u!1 &1725547795
 GameObject:
   m_ObjectHideFlags: 0
