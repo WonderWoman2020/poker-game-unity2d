@@ -17,6 +17,8 @@ public class ChangeNameMenu : MonoBehaviour
 
     [SerializeField] private Button changeNameButton;
     [SerializeField] private Button backButton;
+    [SerializeField] private TMP_InputField passwordField;
+    [SerializeField] private TMP_InputField newNameField;
 
     public GameObject PopupWindow;
 
@@ -25,7 +27,8 @@ public class ChangeNameMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.passwordField.contentType = TMP_InputField.ContentType.Password;
+        this.passwordField.asteriskChar = '*';
     }
 
     // Update is called once per frame
@@ -36,7 +39,9 @@ public class ChangeNameMenu : MonoBehaviour
 
     public void OnChangeNameButton()
     {
-        Debug.Log("Change");
+        Debug.Log(newNameField.text); //tresc pola name
+        Debug.Log(passwordField.text); //tresc pola haslo
+
     }
 
     public void OnBackButton()
