@@ -75,19 +75,37 @@ public class JoinTable : MonoBehaviour
             int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
             MyGameManager.Instance.mainServerConnection.stream.Flush();
             menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
-            string[] tables = menuRequestStr.ToString().Split(new string(":T:"));
-            this.chosenTableStillExists = false;
-            for (int i = 1; i < tables.Length; i++)
-            {
-                UnityEngine.Debug.Log(tables[i]);
-                parseTableData(tables[i]);
-            }
-            if(!this.chosenTableStillExists)
-            {
-                this.chosenTable = -1;
-            }
-            displayTables();
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
 
+            if (response[0] == "answer Z 1 ")
+            {
+                ShowPopup("Error: bad request");
+                return;
+            }
+            else if (response[0] == "answer 2 1 ")
+            {
+                //TODO: Display the message on the list, permanently, instead of creating a popup
+                ShowPopup("There are no tables currently!");
+                return;
+            }
+            else if (response[0] == "answer 2 2 ")
+            {
+                ShowPopup("You are already sitting at a table!");
+                return;
+            }
+            else if (response[0] == "answer 2 0 ")
+            {
+                this.chosenTableStillExists = false;
+                for (int i = 1; i < response.Length; i++)
+                {
+                    parseTableData(response[i]);
+                }
+                if (!this.chosenTableStillExists)
+                {
+                    this.chosenTable = -1;
+                }
+                displayTables();
+            }
         }
     }
 
@@ -229,10 +247,30 @@ public class JoinTable : MonoBehaviour
                     {
                         joinedTheTable = true;
                     }
-                    else
+                    else if (splitted[2] == "1")
                     {
                         joinedTheTable = false;
-                        ShowPopup("Couldn't join table, the game is currently in progress");
+                        ShowPopup("Couldn't join the game, you are already sitting at a table");
+                    }
+                    else if (splitted[2] == "2")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Couldn't find a table with this name");
+                    }
+                    else if (splitted[2] == "3")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Couldn't join the game, please try again later");
+                    }
+                    else if (splitted[2] == "A")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Something went wrong with sending information to the server, please try again later");
+                    }
+                    else if (response == "answer Z 1 ")
+                    {
+                        joinedTheTable = false;
+                        ShowPopup("Error: bad request");
                     }
                 }
                 Debug.Log("Joined bool value: " + joinedTheTable);

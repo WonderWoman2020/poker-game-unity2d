@@ -2,30 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-using TMPro;
 using UnityEngine.SceneManagement;
+using System.Threading;
+using TMPro;
+using System;
+using System.Net.NetworkInformation;
+
+using PokerGameClasses;
 using System.Text;
+using System.Linq;
 
-//using System.Net.Sockets;
-
-//using PokerGameClasses;
-//using pGrServer;
-
-public class DeleteAccount : MonoBehaviour
+public class GetChipsMenu : MonoBehaviour
 {
-
-    [SerializeField] private Button deleteAccountButton;
-    [SerializeField] private Button backButton;
-    [SerializeField] private TMP_InputField passwordField;
-
+    [SerializeField] private Button getChipsButton;
+    [SerializeField] private Button backToMenuButton;
     public GameObject PopupWindow;
 
     // Start is called before the first frame update
     void Start()
     {
-        this.passwordField.contentType = TMP_InputField.ContentType.Password;
-        this.passwordField.asteriskChar = '*';
+
     }
 
     // Update is called once per frame
@@ -34,16 +30,14 @@ public class DeleteAccount : MonoBehaviour
         
     }
 
-    public void OnDeleteAccountButton()
+    //TODO after the communication protocol is changed
+    public void onGetChipsButton()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
-
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + passwordField + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "7" + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
-
-        // odbierz odpowiedü
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -52,32 +46,29 @@ public class DeleteAccount : MonoBehaviour
             mainServer.stream.Flush();
             menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
             string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            string[] splitResponse = response[0].Split(' ');
             if (response[0] == "answer Z 1 ")
             {
                 ShowPopup("Error: bad request");
+            }
+            else if (splitResponse[2] == "1")
+            {
+                ShowPopup("You can't receive more chips now! You'll be able to collect more in " + splitResponse[3] + " hours");
                 return;
             }
-            else if (response[0] == "answer A 0 ")
+            else if (splitResponse[2] == "2")
             {
-                ShowPopup("Account deleted successfuly!");
-                SceneManager.LoadScene("MainMenu");
-            }
-            else if (response[0] == "answer A 1 ")
-            {
-                ShowPopup("Incorrect password");
+                ShowPopup("You can't get more tokens while sitting at a table!");
                 return;
             }
-            else if (response[0] == "answer A 2 ")
+            else if (splitResponse[0] == "0")
             {
-                ShowPopup("An error with the database occured, please try again later");
+                ShowPopup("Received " + splitResponse[3] + " chips!");
+                int coins = Convert.ToInt32(splitResponse[3]);
+                MyGameManager.Instance.MainPlayer.TokensCount += coins;
                 return;
             }
-            else if (response[0] == "answer A 3 ")
-            {
-                ShowPopup("You can't delete your account currently");
-                return;
-            }
-            else if (response[0] == "answer A A ")
+            else if (response[0] == "answer 7 A ")
             {
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
@@ -85,9 +76,9 @@ public class DeleteAccount : MonoBehaviour
         }
     }
 
-    public void OnBackButton()
+    public void onBackToMenuButton ()
     {
-        SceneManager.LoadScene("SettingsMenu");
+        SceneManager.LoadScene("PlayMenu");
     }
 
     void ShowPopup(string text)

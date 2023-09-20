@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Text;
 
 //using System.Net.Sockets;
 
@@ -50,7 +51,53 @@ public class ChangePasswordMenu : MonoBehaviour
 
     public void OnChangePasswordButton()
     {
-        Debug.Log("Change");
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+
+        string token = MyGameManager.Instance.clientToken;
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "9" + ' ' + this.newPassword + ' ' + this.confirmPassword + ' ' );
+        mainServer.stream.Write(toSend, 0, toSend.Length);
+        mainServer.stream.Flush();
+
+        // odbierz odpowiedü
+        if (mainServer.stream.DataAvailable)
+        {
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            mainServer.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            if (response[0] == "answer Z 1 ")
+            {
+                ShowPopup("Error: bad request");
+                return;
+            }
+            else if (response[0] == "answer 9 0 ")
+            {
+                ShowPopup("Password changed successfuly!");
+                return;
+            }
+            else if (response[0] == "answer 9 1 ")
+            {
+                ShowPopup("New password and password confirmations need to match!");
+                return;
+            }
+            else if (response[0] == "answer 9 2 ")
+            {
+                ShowPopup("Incorrect password");
+                return;
+            }
+            else if (response[0] == "answer 9 3 ")
+            {
+                ShowPopup("An error with the database occured, please try again later");
+                return;
+            }
+            else if (response[0] == "answer 9 A ")
+            {
+                ShowPopup("Something went wrong with sending information to the server, please try again later");
+                return;
+            }
+        }
     }
 
     public void OnBackButton()

@@ -15,6 +15,7 @@ using System.Net.Sockets;
 
 using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
+using System.Text;
 
 // G³ówny ekran gry - widok stolika, kart i graczy
 public class Table : MonoBehaviour
@@ -1084,6 +1085,29 @@ public class Table : MonoBehaviour
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "6" + ' ');
         MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
+
+        byte[] readBuf = new byte[4096];
+        StringBuilder menuRequestStr = new StringBuilder();
+        int nrbyt = MyGameManager.Instance.mainServerConnection.stream.Read(readBuf, 0, readBuf.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
+        menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+        string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+
+        if (response[0] == "answer Z 1 ")
+        {
+            ShowPopup("Error: bad request");
+        }
+        else if (response[0] == "answer 6 1 ")
+        {
+            ShowPopup("The game has already started!");
+            return;
+        }
+        else if (response[0] == "answer 6 A ")
+        {
+            ShowPopup("Something went wrong with sending information to the server, please try again later");
+            return;
+        }
+
         Thread.Sleep(1000);
     }
 
@@ -1101,5 +1125,34 @@ public class Table : MonoBehaviour
         byte[] tosend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "4" + ' ');
         MyGameManager.Instance.mainServerConnection.stream.Write(tosend, 0, tosend.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
+
+        byte[] readBuf = new byte[4096];
+        StringBuilder menuRequestStr = new StringBuilder();
+        int nrbyt = MyGameManager.Instance.mainServerConnection.stream.Read(readBuf, 0, readBuf.Length);
+        MyGameManager.Instance.mainServerConnection.stream.Flush();
+        menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+        string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+
+        if (response[0] == "answer Z 1 ")
+        {
+            ShowPopup("Error: bad request");
+        }
+        else if (response[0] == "answer 4 1 ")
+        {
+            ShowPopup("You can't leave the game while it's still ongoing!");
+            return;
+        }
+        else if (response[0] == "answer 4 A ")
+        {
+            ShowPopup("Something went wrong with sending information to the server, please try again later");
+            return;
+        }
+    }
+
+    // TODO jeœli dodamy tak¹ metodê do PopupText, wyrzuciæ
+    void ShowPopup(string text)
+    {
+        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
+        popup.GetComponent<TextMeshProUGUI>().text = text;
     }
 }

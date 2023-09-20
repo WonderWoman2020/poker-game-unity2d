@@ -83,7 +83,7 @@ public class CreateTable : MonoBehaviour
             Debug.Log("Table not created. Player was null");
             if (PopupWindow)
             {
-                ShowPlayerNullPopup();
+                ShowPopup("Table not created. Player was null");
             }
             return;
         }
@@ -93,14 +93,13 @@ public class CreateTable : MonoBehaviour
             Debug.Log("You must set at least table name to create it.");
             if (PopupWindow)
             {
-                ShowTableNameEmptyPopup();
+                ShowPopup("You must set at least table name to create it.");
             }
             return;
         }
         GameModeSelection();
         SendTableToServer();
         // TODO (cz. PGGP-56) dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
-        SceneManager.LoadScene("Table");
     }
 
     // TODO (cz. PGGP-106) dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika,
@@ -113,24 +112,57 @@ public class CreateTable : MonoBehaviour
 
         int mode = (int)this.chosenMode;
 
-        // TODO Zmieniæ ostatni¹ wartoœæ w wiadomoœci na jak¹œ obliczan¹, nie hardcoded
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+
         string token = MyGameManager.Instance.clientToken;
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + "20" + ' ');
-        MyGameManager.Instance.mainServerConnection.stream.Write(toSend, 0, toSend.Length);
-        MyGameManager.Instance.mainServerConnection.stream.Flush();
+        mainServer.stream.Write(toSend, 0, toSend.Length);
+        mainServer.stream.Flush();
+
+        // odbierz odpowiedŸ
+        if (mainServer.stream.DataAvailable)
+        {
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            mainServer.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            if (response[0] == "answer Z 1 ")
+            {
+                ShowPopup("Error: bad request");
+                return;
+            }
+            else if (response[0] == "answer 0 1 ") {
+                ShowPopup("You are already sitting at a table!");
+                return;
+            }
+            else if (response[0] == "answer 0 2 ")
+            {
+                ShowPopup("A table of this name already exists!");
+                return;
+            }
+            else if (response[0] == "answer 0 9 ")
+            {
+                ShowPopup("Validation error! Please check if table name and other data is valid");
+                return;
+            }
+            else if (response[0] == "answer 0 A ")
+            {
+                ShowPopup("Something went wrong with sending information to the server, please try again later");
+                return;
+            }
+            else if (response[0] == "answer 0 0 ")
+            {
+                SceneManager.LoadScene("Table");
+            }
+        }
     }
 
-    // TODO jeœli dodamy w PopupText, wywaliæ
-    void ShowPlayerNullPopup()
+    void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        popup.GetComponent<TextMeshProUGUI>().text = "Table not created. Player was null";
-    }
-    // TODO jeœli dodamy w PopupText, wywaliæ
-    void ShowTableNameEmptyPopup()
-    {
-        var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
-        popup.GetComponent<TextMeshProUGUI>().text = "You must set at least table name to create it.";
+        popup.GetComponent<TextMeshProUGUI>().text = text;
     }
 
     public void OnBackToMenuButton()
