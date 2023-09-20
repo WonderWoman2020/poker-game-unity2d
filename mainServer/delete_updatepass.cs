@@ -20,7 +20,7 @@ namespace aws_2
             updateUserCoinsOrXPbyNick("niccccck", "xp", 12345);
             //updateNick("test33333333", "niccccck");
         }
-        public static void updateNick(string login, string newNick)
+        public static void updateNick(string login, string newNick, string password)
         {
             var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatenick");
             httpWebRequest.ContentType = "application/json";
@@ -28,6 +28,7 @@ namespace aws_2
             using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
             {
                 string json = "{\"login\":\"" + login + "\"," +
+                              "\"password\":\"" + password + "\"," +
                                 "\"nick\":\"" + newNick + "\"}";
                 streamWriter.Write(json);
                 streamWriter.Flush();
@@ -43,6 +44,11 @@ namespace aws_2
                 {
                     // nick istnieje
                     Console.WriteLine("nick istnieje");
+                }
+                else if (responseCode == "401")
+                {
+                    // zle haslo
+                    Console.WriteLine("zle haslo");
                 }
                 else if (responseCode == "200")
                 {
