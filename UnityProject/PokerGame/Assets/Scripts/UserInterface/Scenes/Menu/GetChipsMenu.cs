@@ -49,8 +49,6 @@ public class GetChipsMenu : MonoBehaviour
             string[] response = menuRequestStr.ToString().Split(new string(":T:"));
             string[] splitResponse = response[0].Split(' ');
 
-            splitResponse[2] = "0";
-
             Debug.Log("Chips response: " + response[0]);
             Debug.Log("Chips splitResponse: " + splitResponse[2]);
 
