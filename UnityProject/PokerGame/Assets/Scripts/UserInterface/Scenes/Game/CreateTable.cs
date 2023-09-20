@@ -118,7 +118,9 @@ public class CreateTable : MonoBehaviour
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + "20" + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
+        //Debug.Log("data available: " + mainServer.stream.DataAvailable);
 
+        Thread.Sleep(100);
         // odbierz odpowiedü
         if (mainServer.stream.DataAvailable)
         {
@@ -128,6 +130,7 @@ public class CreateTable : MonoBehaviour
             mainServer.stream.Flush();
             menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
             string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            Debug.Log("response" + response[0]);
             if (response[0] == "answer Z 1 ")
             {
                 ShowPopup("Error: bad request");

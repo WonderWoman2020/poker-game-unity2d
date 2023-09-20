@@ -1132,7 +1132,7 @@ public class Table : MonoBehaviour
         MyGameManager.Instance.mainServerConnection.stream.Flush();
         menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
         string[] response = menuRequestStr.ToString().Split(new string(":T:"));
-
+        Debug.Log("response" + response[0]);
         if (response[0] == "answer Z 1 ")
         {
             ShowPopup("Error: bad request");
@@ -1146,6 +1146,10 @@ public class Table : MonoBehaviour
         {
             ShowPopup("Something went wrong with sending information to the server, please try again later");
             return;
+        }
+        else if (response[0] == "answer 4 0 ")
+        {
+            SceneManager.LoadScene("PlayMenu");
         }
     }
 

@@ -207,9 +207,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: GetTokensMenu, Assembly-CSharp
-        m_MethodName: OnGetButton
+      - m_Target: {fileID: 1719665082}
+        m_TargetAssemblyTypeName: ButtonClickAudio, Assembly-CSharp
+        m_MethodName: PlaySoundEffect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -219,9 +219,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1719665082}
-        m_TargetAssemblyTypeName: ButtonClickAudio, Assembly-CSharp
-        m_MethodName: PlaySoundEffect
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: GetChipsMenu, Assembly-CSharp
+        m_MethodName: onGetChipsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -648,9 +648,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: GetTokensMenu, Assembly-CSharp
-        m_MethodName: OnBackToMenuButton
+      - m_Target: {fileID: 1719665082}
+        m_TargetAssemblyTypeName: ButtonClickAudio, Assembly-CSharp
+        m_MethodName: PlaySoundEffect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -660,9 +660,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1719665082}
-        m_TargetAssemblyTypeName: ButtonClickAudio, Assembly-CSharp
-        m_MethodName: PlaySoundEffect
+      - m_Target: {fileID: 994241598}
+        m_TargetAssemblyTypeName: GetChipsMenu, Assembly-CSharp
+        m_MethodName: onBackToMenuButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1091,9 +1091,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 994241593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7bf4128f13a60274eb77544f8da1ca72, type: 3}
+  m_Script: {fileID: 11500000, guid: 4dc4f6b6ae7f2234daaceac1be5cf2cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  getChipsButton: {fileID: 260972091}
+  backToMenuButton: {fileID: 716606195}
+  PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1564000074
 GameObject:
   m_ObjectHideFlags: 0

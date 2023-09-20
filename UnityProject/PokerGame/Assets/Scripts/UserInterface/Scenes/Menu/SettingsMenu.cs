@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Text;
+using PokerGameClasses;
 
 //using System.Net.Sockets;
 
@@ -78,6 +79,7 @@ public class SettingsMenu : MonoBehaviour
         else if (response[0] == "answer 3 0 ")
         {
             ShowPopup("Logged out successfuly!");
+            MyGameManager.Instance.MainPlayer = null;
             SceneManager.LoadScene("MainMenu");
         }
         else
