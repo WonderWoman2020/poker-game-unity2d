@@ -390,29 +390,37 @@ namespace pGrServer
 
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                             }
-                            //Zmień liczbę żetonów gracza
+                            //Odbierz żetony
                             else if(request[1] == "7")
                             {
                                 bool valid = true;
                                 byte[] answer = null;
-
-                                if(player.Table == null)
+                                if (player.Table == null)
                                 {
                                     DateTime now = DateTime.Now;
+                                    TimeSpan difference = now - freeTokensLastClear;
+                                    if (difference.TotalHours >= 12)
+                                    {
+                                        tokennedPlayers.Clear();
+                                        freeTokensLastClear = now;
+                                        if (now.Hour >= 12)
+                                        {
+                                            TimeSpan ts = new TimeSpan(12, 0, 0);
+                                            freeTokensLastClear = freeTokensLastClear.Date + ts;
+                                        }
+                                        else
+                                        {
+                                            TimeSpan ts = new TimeSpan(0, 0, 0);
+                                            freeTokensLastClear = freeTokensLastClear.Date + ts;
+                                        }
+                                        Console.WriteLine("\n\n\n\n\nXDDDD" + freeTokensLastClear.ToString());
+
+                                    }
                                     foreach (string ppl in tokennedPlayers)
                                     {
                                         if (ppl == player.Login)
                                         {
-                                            if(now.Subtract(freeTokensLastClear).Hours >= 12)
-                                            {
-                                                tokennedPlayers.Clear();
-                                                freeTokensLastClear = DateTime.Now;
-                                            }
-                                            else
-                                            {
-                                                valid = false;
-                                            }
-                                                
+                                            valid = false;      
                                         }      
                                     }
                                     if (valid)
@@ -429,7 +437,10 @@ namespace pGrServer
                                     }
                                     else
                                     {
-                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 7 1 " + (12 - now.Subtract(freeTokensLastClear).Hours).ToString() + " "); // odpowiedź Failed
+                                        if(freeTokensLastClear.Hour == 12)
+                                            answer = System.Text.Encoding.ASCII.GetBytes("answer 7 1 " + (24 - now.Hour).ToString() + " "); // odpowiedź Failed
+                                        else
+                                            answer = System.Text.Encoding.ASCII.GetBytes("answer 7 1 " + (12 - now.Hour).ToString() + " "); // odpowiedź Failed
                                     }
                                 }
                                 else
@@ -712,7 +723,7 @@ namespace pGrServer
                             loggedClientsAccess.ReleaseMutex();
                             if (!is_logged)
                             {
-                                string token = GenerateToken();
+                                string token = GenerateUniqueToken();
 
                                 string toBeSearched = "xp\":";
                                 var xpH = result.Substring(result.IndexOf(toBeSearched) + toBeSearched.Length);
@@ -784,6 +795,36 @@ namespace pGrServer
             openTables = new List<GameTable>();
             tokennedPlayers = new List<string>();
             freeTokensLastClear = DateTime.Now;
+            if(freeTokensLastClear.Hour > 12)
+            {
+                TimeSpan ts = new TimeSpan(12, 0, 0);
+                freeTokensLastClear = freeTokensLastClear.Date + ts;
+            }
+            else
+            {
+                TimeSpan ts = new TimeSpan(0, 0, 0);
+                freeTokensLastClear = freeTokensLastClear.Date + ts;
+            }
+        }
+        public static string GenerateUniqueToken()
+        {
+            bool ok = false;
+            string token = "";
+            while (!ok)
+            {
+                ok = true;
+                token = GenerateToken();
+                if (token == "##&&@@0000" || token == "##&&@@0001" || token == "##&&@@0002" || token == "##&&@@0003")
+                {
+                    ok = false;
+                }
+                foreach (string loggedToken in loggedTokens)
+                {
+                    if (loggedToken == token)
+                        ok = false;
+                }
+            }
+            return token;
         }
         public static string GenerateToken()
         {
@@ -793,7 +834,6 @@ namespace pGrServer
             using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
             {
                 byte[] uintBuffer = new byte[sizeof(uint)];
-
                 while (length-- > 0)
                 {
                     rng.GetBytes(uintBuffer);
@@ -801,7 +841,7 @@ namespace pGrServer
                     res.Append(CHARS[(int)(num % (uint)CHARS.Length)]);
                 }
                 return res.ToString();
-            }
+            }   
         }
         public static void AutoLogout()
         {

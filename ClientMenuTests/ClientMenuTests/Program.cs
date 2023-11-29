@@ -77,7 +77,7 @@ namespace ClientMenuTests
         {
 
             //MenuTest MenuTests tests
-            //MenuTester Menutester tests
+            // MenuTester Menutester tests
             //MenuTesterek MenuTesterek tests
             MenuTest = new Acc("MenuTests", "tests");
             MenuTester = new Acc("MenuTester", "tests");
@@ -92,6 +92,8 @@ namespace ClientMenuTests
             GetTokensTests();
             ChangePasswordTests();
             DeleteAccoutTests();
+
+
             Thread.Sleep(5000);
 
         }
@@ -143,7 +145,13 @@ namespace ClientMenuTests
         {
             TestWithoutReturn(" Get Tokens already at the table | ", "7 ", "answer 7 2 ", MenuTester);
             TestWithoutReturn("                      Get Tokens | ", "7 ", "answer 7 0 1 ", MenuTest);
-            TestWithoutReturn("   Get Tokens 12 hours remaining | ", "7 ", "answer 7 1 12 ", MenuTest);
+            DateTime now = DateTime.Now;
+            int expect;
+            if (now.Hour >= 12)
+                expect = 24 - now.Hour;
+            else
+                expect = 12 - now.Hour;
+            TestWithoutReturn("    Get Tokens "+expect.ToString()+" hours remaining | ", "7 ", "answer 7 1 " + expect.ToString() + " ", MenuTest);
             Console.WriteLine();
         }
         public static void StartGameTests()
