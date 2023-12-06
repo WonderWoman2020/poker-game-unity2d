@@ -38,7 +38,6 @@ public class JoinTable : MonoBehaviour
 
     // Informacje o wstêpnie zaznaczonym stoliku, wyœwietlane w lewym dolnym rogu ekranu
     [SerializeField] private TMP_Text InfoPlayersCount;
-    [SerializeField] private TMP_Text InfoBotsCount;
     [SerializeField] private TMP_Text InfoMinChips;
     [SerializeField] private TMP_Text InfoMinXP;
     private int id = 0;
@@ -305,7 +304,6 @@ public class JoinTable : MonoBehaviour
     {
         this.chosenTableName = gameTable.Name;
         this.InfoPlayersCount.text = gameTable.HumanCount;
-        this.InfoBotsCount.text = gameTable.BotCount;
         this.InfoMinChips.text = gameTable.minChips;
         this.InfoMinXP.text = gameTable.minXp;
 

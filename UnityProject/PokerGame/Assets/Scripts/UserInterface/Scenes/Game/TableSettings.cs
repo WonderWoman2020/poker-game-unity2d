@@ -20,10 +20,6 @@ public class TableSettings : MonoBehaviour
     [SerializeField] private Button changeSettingsButton;
     [SerializeField] private Button backButton;
 
-    [SerializeField] private Button modeNoBotsButton;
-    [SerializeField] private Button modeYouAndBotsButton;
-    [SerializeField] private Button modeMixedButton;
-
     public GameObject PopupWindow;
 
     private string bigBlind;
@@ -163,18 +159,6 @@ public class TableSettings : MonoBehaviour
         Debug.Log(this.minPlayers);
     }
 
-    public void ReadBotsNumber(string botsNumber)
-    {
-        if (botsNumber.Length == 0)
-        {
-            this.numberOfBots = null;
-            return;
-        }
-
-        this.numberOfBots = botsNumber;
-        Debug.Log(this.numberOfBots);
-    }
-
     public void ReadMaxMoveTime(string maxMoveTime)
     {
         if (maxMoveTime.Length == 0)
@@ -185,25 +169,6 @@ public class TableSettings : MonoBehaviour
 
         this.maxMoveTime = maxMoveTime;
         Debug.Log(this.maxMoveTime);
-    }
-
-    public void OnModeNoBotsButton()
-    {
-        this.chosenMode = GameMode.No_Bots;
-        this.numberOfBots = "0";
-        Debug.Log(this.chosenMode);
-    }
-
-    public void OnYouAndBotsButton()
-    {
-        this.chosenMode = GameMode.You_And_Bots;
-        Debug.Log(this.chosenMode);
-    }
-
-    public void OnMixedButton()
-    {
-        this.chosenMode = GameMode.Mixed;
-        Debug.Log(this.chosenMode);
     }
 
     void ShowPopup(string text)

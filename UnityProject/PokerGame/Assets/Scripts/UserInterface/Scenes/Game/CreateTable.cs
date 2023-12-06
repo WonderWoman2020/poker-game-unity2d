@@ -17,12 +17,7 @@ public class CreateTable : MonoBehaviour
     // Przycisku menu ekranu
     [SerializeField] private Button createButton;
     [SerializeField] private Button backToMenuButton;
-    [SerializeField] ToggleGroup toggleGroup;
-    /* Przyciski do wyboru trybu gry (enum GameMode)
-     * - Bez botów
-     * - Tylko Ty i boty
-     * - Gracze i boty
-     */
+    //[SerializeField] ToggleGroup toggleGroup;
 
     // informacje o b³êdach, komunikaty dla gracza
     public GameObject PopupWindow;
@@ -54,27 +49,7 @@ public class CreateTable : MonoBehaviour
                 this.OnCreateButton();
         }
     }
-    public void GameModeSelection()
-    {
-        Toggle toggle = toggleGroup.ActiveToggles().FirstOrDefault();
-        String txt = toggle.GetComponentInChildren<Text>().text;
-        if(txt == "No bots")
-        {
-            this.chosenMode = GameMode.No_Bots;
-            this.numberOfBots = "0";
-            Debug.Log(this.chosenMode);
-        }
-        else if(txt == "Mixed")
-        {
-            this.chosenMode = GameMode.Mixed;
-            Debug.Log(this.chosenMode);
-        }
-        else if(txt == "You and bots")
-        {
-            this.chosenMode = GameMode.You_And_Bots;
-            Debug.Log(this.chosenMode);
-        }
-    }
+
     public void OnCreateButton()
     { 
         PlayerState p = MyGameManager.Instance.MainPlayer;
@@ -97,7 +72,7 @@ public class CreateTable : MonoBehaviour
             }
             return;
         }
-        GameModeSelection();
+        //GameModeSelection();
         SendTableToServer();
         // TODO (cz. PGGP-56) dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
     }
@@ -208,17 +183,4 @@ public class CreateTable : MonoBehaviour
         this.xp = xp;
         Debug.Log(this.xp);
     }
-
-    public void ReadBotsNumber(string botsNumber)
-    {
-        if (botsNumber.Length == 0)
-        {
-            this.numberOfBots = null;
-            return;
-        }
-
-        this.numberOfBots = botsNumber;
-        Debug.Log(this.numberOfBots);
-    }
-
 }
