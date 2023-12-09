@@ -132,6 +132,7 @@ public class CreateTable : MonoBehaviour
             }
             else if (response[0] == "answer 0 0 ")
             {
+                MyGameManager.Instance.owner = MyGameManager.Instance.clientToken;
                 SceneManager.LoadScene("Table");
             }
         }

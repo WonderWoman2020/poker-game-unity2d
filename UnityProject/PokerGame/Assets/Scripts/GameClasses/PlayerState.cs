@@ -18,6 +18,7 @@ namespace PokerGameClasses
         public int Xp { get; set; }
         public int SeatNr { get; set; }
         public string LastMove { get; set; }
+        public bool isOwner = false;
 
         public PlayerState()
         {

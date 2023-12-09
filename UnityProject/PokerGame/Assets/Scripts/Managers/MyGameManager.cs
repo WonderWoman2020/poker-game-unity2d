@@ -17,6 +17,7 @@ public class MyGameManager : MonoBehaviour
     { get; set; }
     public List<GameTableInfo> GameTableList
     { get; set; }
+    public string owner { get; set; }
 
     // Klienci tcp do ³¹czenia siê z serwerem na porcie od obs³ugi menu (6937)
     // i od obs³ugi zdarzeñ z gry (6938)
@@ -25,7 +26,7 @@ public class MyGameManager : MonoBehaviour
 
     // Token gracza, dostêpny po zalogowaniu
     public string clientToken;
-
+    public GameTableInfo GameTableInfo;
     public string ServerIP
     { get; set; }
 

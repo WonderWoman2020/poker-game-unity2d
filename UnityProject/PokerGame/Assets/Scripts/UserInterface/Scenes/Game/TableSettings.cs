@@ -102,13 +102,14 @@ public class TableSettings : MonoBehaviour
             else if (response[0] == "answer 5 0 ")
             {
                 ShowPopup("Table settings updated!");
+                SceneManager.LoadScene("Table");
             }
         }
     }
 
     public void OnBackButton()
     {
-        SceneManager.LoadScene("PlayMenu");
+        SceneManager.LoadScene("Table");
     }
 
     public void ReadBigBlind(string bigBlind)
@@ -135,40 +136,16 @@ public class TableSettings : MonoBehaviour
         Debug.Log(this.minTokens);
     }
 
-    public void ReadMaxPlayers(string maxPlayers)
+    public void ReadMinXp(string minXp)
     {
-        if (maxPlayers.Length == 0)
+        if (minXp.Length == 0)
         {
-            this.maxPlayers = null;
+            this.minXp = null;
             return;
         }
 
-        this.maxPlayers = maxPlayers;
-        Debug.Log(this.maxPlayers);
-    }
-
-    public void ReadMinPlayers(string minPlayers)
-    {
-        if (minPlayers.Length == 0)
-        {
-            this.minPlayers = null;
-            return;
-        }
-
-        this.minPlayers = minPlayers;
-        Debug.Log(this.minPlayers);
-    }
-
-    public void ReadMaxMoveTime(string maxMoveTime)
-    {
-        if (maxMoveTime.Length == 0)
-        {
-            this.maxMoveTime = null;
-            return;
-        }
-
-        this.maxMoveTime = maxMoveTime;
-        Debug.Log(this.maxMoveTime);
+        this.minXp = minXp;
+        Debug.Log(this.minXp);
     }
 
     void ShowPopup(string text)

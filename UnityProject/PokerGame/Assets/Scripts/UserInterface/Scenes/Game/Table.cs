@@ -25,6 +25,7 @@ public class Table : MonoBehaviour
     [SerializeField] private Button allInButton;
     [SerializeField] private Button passButton;
     [SerializeField] private Button bidButton;
+    [SerializeField] private Button changeSettingsButton;
 
     // Dane pobrane z pola input 'Bid' (menu w lewym dolnym rogu ekranu)
     private string betFieldText;
@@ -110,9 +111,13 @@ public class Table : MonoBehaviour
 
     // odpowiedŸ od serwera, czy uda³o siê odejœæ od stolika
     bool leftTableSuccess = false;
+    bool isChangingSettingsOnClick = false;
+    bool isChangingSettings = false;
 
     Thread serverCommunicationMenu;
     Thread serverCommunicationGame;
+
+    private GameMode mode = GameMode.No_Bots;
 
     // Start is called before the first frame update
     void Start()
@@ -256,7 +261,7 @@ public class Table : MonoBehaviour
                 }
             }
 
-            if (this.leftTableSuccess)
+            if (this.leftTableSuccess || this.isChangingSettings)
                 running = false;
         }
 
@@ -297,9 +302,11 @@ public class Table : MonoBehaviour
                             this.leftTableSuccess = true;
                     }
                 }
+                
             }
-
-            if (this.leftTableSuccess)
+            if (isChangingSettingsOnClick)
+                isChangingSettings = true;
+            if (this.leftTableSuccess || isChangingSettings)
                 running = false;
         }
     }
@@ -979,28 +986,33 @@ public class Table : MonoBehaviour
             this.displayWinnerPopup = false;
         }
 
-        // Pokazywanie/chowanie przycisku 'start game' i 'next hand'
+        // Pokazywanie/chowanie przycisku 'start game', 'next hand', 'quit Table' i 'Table settings' 
         if (this.isGameOn)
         {
             this.nextHandButton.transform.localScale = Vector3.zero;
             this.startGameButton.transform.localScale = Vector3.zero;
             this.quitTableButton.transform.localScale = Vector3.zero;
+            this.changeSettingsButton.transform.localScale = Vector3.zero;
         }
         else
         {
+            this.changeSettingsButton.transform.localScale = Vector3.zero;
             if (this.showStartGameButton)
             {
                 this.startGameButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
                 this.nextHandButton.transform.localScale = Vector3.zero;
+                if(MyGameManager.Instance.clientToken == MyGameManager.Instance.owner)
+                    this.changeSettingsButton.transform.localScale = Vector3.one;
             }
             else
             {
                 this.nextHandButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
                 this.startGameButton.transform.localScale = Vector3.zero;
+                this.changeSettingsButton.transform.localScale = Vector3.zero;
             }
             this.quitTableButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
         }
-
+        
         // sprawdzanie, czy na klikniêcie przycisku 'quit table' dostaliœmy odpowiedŸ OK
         // i wyjœcie, jeœli tak
         if (this.leftTableSuccess)
@@ -1011,6 +1023,15 @@ public class Table : MonoBehaviour
             this.serverCommunicationGame.Join();
 
             SceneManager.LoadScene("PlayMenu");
+        }
+        else if(this.isChangingSettings){
+            this.isChangingSettings = false;
+            this.isChangingSettingsOnClick = false;
+            // wy³¹czenie w¹tków od komunikacji z serwerem w ekranie Table
+            this.serverCommunicationMenu.Join();
+            this.serverCommunicationGame.Join();
+
+            SceneManager.LoadScene("TableSettings");
         }
 
     }
@@ -1151,6 +1172,14 @@ public class Table : MonoBehaviour
         {
             SceneManager.LoadScene("PlayMenu");
         }
+    }
+
+    public void OnChangeSettingsButton()
+    {
+        isChangingSettingsOnClick = true;
+        
+        // TODO dodaæ nie wpuszczanie do tego ekranu, jeœli nie siedzimy przy ¿adnym stoliku i odpowiedni Popup z info
+        //SceneManager.LoadScene("TableSettings");
     }
 
     // TODO jeœli dodamy tak¹ metodê do PopupText, wyrzuciæ
