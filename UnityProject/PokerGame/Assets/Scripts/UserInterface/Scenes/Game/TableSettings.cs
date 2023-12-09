@@ -103,7 +103,6 @@ public class TableSettings : MonoBehaviour
             }
             else if (response[0] == "answer 5 0 ")
             {
-                ShowPopup("Table settings updated!");
                 SceneManager.LoadScene("Table");
             }
         }
