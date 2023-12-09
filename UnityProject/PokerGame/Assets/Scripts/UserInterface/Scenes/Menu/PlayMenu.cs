@@ -25,7 +25,6 @@ public class PlayMenu : MonoBehaviour
     [SerializeField] private Button joinTableButton;
     [SerializeField] private Button createTableButton;
     [SerializeField] private Button getChipsButton;
-    [SerializeField] private Button changeSettingsButton;
 
     // Informacje o graczu wyœwietlane na ekranie obok menu
     [SerializeField] private TMP_Text InfoPlayerNick;
@@ -113,13 +112,6 @@ public class PlayMenu : MonoBehaviour
     public void OnGetChipsButton()
     {
         SceneManager.LoadScene("GetTokensMenu");
-    }
-
-    // TODO (cz. PGGP-107) ekran Settings od zmieniania ustawieñ stolika/rozgrywki
-    public void OnChangeSettingsButton()
-    {
-        // TODO dodaæ nie wpuszczanie do tego ekranu, jeœli nie siedzimy przy ¿adnym stoliku i odpowiedni Popup z info
-        SceneManager.LoadScene("TableSettings");
     }
 
     public void OnAccountSettingsButton()
