@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 
 using PokerGameClasses;
 using System.Text;
+using System.Threading;
 //using pGrServer;
 
 
@@ -64,6 +65,7 @@ public class TableSettings : MonoBehaviour
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.minXp + ' ' + this.minTokens + ' ' + this.bigBlind + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
+        Thread.Sleep(100);
 
         // odbierz odpowiedü
         if (mainServer.stream.DataAvailable)
