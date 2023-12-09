@@ -24,7 +24,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test1()//Krolewski poker
+        public void DetermineWinner_RoyalStraightFlush_ReturnsListOfWinners()//Krolewski poker
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -70,7 +70,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test2()//Poker
+        public void DetermineWinner_Poker_ReturnsListOfWinner()//Poker
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -116,7 +116,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test3()//Kareta
+        public void DetermineWinner_FourOfKind_ReturnsListOfWinner()//Kareta
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -162,7 +162,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test4()//Full
+        public void DetermineWinner_Full_ReturnsListOfWinner()//Full
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -208,7 +208,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test5()//Kolor
+        public void DetermineWinner_Colour_ReturnsListOfWinner()//Kolor
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -254,7 +254,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test6()//Strit
+        public void DetermineWinner_Straight_ReturnsListOfWinner()//Strit
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -300,7 +300,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test7()//Trojka
+        public void DetermineWinner_ThreeOfKind_ReturnsListOfWinner()//Trojka
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -346,7 +346,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test8()//Dwie pary
+        public void DetermineWinner_TwoPairs_ReturnsListOfWinner()//Dwie pary
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -392,7 +392,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test9()//Para
+        public void DetermineWinner_Pair_ReturnsListOfWinner()//Para
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -438,7 +438,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test10()//Najwyzsza karta
+        public void DetermineWinner_HighestCard_ReturnsListOfWinner()//Najwyzsza karta
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -484,7 +484,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test11()//Poker krolewski dla wszystkich
+        public void DetermineWinner_EveryoneHasRoyalFlush_ReturnsListOfWinner()//Poker krolewski dla wszystkich
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -532,7 +532,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test12()//Rozne pokery
+        public void DetermineWinner_DifferentPokers_ReturnsListOfWinner()//Rozne pokery
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -574,7 +574,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test13()//Rozne karety
+        public void DetermineWinner_DifferentFourOfKinds_ReturnsListOfWinner()//Rozne karety
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -616,7 +616,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test14()//ta sama kareta, ten sam high
+        public void DetermineWinner_SameFourOfKindsWithSameHigh_ReturnsListOfWinner()//ta sama kareta, ten sam high
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -660,7 +660,7 @@ namespace TestProjectWinner
         }
 
         [Test]
-        public void Test15()//ta sama kareta, rozny high
+        public void DetermineWinner_SameFourOfKindsWithDifferentHigh_ReturnsListOfWinner()//ta sama kareta, rozny high
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -705,7 +705,7 @@ namespace TestProjectWinner
             Assert.AreEqual(winners, winnersShouldBe);
         }
         [Test]
-        public void Test16()//Ten sam full
+        public void DetermineWinner_SameFull_ReturnsListOfWinner()//Ten sam full
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -750,7 +750,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test17()//Rozne fulle
+        public void DetermineWinner_DifferentFulls_ReturnsListOfWinner()//Rozne fulle
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -795,7 +795,7 @@ namespace TestProjectWinner
             Assert.AreEqual(winners, winnersShouldBe);
         }
         [Test]
-        public void Test18()//Kolory, gdzie sprawdzamy najwyzsza karte
+        public void DetermineWinner_EveryoneHasColours_ReturnsListOfWinner()//Kolory, gdzie sprawdzamy najwyzsza karte
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -840,7 +840,7 @@ namespace TestProjectWinner
             Assert.AreEqual(winners, winnersShouldBe);
         }
         [Test]
-        public void Test19()//ten sam strit
+        public void DetermineWinner_SameStraight_ReturnsListOfWinner()//ten sam strit
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -888,7 +888,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test20()//strity na roznych kartach
+        public void DetermineWinner_StraightOnDifferentCards_ReturnsListOfWinner()//strity na roznych kartach
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -933,7 +933,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test21()//Trojki rozne
+        public void DetermineWinner_DifferentThreeOfKinds_ReturnsListOfWinner()//Trojki rozne
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -977,7 +977,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test22()//Trojki te same - highe te same
+        public void DetermineWinner_SameThreeOfKindsWithSameHigh_ReturnsListOfWinner()//Trojki te same - highe te same
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1022,7 +1022,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test23()//Trojki te same - highe rozne
+        public void DetermineWinner_SameThreeOfKindsWithDifferentHigh_ReturnsListOfWinner()//Trojki te same - highe rozne
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1066,7 +1066,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test24()//Rozne dwie pary
+        public void DetermineWinner_TwoDifferentPairs_ReturnsListOfWinner()//Rozne dwie pary
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1110,7 +1110,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test25()//te same dwie pary, rozne highe
+        public void DetermineWinner_TwoSamePairsWithDifferentHigh_ReturnsListOfWinner()//te same dwie pary, rozne highe
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1154,7 +1154,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test26()//te same dwie pary, ten sam high
+        public void DetermineWinner_TwoSamePairsWithSameHigh_ReturnsListOfWinner()//te same dwie pary, ten sam high
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1199,7 +1199,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test27()//rozne jedne pary
+        public void DetermineWinner_DifferentOnePairs_ReturnsListOfWinner()//rozne jedne pary
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1243,7 +1243,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test28()//ta sama para, trzecia karta rozna
+        public void DetermineWinner_SamePairsWithThirdCardDifferent_ReturnsListOfWinner()//ta sama para, trzecia karta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1287,7 +1287,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test29()//ta sama para, czwarta karta rozna
+        public void DetermineWinner_SamePair_FourthCardDifferent_ReturnsListOfWinner()//ta sama para, czwarta karta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1331,7 +1331,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test30()//ta sama para, piata karta rozna
+        public void DetermineWinner_SamePairWithDifferentFifthCard_ReturnsListOfWinner()//ta sama para, piata karta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1375,7 +1375,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test31()//ta sama para, reszta ta sama
+        public void DetermineWinner_SamePairWithSameRemainingCards_ReturnsListOfWinner()//ta sama para, reszta ta sama
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1420,7 +1420,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test32()//high ten sam, reszta rozna
+        public void DetermineWinner_SameHighWithSameRemainingCards_ReturnsListOfWinner()//high ten sam, reszta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1464,7 +1464,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test33()//dwie karty te same, reszta rozna
+        public void DetermineWinner_SameTwoCardsWithDifferentRemainingCards_ReturnsListOfWinner()//dwie karty te same, reszta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1508,7 +1508,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test34()//trzy karty te same, reszta rozna
+        public void DetermineWinner_SameThreeCardsWithDifferentRemainingCards_ReturnsListOfWinner()//trzy karty te same, reszta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1552,7 +1552,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test35()//cztery karty te same, reszta rozna
+        public void DetermineWinner_SameFourCardsWithDifferentRemaingCards_ReturnsListOfWinner()//cztery karty te same, reszta rozna
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
@@ -1597,7 +1597,7 @@ namespace TestProjectWinner
             Assert.IsTrue(IsSame(winners, winnersShouldBe));
         }
         [Test]
-        public void Test36()//najwyzsza karta - wszystkie te same
+        public void DetermineWinner_HighestCardWithSameEveryCards_ReturnsListOfWinner()//najwyzsza karta - wszystkie te same
         {
             Player player1 = new HumanPlayer("First player", PlayerType.Human);
             GameTable gameTable = new GameTable("Table#1", (HumanPlayer)player1);
