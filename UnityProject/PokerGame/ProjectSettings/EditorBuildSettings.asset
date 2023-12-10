@@ -39,6 +39,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Game/TableSettings.unity
     guid: 340903650164d8f49bdf0c86240e9412
   - enabled: 1
+    path: Assets/Scenes/Menu/MainSettingsMenu.unity
+    guid: 20657ba7c007abc409414c1e925e8ae0
+  - enabled: 1
     path: Assets/Scenes/Menu/ChangeNameMenu.unity
     guid: ea00d0af0dec86b41bc13241808d4714
   - enabled: 1

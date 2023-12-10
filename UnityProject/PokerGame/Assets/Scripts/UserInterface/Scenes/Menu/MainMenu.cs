@@ -32,7 +32,7 @@ public class MainMenu : MonoBehaviour
     // TODO (cz. PGGP-107) ekran Settings do zrobienia i zaimplementowania
     public void OnSettingsButton()
     {
-        //SceneManager.LoadScene("SettingsMenu");
+        SceneManager.LoadScene("MainSettingsMenu");
     }
 
     // W zale¿noœci, czy gracz jest zalogowany, prosi o logowanie lub
