@@ -43,7 +43,7 @@ public class DeleteAccount : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedŸ
+        // odbierz odpowiedï¿½
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -83,6 +83,10 @@ public class DeleteAccount : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void ReadPassword(){
+        
     }
 
     public void OnBackButton()
