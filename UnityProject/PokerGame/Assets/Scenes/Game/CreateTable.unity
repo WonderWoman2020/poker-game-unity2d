@@ -2204,7 +2204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   createButton: {fileID: 28378473}
   backToMenuButton: {fileID: 716606195}
-  toggleGroup: {fileID: 0}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
 --- !u!1 &1111787381
 GameObject:
@@ -2598,8 +2597,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 994241598}
-        m_TargetAssemblyTypeName: CreateTableMenu, Assembly-CSharp
-        m_MethodName: ReadChips
+        m_TargetAssemblyTypeName: CreateTable, Assembly-CSharp
+        m_MethodName: ReadBigBlind
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

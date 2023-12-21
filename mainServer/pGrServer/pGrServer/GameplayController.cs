@@ -266,6 +266,7 @@ namespace PokerGameClasses
             {
                 NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(null, p, true) + sb.ToString());
                 p.GameRequestsStream.Flush();
+                p.ResetPlayerGameState();
             }
 
             //this.ResetGame(); // Reset gry bêdzie odt¹d PRZED gr¹ (przy starcie gry), ¿eby u¿ywaæ zaktualizowanej miêdzy rozdaniami listy graczy

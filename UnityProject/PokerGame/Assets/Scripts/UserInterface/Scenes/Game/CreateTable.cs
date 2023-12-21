@@ -28,6 +28,7 @@ public class CreateTable : MonoBehaviour
     private string tableName;
     private string chips;
     private string xp;
+    private string bigBlind;
     private GameMode chosenMode;
 
     // Start is called before the first frame update
@@ -37,6 +38,7 @@ public class CreateTable : MonoBehaviour
         this.numberOfBots = "0";
         this.tableName = null;
         this.chips = null;
+        this.bigBlind = null;
         this.xp = null;
     }
 
@@ -73,6 +75,14 @@ public class CreateTable : MonoBehaviour
             }
             return;
         }
+
+        if (Int32.Parse(this.bigBlind) > (Int32.Parse(this.chips)/2)) {
+            if (PopupWindow)
+            {
+                ShowPopup("Big blind cannot be higher than half of minimum chips");
+            }
+            return;
+        }
         //GameModeSelection();
         SendTableToServer();
         // TODO (cz. PGGP-56) doda� kiedy� czekanie na odpowied� od serwera czy si� uda�o stworzy� stolik
@@ -91,7 +101,7 @@ public class CreateTable : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + "20" + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + this.bigBlind + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
         //UnityEngine.Debug.Log("data available: " + mainServer.stream.DataAvailable);
@@ -178,6 +188,18 @@ public class CreateTable : MonoBehaviour
 
         this.chips = chips;
         UnityEngine.Debug.Log(this.chips);
+    }
+
+    public void ReadBigBlind(string bb)
+    {
+        if (bb.Length == 0)
+        {
+            this.bigBlind = null;
+            return;
+        }
+
+        this.bigBlind = bb;
+        UnityEngine.Debug.Log(this.bigBlind);
     }
 
     public void ReadXP(string xp)
