@@ -254,7 +254,7 @@ namespace pGrServer
                                                     }
                                                     else
                                                     {
-                                                        sb.Append("answer add " + ppl.Nick + " " + ppl.TokensCount + " " + ppl.XP + " " + ppl.SeatNr + " ");  
+                                                        sb.Append("answer add " + client.Nick + " " + client.TokensCount + " " + client.XP + " " + client.SeatNr + " ");  
                                                     }
                                                     byte[] info = System.Text.Encoding.ASCII.GetBytes(sb.ToString());
                                                     ppl.MenuRequestsStream.Write(info, 0, info.Length);
