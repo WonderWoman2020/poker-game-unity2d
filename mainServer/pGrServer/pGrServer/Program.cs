@@ -309,16 +309,33 @@ namespace pGrServer
                             {
                                 byte[] answer = System.Text.Encoding.ASCII.GetBytes("answer 3 0 "); // odpowiedź OK
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
-                                RemoveFromTable(player);
+                                if(player.Table != null)
+                                    RemoveFromTable(player);
                                 LogOut(player, i);
 
                             }
                             //Odejscie od stołu
                             else if (request[1] == "4")
                             {
-                                RemoveFromTable(player);
-                                byte[] answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
+                                byte[] answer;
+                                if (player.Table != null)
+                                {
+                                    if (!player.Table.alreadyHasGameThread)
+                                    {
+                                        RemoveFromTable(player);
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
+                                    }
+                                    else
+                                    {
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 4 1 "); // odpowiedź Failed
+                                    }
+                                }
+                                else
+                                {
+                                    answer = System.Text.Encoding.ASCII.GetBytes("answer 4 1 "); // odpowiedź Failed
+                                }
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
+
                             }
                             //Zmiana ustawień
                             else if (request[1] == "5")
@@ -378,10 +395,17 @@ namespace pGrServer
                                 Player client = loggedClients[token];
                                 if (client.Table != null && client.Table.alreadyHasGameThread == false) // nie rozpoczynamy nowego wątky gry dla stolika, który już ma taki wątek
                                 {
-                                    Thread gameThread = new Thread(() => Game(client.Table));
-                                    allGameThreads.Add(gameThread);
-                                    gameThread.Start();
-                                    answer = System.Text.Encoding.ASCII.GetBytes("answer 6 0 "); // odpowiedź OK
+                                    if(client.Table.GetPlayerCount() > 1)
+                                    {
+                                        Thread gameThread = new Thread(() => Game(client.Table));
+                                        allGameThreads.Add(gameThread);
+                                        gameThread.Start();
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 6 0 "); // odpowiedź OK
+                                    }
+                                    else
+                                    {
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 6 1 "); // odpowiedź Failed
+                                    }
                                 }
                                 else
                                 {
@@ -476,7 +500,7 @@ namespace pGrServer
                                         var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
                                         if (responseCode == "200")
                                         {
-                                            player.Login = request[2];
+                                            player.Nick = request[2];
                                             answer = System.Text.Encoding.ASCII.GetBytes("answer 8 0 ");
                                         }
                                         else if (responseCode == "405")
@@ -915,7 +939,7 @@ namespace pGrServer
                 GameTable tmp = player.Table;
                 tmp.Remove(player.Nick);
                 player.Table = null;
-                if (tmp.GetPlayerTypeCount(PlayerType.Human) == 0)
+                if (tmp.GetPlayerCount() == 0)
                 {
                     openTables.Remove(tmp);
                 }
@@ -956,7 +980,7 @@ namespace pGrServer
             while (true)
             {
                 // zakończ wątek, jeśli nie ma już ludzkich graczy przy tym stoliku
-                if (table.GetPlayerTypeCount(PlayerType.Human) == 0)
+                if (table.GetPlayerCount() < 2)
                 {
                     table.alreadyHasGameThread = false;
                     return;

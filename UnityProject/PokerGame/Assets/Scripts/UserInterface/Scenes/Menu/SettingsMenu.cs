@@ -69,39 +69,39 @@ public class SettingsMenu : MonoBehaviour
         stopwatch.Start();
         while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
         stopwatch.Stop();
-
         // odbierz odpowied�
-        byte[] readBuf = new byte[4096];
-        StringBuilder menuRequestStr = new StringBuilder();
-        int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
-        mainServer.stream.Flush();
-        menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
-        string[] response = menuRequestStr.ToString().Split(new string(":T:"));
-        UnityEngine.Debug.Log(response[0]);
-        if (response[0] == "answer Z 1 ")
-        {
-            ShowPopup("Error: bad request");
-        }
-        else if (response[0] == "answer 3 A ")
-        {
-            ShowPopup("Something went wrong with sending information to the server, please try again later");
-            return;
-        }
-        else if (response[0] == "answer 3 0 ")
-        {
-            ShowPopup("Logged out successfuly!");
-            MyGameManager.Instance.MainPlayer = null;
-            SceneManager.LoadScene("MainMenu");
+            if(mainServer.stream.DataAvailable){
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            mainServer.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            UnityEngine.Debug.Log(response[0]);
+            if (response[0] == "answer Z 1 ")
+            {
+                ShowPopup("Error: bad request");
+            }
+            else if (response[0] == "answer 3 A ")
+            {
+                ShowPopup("Something went wrong with sending information to the server, please try again later");
+                return;
+            }
+            else if (response[0] == "answer 3 0 ")
+            {
+                ShowPopup("Logged out successfuly!");
+                MyGameManager.Instance.MainPlayer = null;
+                SceneManager.LoadScene("MainMenu");
+            }
+            else
+            {
+                ShowPopup("Something went wrong, please try again later");
+            }
         }
         else
-        {
-            ShowPopup("Something went wrong, please try again later");
-        }
-
-        //if (mainServer.stream.DataAvailable)
-        //{
-            
-        //}
+            {
+                ShowPopup("Something went wrong, please try again later");
+            }
     }
 
     public void OnBackButton()

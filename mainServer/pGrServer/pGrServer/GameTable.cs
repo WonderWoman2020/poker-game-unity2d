@@ -127,7 +127,7 @@ namespace PokerGameClasses
 
             if (player == this.Owner)
             {
-                if (this.GetPlayerTypeCount(PlayerType.Human) > 0)
+                if (this.GetPlayerCount() > 0)
                 {
                     HumanPlayer newOwner = (HumanPlayer)this.Players.Find(p => p.Type == PlayerType.Human);
                     this.ChangeOwner(newOwner);
@@ -168,6 +168,10 @@ namespace PokerGameClasses
 
             this.Settings = settings;
             return true;
+        }
+        public int GetPlayerCount()
+        {
+            return this.Players.Count;
         }
         public int GetPlayerTypeCount(PlayerType type)
         {
@@ -217,8 +221,8 @@ namespace PokerGameClasses
         {
             return "Name: " + this.Name + "\n"
                 + "Owner: " + ((this.Owner == null) ? "No owner" : this.Owner.Nick) + "\n"
-                + "Human count: " + this.GetPlayerTypeCount(PlayerType.Human) + "\n"
-                + "Bots count: " + this.GetPlayerTypeCount(PlayerType.Bot) + " (note: BotsCount != BotsNumberOnStart)\n"
+                + "Human count: " + this.GetPlayerCount() + "\n"
+                + "Bots count: " + "0" + " (note: BotsCount != BotsNumberOnStart)\n"
                 + "Min XP: " + this.Settings.MinPlayersXP + "\n"
                 + "Min Chips: " + this.Settings.MinTokens + "\n"
                 + "Big Blind: " + this.Settings.BigBlind + "\n";
@@ -229,8 +233,8 @@ namespace PokerGameClasses
                 ":T:" +
                 this.Name + ' ' +
                 this.Owner.Nick + ' ' +
-                this.GetPlayerTypeCount(PlayerType.Human) + ' ' +
-                this.GetPlayerTypeCount(PlayerType.Bot) + ' ' +
+                this.GetPlayerCount() + ' ' +
+                '0' + ' ' +
                 this.Settings.MinPlayersXP + ' ' +
                 this.Settings.MinTokens + ' ' +
                 this.Settings.BigBlind;
