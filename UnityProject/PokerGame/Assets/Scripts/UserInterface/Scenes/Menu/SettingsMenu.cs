@@ -47,7 +47,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnDeleteAccountButton()
     {
-        // TODO sprawdzaæ, czy gracz jest zalogowany i nie wpuszczaæ go tu jeœli nie jest (+ Popup z odpowiednim info czemu nie móg³ wejœæ)
+        // TODO sprawdzaï¿½, czy gracz jest zalogowany i nie wpuszczaï¿½ go tu jeï¿½li nie jest (+ Popup z odpowiednim info czemu nie mï¿½gï¿½ wejï¿½ï¿½)
         SceneManager.LoadScene("DeleteAccount");
     }
 
@@ -59,7 +59,7 @@ public class SettingsMenu : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedŸ
+        // odbierz odpowiedï¿½
         byte[] readBuf = new byte[4096];
         StringBuilder menuRequestStr = new StringBuilder();
         int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);

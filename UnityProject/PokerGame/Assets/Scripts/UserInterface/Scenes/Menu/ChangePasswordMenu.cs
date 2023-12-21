@@ -51,14 +51,18 @@ public class ChangePasswordMenu : MonoBehaviour
 
     public void OnChangePasswordButton()
     {
+        if (this.newPassword != this.confirmPassword) {
+            ShowPopup("New password and password confirmation need to match");
+            return;
+        }
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "9" + ' ' + this.newPassword + ' ' + this.confirmPassword + ' ' );
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "9" + ' ' + this.currentPassword + ' ' + this.newPassword + ' ' + this.confirmPassword + ' ' );
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedŸ
+        // odbierz odpowiedï¿½
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -79,7 +83,7 @@ public class ChangePasswordMenu : MonoBehaviour
             }
             else if (response[0] == "answer 9 1 ")
             {
-                ShowPopup("New password and password confirmations need to match!");
+                ShowPopup("New password and password confirmation need to match!");
                 return;
             }
             else if (response[0] == "answer 9 2 ")

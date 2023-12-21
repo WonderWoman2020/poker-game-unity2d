@@ -24,6 +24,7 @@ public class ChangeNameMenu : MonoBehaviour
     public GameObject PopupWindow;
 
     private string newName;
+    private string password;
 
     // Start is called before the first frame update
     void Start()
@@ -43,11 +44,11 @@ public class ChangeNameMenu : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "8" + ' ' + this.newName + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "8" + ' ' + this.newName + ' ' + this.password + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedŸ
+        // odbierz odpowiedï¿½
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -110,6 +111,18 @@ public class ChangeNameMenu : MonoBehaviour
 
         this.newName = newName;
         Debug.Log(this.newName);
+    }
+
+    public void ReadPassword(string password)
+    {
+        if (password.Length == 0)
+        {
+            this.password = null;
+            return;
+        }
+
+        this.password = password;
+        Debug.Log(this.password);
     }
 
 
