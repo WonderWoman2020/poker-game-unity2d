@@ -675,6 +675,7 @@ namespace pGrServer
                                 }
 
                             }
+                            //pobranie informacji o stanie zetonow i xp, swojego gracza
                             else if (request[1] == "B")
                             {
                                 int currXP = player.XP;
