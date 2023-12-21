@@ -244,14 +244,21 @@ namespace pGrServer
                                             {
                                                 client.Table = table;
                                                 answer = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
+                                                StringBuilder sb = new StringBuilder();
                                                 foreach(var ppl in client.Table.Players)
                                                 {
-                                                    if(ppl != client)
+                                                    if(ppl.Nick == client.Nick)
                                                     {
-                                                        byte[] info = System.Text.Encoding.ASCII.GetBytes("answer add " + ppl.Nick + " " + ppl.TokensCount + 
-                                                            " " + ppl.XP + " " + ppl.SeatNr + " ");
-                                                        ppl.MenuRequestsStream.Write(info, 0, info.Length);
+                                                        foreach(var person in client.Table.Players)
+                                                            sb.Append("answer add " + person.Nick + " " + person.TokensCount + " " + person.XP + " " + person.SeatNr + " ");
                                                     }
+                                                    else
+                                                    {
+                                                        sb.Append("answer add " + client.Nick + " " + client.TokensCount + " " + client.XP + " " + client.SeatNr + " ");  
+                                                    }
+                                                    byte[] info = System.Text.Encoding.ASCII.GetBytes(sb.ToString());
+                                                    ppl.MenuRequestsStream.Write(info, 0, info.Length);
+                                                    sb.Clear();
                                                 }
 
                                             }
