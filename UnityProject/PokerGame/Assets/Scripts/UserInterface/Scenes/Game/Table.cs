@@ -240,12 +240,11 @@ public class Table : MonoBehaviour
                     else if(splitted[0] == "Winner") // komunikat z Nick'iem zwyci�zcy
                     {
                         this.winnerNick = splitted[1];
-                        Debug.Log(this.winnerNick);
+                        Debug.Log("Winner: " + this.winnerNick);
                         if (this.winnerNick == MyGameManager.Instance.MainPlayer.Nick) {
                             MyGameManager.Instance.MainPlayer.Xp += 100;
                         }
                         this.displayWinnerPopup = true;
-                        ShowPopup("And the winner is: " + this.winnerNick + "!");
                     }
                     else if(splitted[0] == "Status") // komunikaty o statusie gry (zacz�a si�, sko�czy�a)
                     {
@@ -981,12 +980,11 @@ public class Table : MonoBehaviour
             */
             this.displayPlayerTurnPopup = false;
         }
-
         // Wy�wietlanie Popupu o zwyci�zcy gry
         if (this.displayWinnerPopup && PopupWindow)
         {
             Vector3 position = new Vector3(625.0f, 700.0f, 0.0f);
-            var popup = Instantiate(PopupWindow, position, Quaternion.identity, transform);
+            var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
             popup.GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 255);
             Thread.Sleep(3000);
