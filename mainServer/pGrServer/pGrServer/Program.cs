@@ -320,7 +320,7 @@ namespace pGrServer
                                 byte[] answer;
                                 if (player.Table != null)
                                 {
-                                    if (!player.Table.alreadyHasGameThread)
+                                    if (!player.Table.isGameActive)
                                     {
                                         RemoveFromTable(player);
                                         answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
@@ -980,7 +980,7 @@ namespace pGrServer
             while (true)
             {
                 // zakończ wątek, jeśli nie ma już ludzkich graczy przy tym stoliku
-                if (table.GetPlayerCount() < 2)
+                if (table.GetPlayerCount() < 1)
                 {
                     table.alreadyHasGameThread = false;
                     return;
@@ -1010,8 +1010,11 @@ namespace pGrServer
                             int messageCode = Convert.ToInt32(splitted[0]);
                             if (messageCode == 100) // Kod oznaczający prośbę o następne rozdanie
                             {
-                                startNextGame = true;
-                                break;
+                                if(table.GetPlayerCount() > 1)
+                                {
+                                    startNextGame = true;
+                                    break;
+                                }
                             }
                         }
                     }
