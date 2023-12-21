@@ -478,7 +478,7 @@ namespace pGrServer
                                         var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
                                         if (responseCode == "200")
                                         {
-                                            player.Login = request[2];
+                                            player.Nick = request[2];
                                             answer = System.Text.Encoding.ASCII.GetBytes("answer 8 0 ");
                                         }
                                         else if (responseCode == "405")
