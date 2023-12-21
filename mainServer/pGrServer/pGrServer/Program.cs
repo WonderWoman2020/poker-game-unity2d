@@ -309,14 +309,16 @@ namespace pGrServer
                             {
                                 byte[] answer = System.Text.Encoding.ASCII.GetBytes("answer 3 0 "); // odpowiedź OK
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
-                                RemoveFromTable(player);
+                                if(player.Table != null)
+                                    RemoveFromTable(player);
                                 LogOut(player, i);
 
                             }
                             //Odejscie od stołu
                             else if (request[1] == "4")
                             {
-                                RemoveFromTable(player);
+                                if (player.Table != null)
+                                    RemoveFromTable(player);
                                 byte[] answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                             }
