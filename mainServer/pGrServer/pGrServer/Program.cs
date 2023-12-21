@@ -244,6 +244,14 @@ namespace pGrServer
                                             {
                                                 client.Table = table;
                                                 answer = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
+                                                foreach(var ppl in client.Table.Players)
+                                                {
+                                                    if(ppl != client)
+                                                    {
+                                                        byte[] info = System.Text.Encoding.ASCII.GetBytes("answer add " + ppl.Nick + " " + ppl.TokensCount + " " + ppl.XP + " ");
+                                                        ppl.MenuRequestsStream.Write(info, 0, info.Length);
+                                                    }
+                                                }
 
                                             }
                                             else
@@ -324,6 +332,14 @@ namespace pGrServer
                                     {
                                         RemoveFromTable(player);
                                         answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
+                                        foreach (var ppl in player.Table.Players)
+                                        {
+                                            if (ppl != player)
+                                            {
+                                                byte[] info = System.Text.Encoding.ASCII.GetBytes("answer rem " + ppl.Nick + " ");
+                                                ppl.MenuRequestsStream.Write(info, 0, info.Length);
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -404,7 +420,7 @@ namespace pGrServer
                                     }
                                     else
                                     {
-                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 6 1 "); // odpowiedź Failed
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 6 2 "); // odpowiedź za malo graczy
                                     }
                                 }
                                 else
