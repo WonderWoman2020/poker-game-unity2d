@@ -21,6 +21,8 @@ public class DeleteAccount : MonoBehaviour
 
     public GameObject PopupWindow;
 
+    private string password;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,11 +41,11 @@ public class DeleteAccount : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + passwordField + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + this.password + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedŸ
+        // odbierz odpowiedï¿½
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -60,6 +62,7 @@ public class DeleteAccount : MonoBehaviour
             else if (response[0] == "answer A 0 ")
             {
                 ShowPopup("Account deleted successfuly!");
+                MyGameManager.Instance.MainPlayer = null;
                 SceneManager.LoadScene("MainMenu");
             }
             else if (response[0] == "answer A 1 ")
@@ -88,6 +91,18 @@ public class DeleteAccount : MonoBehaviour
     public void OnBackButton()
     {
         SceneManager.LoadScene("SettingsMenu");
+    }
+
+    public void ReadPassword(string password)
+    {
+        if (password.Length == 0)
+        {
+            this.password = null;
+            return;
+        }
+
+        this.password = password;
+        Debug.Log(this.password);
     }
 
     void ShowPopup(string text)

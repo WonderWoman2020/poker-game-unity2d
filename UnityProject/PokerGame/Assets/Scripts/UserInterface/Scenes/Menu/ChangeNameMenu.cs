@@ -69,7 +69,7 @@ public class ChangeNameMenu : MonoBehaviour
             }
             else if (response[0] == "answer 8 1 ")
             {
-                ShowPopup("Something unexpected happened! Check if your input is correct and try again");
+                ShowPopup("This nick is already in use. Try a different one");
                 return;
             }
             else if (response[0] == "answer 8 2 ")
@@ -78,11 +78,6 @@ public class ChangeNameMenu : MonoBehaviour
                 return;
             }
             else if (response[0] == "answer 8 3 ")
-            {
-                ShowPopup("Couldn't finish the request");
-                return;
-            }
-            else if (response[0] == "answer 8 4 ")
             {
                 ShowPopup("An error with the database occured, please try again later");
                 return;

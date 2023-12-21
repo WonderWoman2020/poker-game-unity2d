@@ -167,7 +167,7 @@ namespace pGrServer
                                 openTablesAccess.WaitOne();
                                 if (request.Length > 8)
                                 {
-                                    
+
                                     //Tylko dla clienta ktory nie jest przy stole
                                     if (player.Table == null && valid)
                                     {
@@ -208,7 +208,7 @@ namespace pGrServer
                                 {
                                     answer = System.Text.Encoding.ASCII.GetBytes("answer 0 A "); // błąd pakietu
                                 }
-                                
+
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
@@ -221,7 +221,7 @@ namespace pGrServer
                                 byte[] answer = null;
 
                                 Player client = player;
-                                if(request.Length > 3)
+                                if (request.Length > 3)
                                 {
                                     if (client.Table == null) // Dołączymy do nowego stołu tylko, jeśli przy żadnym nie siedzimy
                                     {
@@ -269,7 +269,7 @@ namespace pGrServer
                                 {
                                     answer = System.Text.Encoding.ASCII.GetBytes("answer 1 A "); // za krótki pakiet
                                 }
-                               
+
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
@@ -281,7 +281,7 @@ namespace pGrServer
                                 StringBuilder completeMessage = new StringBuilder();
                                 if (player.Table == null)
                                 {
-                                    if(openTables.Count > 0)
+                                    if (openTables.Count > 0)
                                     {
                                         completeMessage.Append("answer 2 0 ");
                                         foreach (GameTable table in openTables)
@@ -293,8 +293,8 @@ namespace pGrServer
                                     {
                                         completeMessage.Append("answer 2 1 ");
                                     }
-                                    
-                                    
+
+
                                 }
                                 else
                                 {
@@ -311,7 +311,7 @@ namespace pGrServer
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                 RemoveFromTable(player);
                                 LogOut(player, i);
-                                
+
                             }
                             //Odejscie od stołu
                             else if (request[1] == "4")
@@ -337,7 +337,7 @@ namespace pGrServer
                                 if (!ValidateStringIfPositiveInt(request[6]))
                                     valid = false;
 
-                                if(request.Length > 7)
+                                if (request.Length > 7)
                                 {
                                     if (client.Table != null)
                                     {
@@ -391,7 +391,7 @@ namespace pGrServer
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                             }
                             //Odbierz żetony
-                            else if(request[1] == "7")
+                            else if (request[1] == "7")
                             {
                                 bool valid = true;
                                 byte[] answer = null;
@@ -413,21 +413,21 @@ namespace pGrServer
                                             TimeSpan ts = new TimeSpan(0, 0, 0);
                                             freeTokensLastClear = freeTokensLastClear.Date + ts;
                                         }
-                                        Console.WriteLine("\n\n\n\n\nXDDDD" + freeTokensLastClear.ToString());
+                                        //Console.WriteLine("\n\n\n\n\nXDDDD" + freeTokensLastClear.ToString());
 
                                     }
                                     foreach (string ppl in tokennedPlayers)
                                     {
                                         if (ppl == player.Login)
                                         {
-                                            valid = false;      
-                                        }      
+                                            valid = false;
+                                        }
                                     }
                                     if (valid)
                                     {
                                         Player client = loggedClients[token];
                                         //TODO
-                                        int freeTokens = 1;//Tutaj mozna tę wartość zrobić dynamicznie zaleznie od XP
+                                        int freeTokens = 100;//Tutaj mozna tę wartość zrobić dynamicznie zaleznie od XP
                                         client.TokensCount += freeTokens;
                                         //NetworkHelper.WriteNetworkStream(client.MenuRequestsStream, "1" + ' ' + client.TokensCount.ToString());
                                         tokennedPlayers.Add(player.Login);
@@ -437,7 +437,7 @@ namespace pGrServer
                                     }
                                     else
                                     {
-                                        if(freeTokensLastClear.Hour == 12)
+                                        if (freeTokensLastClear.Hour == 12)
                                             answer = System.Text.Encoding.ASCII.GetBytes("answer 7 1 " + (24 - now.Hour).ToString() + " "); // odpowiedź Failed
                                         else
                                             answer = System.Text.Encoding.ASCII.GetBytes("answer 7 1 " + (12 - now.Hour).ToString() + " "); // odpowiedź Failed
@@ -450,54 +450,68 @@ namespace pGrServer
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                             }
                             //zmiana nicku
-                            else if(request[1] == "8")
+                            else if (request[1] == "8")
                             {
-                                byte[] answear = null;
-                                var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatenick");
-                                httpWebRequest.ContentType = "application/json";
-                                httpWebRequest.Method = "POST";
-                                using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                                byte[] answer = null;
+                                if (request.Length > 4)
                                 {
-                                    string json = "{\"login\":\"" + player.Login + "\"," +
-                                                    "\"nick\":\"" + request[2] + "\"}";
-                                    streamWriter.Write(json);
-                                    streamWriter.Flush();
-                                    streamWriter.Close();
+
+                                    var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatenick");
+                                    httpWebRequest.ContentType = "application/json";
+                                    httpWebRequest.Method = "POST";
+                                    using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                                    {
+                                        string json = "{\"login\":\"" + player.Login + "\"," +
+                                                        "\"nick\":\"" + request[2] + "\"," +
+                                                        "\"password\":\"" + request[3] + "\"}";
+                                        streamWriter.Write(json);
+                                        streamWriter.Flush();
+                                        streamWriter.Close();
+                                    }
+                                    var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                                    using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                    {
+                                        var result = streamReader.ReadToEnd();
+                                        var dataFromDatabase = result.Split("\"");
+                                        var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
+                                        if (responseCode == "200")
+                                        {
+                                            player.Login = request[2];
+                                            answer = System.Text.Encoding.ASCII.GetBytes("answer 8 0 ");
+                                        }
+                                        else if (responseCode == "405")
+                                        {
+                                            answer = System.Text.Encoding.ASCII.GetBytes("answer 8 1 ");
+                                        }
+                                        else if (responseCode == "401")
+                                        {
+                                            answer = System.Text.Encoding.ASCII.GetBytes("answer 8 2 ");
+                                        }
+                                        else
+                                        {
+                                            answer = System.Text.Encoding.ASCII.GetBytes("answer 8 3 ");
+                                        }
+                                    }
+
                                 }
-                                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                                else
                                 {
-                                    var result = streamReader.ReadToEnd();
-                                    var dataFromDatabase = result.Split("\"");
-                                    var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
-                                    if (responseCode == "200")
-                                    {
-                                        player.Login = request[2];
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 8 0 ");
-                                    }
-                                    else if (responseCode == "405")
-                                    {
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 8 1 ");
-                                    }
-                                    else
-                                    {
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer 8 2 ");
-                                    }
+                                    answer = System.Text.Encoding.ASCII.GetBytes("answer 8 A ");
                                 }
-                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
                             }
                             //zmiana hasla
                             else if (request[1] == "9")
                             {
                                 byte[] answear = null;
-                                
+
                                 var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/updatepasswd");
                                 httpWebRequest.ContentType = "application/json";
                                 httpWebRequest.Method = "POST";
                                 var currPass = request[2];
                                 var newPass = request[3];
                                 var confPass = request[4];
-                                if(request.Length > 5)
+                                if (request.Length > 5)
                                 {
                                     if (newPass == confPass)
                                     {
@@ -545,13 +559,13 @@ namespace pGrServer
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
                             //usun konto
-                            else if (request[1] == "10")
+                            else if (request[1] == "A")
                             {
                                 byte[] answear = null;
-                                
-                                if(request.Length > 3)
+
+                                if (request.Length > 3)
                                 {
-                                    if(player.Table == null)
+                                    if (player.Table == null)
                                     {
                                         var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://3rh988512b.execute-api.eu-central-1.amazonaws.com/default/deleteaccount");
                                         httpWebRequest.ContentType = "application/json";
@@ -590,7 +604,6 @@ namespace pGrServer
                                                     loggedTokens.RemoveAt(i);
                                                 }
                                                 loggedClientsAccess.ReleaseMutex();
-                                                Thread.Sleep(10000);
                                             }
                                             else if (responseCode == "401")
                                             {
@@ -620,7 +633,7 @@ namespace pGrServer
                                     answear = System.Text.Encoding.ASCII.GetBytes("answer A A ");
                                     player.MenuRequestsStream.Write(answear, 0, answear.Length);
                                 }
-                                
+
                             }
                             else
                             {
@@ -628,13 +641,13 @@ namespace pGrServer
                                 byte[] answear = System.Text.Encoding.ASCII.GetBytes("answer 100 1 "); // odpowiedź Failed
                                 player.MenuRequestsStream.Write(answear, 0, answear.Length);
                             }
-                               
+
                         }
                     }
                 }
                 loggedClientsAccess.ReleaseMutex();
 
-                
+
             }
             Console.WriteLine("Menu requests listening stopped");
         }
@@ -665,7 +678,7 @@ namespace pGrServer
                     //(otrzymuje zaszyfrowany login i haslo i deszyfruje)
                     byte[] readBuffer = new byte[128];
                     int numberOfBytesRead = 0;
-                    
+
                     numberOfBytesRead = clientStream.Read(readBuffer, 0, readBuffer.Length);
                     var decryptedLognPass = rsa.Decrypt(readBuffer, false);
 
@@ -748,7 +761,7 @@ namespace pGrServer
                                 byte[] message = System.Text.Encoding.ASCII.GetBytes(token + ' ' + xp + ' ' + coins + ' ' + nick);
                                 clientStream.Write(message, 0, message.Length);
 
-                                
+
 
                                 //(akceptuje drugi port)
                                 TcpClient gameClient = gameListener.AcceptTcpClient();
@@ -795,7 +808,7 @@ namespace pGrServer
             openTables = new List<GameTable>();
             tokennedPlayers = new List<string>();
             freeTokensLastClear = DateTime.Now;
-            if(freeTokensLastClear.Hour > 12)
+            if (freeTokensLastClear.Hour > 12)
             {
                 TimeSpan ts = new TimeSpan(12, 0, 0);
                 freeTokensLastClear = freeTokensLastClear.Date + ts;
@@ -841,7 +854,7 @@ namespace pGrServer
                     res.Append(CHARS[(int)(num % (uint)CHARS.Length)]);
                 }
                 return res.ToString();
-            }   
+            }
         }
         public static void AutoLogout()
         {
@@ -971,7 +984,7 @@ namespace pGrServer
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Console.WriteLine("Couldn't read from player's " + p.Nick + " game stream. Assuming network failure and removing player from table.");
                         Console.WriteLine(e);
@@ -1014,7 +1027,7 @@ namespace pGrServer
             Regex regex = new Regex(@"^\d+$");
             if (regex.IsMatch(attribute))
             {
-                if(attribute.Length <= 9)
+                if (attribute.Length <= 9)
                 {
                     return true;
                 }
