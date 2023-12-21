@@ -248,7 +248,8 @@ namespace pGrServer
                                                 {
                                                     if(ppl != client)
                                                     {
-                                                        byte[] info = System.Text.Encoding.ASCII.GetBytes("answer add " + ppl.Nick + " " + ppl.TokensCount + " " + ppl.XP + " ");
+                                                        byte[] info = System.Text.Encoding.ASCII.GetBytes("answer add " + ppl.Nick + " " + ppl.TokensCount + 
+                                                            " " + ppl.XP + " " + ppl.SeatNr + " ");
                                                         ppl.MenuRequestsStream.Write(info, 0, info.Length);
                                                     }
                                                 }
@@ -675,6 +676,7 @@ namespace pGrServer
                                 }
 
                             }
+                            //pobranie informacji o stanie zetonow i xp, swojego gracza
                             else if (request[1] == "B")
                             {
                                 int currXP = player.XP;
