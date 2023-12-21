@@ -248,7 +248,7 @@ namespace pGrServer
                                                 {
                                                     if(ppl != client)
                                                     {
-                                                        byte[] info = System.Text.Encoding.ASCII.GetBytes("new player " + ppl.Nick + " " + ppl.TokensCount + " " + ppl.XP + " ");
+                                                        byte[] info = System.Text.Encoding.ASCII.GetBytes("answer add " + ppl.Nick + " " + ppl.TokensCount + " " + ppl.XP + " ");
                                                         ppl.MenuRequestsStream.Write(info, 0, info.Length);
                                                     }
                                                 }
@@ -336,7 +336,7 @@ namespace pGrServer
                                         {
                                             if (ppl != player)
                                             {
-                                                byte[] info = System.Text.Encoding.ASCII.GetBytes("rem player " + ppl.Nick + " ");
+                                                byte[] info = System.Text.Encoding.ASCII.GetBytes("answer rem " + ppl.Nick + " ");
                                                 ppl.MenuRequestsStream.Write(info, 0, info.Length);
                                             }
                                         }
