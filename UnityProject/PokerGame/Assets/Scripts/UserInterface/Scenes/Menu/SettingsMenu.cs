@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -59,6 +60,11 @@ public class SettingsMenu : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
         // odbierz odpowied�
         byte[] readBuf = new byte[4096];
         StringBuilder menuRequestStr = new StringBuilder();
@@ -66,7 +72,7 @@ public class SettingsMenu : MonoBehaviour
         mainServer.stream.Flush();
         menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
         string[] response = menuRequestStr.ToString().Split(new string(":T:"));
-        Debug.Log(response[0]);
+        UnityEngine.Debug.Log(response[0]);
         if (response[0] == "answer Z 1 ")
         {
             ShowPopup("Error: bad request");

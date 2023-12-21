@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -48,6 +49,11 @@ public class ChangeNameMenu : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
         // odbierz odpowied�
         if (mainServer.stream.DataAvailable)
         {
@@ -65,6 +71,7 @@ public class ChangeNameMenu : MonoBehaviour
             else if (response[0] == "answer 8 0 ")
             {
                 ShowPopup("Nick changed successfuly!");
+                MyGameManager.Instance.MainPlayer.Nick = this.newName;
                 return;
             }
             else if (response[0] == "answer 8 1 ")
@@ -87,6 +94,8 @@ public class ChangeNameMenu : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -105,7 +114,7 @@ public class ChangeNameMenu : MonoBehaviour
         }
 
         this.newName = newName;
-        Debug.Log(this.newName);
+        UnityEngine.Debug.Log(this.newName);
     }
 
     public void ReadPassword(string password)
@@ -117,7 +126,7 @@ public class ChangeNameMenu : MonoBehaviour
         }
 
         this.password = password;
-        Debug.Log(this.password);
+        UnityEngine.Debug.Log(this.password);
     }
 
 

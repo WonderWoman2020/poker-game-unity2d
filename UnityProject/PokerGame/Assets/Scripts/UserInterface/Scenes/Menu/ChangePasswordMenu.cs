@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -62,6 +63,10 @@ public class ChangePasswordMenu : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
         // odbierz odpowied�
         if (mainServer.stream.DataAvailable)
         {
@@ -101,6 +106,8 @@ public class ChangePasswordMenu : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -118,7 +125,7 @@ public class ChangePasswordMenu : MonoBehaviour
         }
 
         this.currentPassword = currentPswd;
-        Debug.Log(this.currentPassword);
+        UnityEngine.Debug.Log(this.currentPassword);
     }
 
     public void ReadNewPassword(string newPswd)
@@ -130,7 +137,7 @@ public class ChangePasswordMenu : MonoBehaviour
         }
 
         this.newPassword = newPswd;
-        Debug.Log(this.newPassword);
+        UnityEngine.Debug.Log(this.newPassword);
     }
 
     public void ReadConfirmPassword(string confirmPswd)
@@ -142,7 +149,7 @@ public class ChangePasswordMenu : MonoBehaviour
         }
 
         this.confirmPassword = confirmPswd;
-        Debug.Log(this.confirmPassword);
+        UnityEngine.Debug.Log(this.confirmPassword);
     }
 
     void ShowPopup(string text)

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -45,6 +46,10 @@ public class DeleteAccount : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
         // odbierz odpowied�
         if (mainServer.stream.DataAvailable)
         {
@@ -85,6 +90,8 @@ public class DeleteAccount : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -102,7 +109,7 @@ public class DeleteAccount : MonoBehaviour
         }
 
         this.password = password;
-        Debug.Log(this.password);
+        UnityEngine.Debug.Log(this.password);
     }
 
     void ShowPopup(string text)
