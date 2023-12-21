@@ -1128,6 +1128,11 @@ public class Table : MonoBehaviour
             ShowPopup("The game has already started!");
             return;
         }
+        else if (response[0] == "answer 6 2 ")
+        {
+            ShowPopup("There must be a minimum of 2 players to start the game");
+            return;
+        }
         else if (response[0] == "answer 6 A ")
         {
             ShowPopup("Something went wrong with sending information to the server, please try again later");
