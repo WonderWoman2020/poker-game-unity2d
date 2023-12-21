@@ -93,6 +93,42 @@ public class PlayMenu : MonoBehaviour
         if (MyGameManager.Instance.MainPlayer == null)
             return;
 
+        TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        string token = MyGameManager.Instance.clientToken;
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "B" + ' ');
+        mainServer.stream.Write(toSend, 0, toSend.Length);
+        mainServer.stream.Flush();
+
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
+        if (mainServer.stream.DataAvailable)
+        {
+            byte[] readBuf = new byte[4096];
+            StringBuilder menuRequestStr = new StringBuilder();
+            int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
+            mainServer.stream.Flush();
+            menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
+            string[] response = menuRequestStr.ToString().Split(new string(":T:"));
+            string[] splitResponse = response[0].Split(' ');
+
+            if (response[0] == "answer Z 1 ")
+            {
+                UnityEngine.Debug.Log("IF ERROR");
+            }
+            else if (splitResponse[2] == "0")
+            {
+                int coins = Convert.ToInt32(splitResponse[3]);
+                int xp = Convert.ToInt32(splitResponse[4]);
+                MyGameManager.Instance.MainPlayer.TokensCount = coins;
+                MyGameManager.Instance.MainPlayer.Xp = xp;
+            }
+        } else {
+            UnityEngine.Debug.Log("Couldn't get a response from the server, please try again later");
+        }
+
         this.InfoPlayerNick.text = MyGameManager.Instance.MainPlayer.Nick;
         this.InfoPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
         this.InfoPlayerXP.text = Convert.ToString(MyGameManager.Instance.MainPlayer.Xp) + " XP";

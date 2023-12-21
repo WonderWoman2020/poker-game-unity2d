@@ -242,7 +242,7 @@ public class Table : MonoBehaviour
                         this.winnerNick = splitted[1];
                         Debug.Log("Winner: " + this.winnerNick);
                         if (this.winnerNick == MyGameManager.Instance.MainPlayer.Nick) {
-                            MyGameManager.Instance.MainPlayer.Xp += 100;
+                            //MyGameManager.Instance.MainPlayer.Xp += 100;
                         }
                         this.displayWinnerPopup = true;
                     }
@@ -1175,6 +1175,7 @@ public class Table : MonoBehaviour
         }
         else if (response[0] == "answer 4 0 ")
         {
+            this.leftTableSuccess = true;
             SceneManager.LoadScene("PlayMenu");
         }
     }

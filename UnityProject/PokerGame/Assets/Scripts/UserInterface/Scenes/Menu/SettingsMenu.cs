@@ -55,6 +55,11 @@ public class SettingsMenu : MonoBehaviour
     public void OnLogoutButton()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
+        if (mainServer.stream.DataAvailable)
+        {
+            mainServer.stream.Flush();   
+        }
+
         string token = MyGameManager.Instance.clientToken;
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "3" + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
