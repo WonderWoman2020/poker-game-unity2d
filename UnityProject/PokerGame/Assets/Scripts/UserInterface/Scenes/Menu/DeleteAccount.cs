@@ -95,6 +95,10 @@ public class DeleteAccount : MonoBehaviour
         }
     }
 
+    public void ReadPassword(){
+        
+    }
+
     public void OnBackButton()
     {
         SceneManager.LoadScene("SettingsMenu");

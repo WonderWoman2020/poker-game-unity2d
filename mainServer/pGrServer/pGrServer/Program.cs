@@ -561,7 +561,7 @@ namespace pGrServer
                             //usun konto
                             else if (request[1] == "A")
                             {
-                                byte[] answear = null;
+                                byte[] answer = null;
 
                                 if (request.Length > 3)
                                 {
@@ -586,8 +586,8 @@ namespace pGrServer
                                             var responseCode = Regex.Match(dataFromDatabase[2], @"\d+").Value;
                                             if (responseCode == "200")
                                             {
-                                                answear = System.Text.Encoding.ASCII.GetBytes("answer A 0 ");
-                                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                                answer = System.Text.Encoding.ASCII.GetBytes("answer A 0 ");
+                                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
 
                                                 loggedClientsAccess.WaitOne();
                                                 Socket s = loggedClients[token].MenuRequestsStream.Socket;
@@ -595,7 +595,7 @@ namespace pGrServer
                                                 bool pt2 = (s.Available == 0);
                                                 if (pt1 && pt2)
                                                 {
-                                                    player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                                    player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                                     player.MenuRequestsTcp.Close();
                                                     player.MenuRequestsStream.Dispose();
                                                     player.GameRequestsTcp.Close();
@@ -608,14 +608,14 @@ namespace pGrServer
                                             else if (responseCode == "401")
                                             {
                                                 // zle haslo
-                                                answear = System.Text.Encoding.ASCII.GetBytes("answer A 1 ");
-                                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                                answer = System.Text.Encoding.ASCII.GetBytes("answer A 1 ");
+                                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                             }
                                             else
                                             {
                                                 //inny błąd aws
-                                                answear = System.Text.Encoding.ASCII.GetBytes("answer A 2 ");
-                                                player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                                answer = System.Text.Encoding.ASCII.GetBytes("answer A 2 ");
+                                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                             }
                                         }
                                     }
@@ -623,17 +623,24 @@ namespace pGrServer
                                     {
                                         // info, że gracz nie może teraz tego zrobić (najlepiej dosłownie info “Nie możesz teraz usunąć konta).
                                         //jest przy stole
-                                        answear = System.Text.Encoding.ASCII.GetBytes("answer A 3 ");
-                                        player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer A 3 ");
+                                        player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                     }
                                 }
                                 else
                                 {
                                     //za krótki pakiet
-                                    answear = System.Text.Encoding.ASCII.GetBytes("answer A A ");
-                                    player.MenuRequestsStream.Write(answear, 0, answear.Length);
+                                    answer = System.Text.Encoding.ASCII.GetBytes("answer A A ");
+                                    player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                 }
 
+                            }
+                            else if (request[1] == "B")
+                            {
+                                int currXP = player.XP;
+                                int currCoins = player.TokensCount;
+                                byte[] answer = System.Text.Encoding.ASCII.GetBytes("answer B 0 " + currCoins + ' ' + currXP + ' '); // odpowiedź OK
+                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
                             }
                             else
                             {
