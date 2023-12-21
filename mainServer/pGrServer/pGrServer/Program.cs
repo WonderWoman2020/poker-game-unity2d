@@ -317,10 +317,25 @@ namespace pGrServer
                             //Odejscie od stołu
                             else if (request[1] == "4")
                             {
+                                byte[] answer;
                                 if (player.Table != null)
-                                    RemoveFromTable(player);
-                                byte[] answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
+                                {
+                                    if (!player.Table.alreadyHasGameThread)
+                                    {
+                                        RemoveFromTable(player);
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
+                                    }
+                                    else
+                                    {
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 4 1 "); // odpowiedź Failed
+                                    }
+                                }
+                                else
+                                {
+                                    answer = System.Text.Encoding.ASCII.GetBytes("answer 4 1 "); // odpowiedź Failed
+                                }
                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
+
                             }
                             //Zmiana ustawień
                             else if (request[1] == "5")
