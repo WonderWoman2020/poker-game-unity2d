@@ -30,13 +30,12 @@ public class GetTokensMenu : MonoBehaviour
             string response = NetworkHelper.ReadNetworkStream(mainServer.stream);
             mainServer.stream.Flush();
             string[] splitted = response.Split(' ');
-            // arg 0 - bool czy siê uda³o zmieniæ coins gracza na serwerze
-            if (splitted[0] == "1")
+            // arg 0 - bool czy siï¿½ udaï¿½o zmieniï¿½ coins gracza na serwerze
+            if (splitted[2] == "0")
             {
-                // arg 1 - aktualna wartoœæ coins gracza, jeœli siê uda³o
-                int coins = Convert.ToInt32(splitted[1]);
-                MyGameManager.Instance.MainPlayer.TokensCount = coins;
-               // this.ChangePlayerInfo();
+                // arg 1 - aktualna wartoï¿½ï¿½ coins gracza, jeï¿½li siï¿½ udaï¿½o
+                int coins = Convert.ToInt32(splitted[3]);
+                MyGameManager.Instance.MainPlayer.TokensCount += coins;
             }
             
         }

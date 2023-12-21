@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Diagnostics;
 
 using PokerGameClasses;
 
@@ -15,7 +16,7 @@ using pGrServer;
 using System.Text;
 
 
-// Ekran do wyboru stolika do do³¹czenia, z list¹ istniej¹cych na serwerze stolików
+// Ekran do wyboru stolika do doï¿½ï¿½czenia, z listï¿½ istniejï¿½cych na serwerze stolikï¿½w
 public class JoinTable : MonoBehaviour
 {
     // Przyciski menu ekranu
@@ -25,10 +26,10 @@ public class JoinTable : MonoBehaviour
     [SerializeField] private GameObject tableTemplate;
     [SerializeField] private GameObject noTableText;
     [SerializeField] private GameObject tablesContainer;
-    // informacje o b³êdach, komunikaty dla gracza
+    // informacje o bï¿½ï¿½dach, komunikaty dla gracza
     public GameObject PopupWindow;
 
-    // Numer przycisku obok stolika, który zosta³ wybrany
+    // Numer przycisku obok stolika, ktï¿½ry zostaï¿½ wybrany
     private int chosenTable;
     private string chosenTableName;
 
@@ -36,7 +37,7 @@ public class JoinTable : MonoBehaviour
     private bool chosenTableStillExists;
 
 
-    // Informacje o wstêpnie zaznaczonym stoliku, wyœwietlane w lewym dolnym rogu ekranu
+    // Informacje o wstï¿½pnie zaznaczonym stoliku, wyï¿½wietlane w lewym dolnym rogu ekranu
     [SerializeField] private TMP_Text InfoPlayersCount;
     [SerializeField] private TMP_Text InfoMinChips;
     [SerializeField] private TMP_Text InfoMinXP;
@@ -51,12 +52,12 @@ public class JoinTable : MonoBehaviour
 
 
 
-        // Domyœlnie nie wybrano stolika
+        // Domyï¿½lnie nie wybrano stolika
         this.chosenTable = -1;
 
     }
 
-    // TODO dodaæ kiedyœ do osobnej klasy
+    // TODO dodaï¿½ kiedyï¿½ do osobnej klasy
     public void loadTables()
     {
         
@@ -64,10 +65,15 @@ public class JoinTable : MonoBehaviour
         byte[] request = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "2");
         mainServer.stream.Write(request, 0, request.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
-        Thread.Sleep(1000);
+
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
         if (mainServer.stream.DataAvailable)
         {
-            // Usuñ poprzednio za³adowane stoliki
+            // Usuï¿½ poprzednio zaï¿½adowane stoliki
             MyGameManager.Instance.GameTableList.Clear();
             byte[] readBuf = new byte[4096];
             StringBuilder menuRequestStr = new StringBuilder();
@@ -105,10 +111,12 @@ public class JoinTable : MonoBehaviour
                 }
                 displayTables();
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
-    // TODO dodaæ kiedyœ do osobnej klasy
+    // TODO dodaï¿½ kiedyï¿½ do osobnej klasy
     public void parseTableData(string serverResponse)
     {
         string[] data = serverResponse.Split(' ');
@@ -130,9 +138,9 @@ public class JoinTable : MonoBehaviour
 
     public void displayTables()
     {
-        // Jeœli stolików jest wiêcej ni¿ tyle ile siê zmieœci w naszym menu (obecnie 4 opcje),
-        // wyœwietlamy tylko 4 pierwsze z listy
-        // (TODO (cz. PGGP-34) mo¿e warto zmieniæ, ¿eby wyœwietlaæ 4 najnowsze, czyli 4 ostatnie?) 
+        // Jeï¿½li stolikï¿½w jest wiï¿½cej niï¿½ tyle ile siï¿½ zmieï¿½ci w naszym menu (obecnie 4 opcje),
+        // wyï¿½wietlamy tylko 4 pierwsze z listy
+        // (TODO (cz. PGGP-34) moï¿½e warto zmieniï¿½, ï¿½eby wyï¿½wietlaï¿½ 4 najnowsze, czyli 4 ostatnie?) 
         DeleteTablesOnCanva();
         int tablesToShow = MyGameManager.Instance.GameTableList.Count;
         GameObject table;
@@ -154,7 +162,7 @@ public class JoinTable : MonoBehaviour
 
     void OnTableButton(int index)
     {
-        Debug.Log(index);
+        UnityEngine.Debug.Log(index);
         this.chosenTable = index;
         this.UpdateGameTableInfo(MyGameManager.Instance.GameTableList[this.chosenTable]);
     }
@@ -179,10 +187,10 @@ public class JoinTable : MonoBehaviour
     public void OnJoinButton()
     {
 
-        // Jeœli nie ma dostêpnych stolików, cofa do ekranu PlayMenu
+        // Jeï¿½li nie ma dostï¿½pnych stolikï¿½w, cofa do ekranu PlayMenu
         if(MyGameManager.Instance.GameTableList.Count == 0)
         {
-            Debug.Log("There are no game tables to join. Create one first");
+            UnityEngine.Debug.Log("There are no game tables to join. Create one first");
             if (PopupWindow)
             {
                 ShowPopup("There are no game tables to join. Create one first");
@@ -191,10 +199,10 @@ public class JoinTable : MonoBehaviour
             return;
         }
 
-        // Info, ¿e nie wybrano ¿adnego stolika (nie cofa, zostajemy w tym ekranie)
+        // Info, ï¿½e nie wybrano ï¿½adnego stolika (nie cofa, zostajemy w tym ekranie)
         if(this.chosenTable == -1)
         {
-            Debug.Log("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
+            UnityEngine.Debug.Log("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
             if (PopupWindow)
             {
                 ShowPopup("You didn't choose any game table. Choose one to join it by clicking the tick near it. ");
@@ -206,8 +214,8 @@ public class JoinTable : MonoBehaviour
         GameTableInfo gameTable = MyGameManager.Instance.GameTableList[this.chosenTable];
         PlayerState player = MyGameManager.Instance.MainPlayer;
 
-        // Sprawdzenie, czy gracz spe³nia warunki do³¹czenia do stolika
-        // TODO mo¿na by to dodaæ do osobnej metody
+        // Sprawdzenie, czy gracz speï¿½nia warunki doï¿½ï¿½czenia do stolika
+        // TODO moï¿½na by to dodaï¿½ do osobnej metody
         if(Int32.Parse(gameTable.minXp) > player.Xp)
         {
             this.ShowPopup("You can't join this table. You don't have enough XP");
@@ -220,28 +228,28 @@ public class JoinTable : MonoBehaviour
         }
         else // ok
         {
-            Debug.Log("Sending request to add player " + player.Nick + " to " + gameTable.Name);
+            UnityEngine.Debug.Log("Sending request to add player " + player.Nick + " to " + gameTable.Name);
             // zapytanie o dodanie do stolika na serwerze
             byte[] tosend = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "1" + ' ' + MyGameManager.Instance.GameTableList[this.chosenTable].Name + ' ');
             NetworkStream ns = MyGameManager.Instance.mainServerConnection.stream;
             ns.Write(tosend, 0, tosend.Length);
 
-            // Czekanie na odpowiedŸ od serwera, czy zostaliœmy dodani
+            // Czekanie na odpowiedï¿½ od serwera, czy zostaliï¿½my dodani
             // do wybranego stolika, zanim przejdziemy do sceny stolika
-            // TODO zrobiæ to lepiej ni¿ z sekundowym czasem oczekiwania, powinniœmy gdzieœ w osobnym w¹tku odbieraæ odpowiedzi
+            // TODO zrobiï¿½ to lepiej niï¿½ z sekundowym czasem oczekiwania, powinniï¿½my gdzieï¿½ w osobnym wï¿½tku odbieraï¿½ odpowiedzi
             Thread.Sleep(1000);
             bool joinedTheTable = false;
             if (ns.DataAvailable)
             {
                 string response = NetworkHelper.ReadNetworkStream(ns);
                 ns.Flush();
-                Debug.Log("Received response: "+response);
+                UnityEngine.Debug.Log("Received response: "+response);
                 string[] splitted = response.Split(' ');
-                // arg 0 - numer rodzaju odpowiedzi (odpowiedŸ na zapytanie o dodanie do stolika)
+                // arg 0 - numer rodzaju odpowiedzi (odpowiedï¿½ na zapytanie o dodanie do stolika)
                 if (splitted[1] == "1")
                 {
-                    // arg 1 - bool czy siê uda³o dodaæ do stolika
-                    Debug.Log(splitted[2]);
+                    // arg 1 - bool czy siï¿½ udaï¿½o dodaï¿½ do stolika
+                    UnityEngine.Debug.Log(splitted[2]);
                     if (splitted[2] == "0")
                     {
                         joinedTheTable = true;
@@ -272,22 +280,22 @@ public class JoinTable : MonoBehaviour
                         ShowPopup("Error: bad request");
                     }
                 }
-                Debug.Log("Joined bool value: " + joinedTheTable);
+                UnityEngine.Debug.Log("Joined bool value: " + joinedTheTable);
             }
             if (!joinedTheTable)
             {
-                Debug.Log("Player " + player.Nick + " wasn't added to " + gameTable.Name);
+                UnityEngine.Debug.Log("Player " + player.Nick + " wasn't added to " + gameTable.Name);
                 //this.ShowPopup("Joining the table failed. The game by it has already started or it is an error.");
             }
             else
             {
-                Debug.Log("Added player " + player.Nick + " to " + gameTable.Name);
+                UnityEngine.Debug.Log("Added player " + player.Nick + " to " + gameTable.Name);
                 SceneManager.LoadScene("Table");
             }
         }   
     }
 
-    // TODO jeœli dodamy tak¹ metodê do PopupText, wyrzuciæ
+    // TODO jeï¿½li dodamy takï¿½ metodï¿½ do PopupText, wyrzuciï¿½
     void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);
@@ -310,8 +318,8 @@ public class JoinTable : MonoBehaviour
         return true;
     }
 
-    // Zapisanie numeru wybranego stolika po klikniêciu przycisku obok niego, ze sprawdzaniem,
-    // czy numer wybranego stolika nie jest wiêkszy, ni¿ liczba dostêpnych stolików
+    // Zapisanie numeru wybranego stolika po klikniï¿½ciu przycisku obok niego, ze sprawdzaniem,
+    // czy numer wybranego stolika nie jest wiï¿½kszy, niï¿½ liczba dostï¿½pnych stolikï¿½w
     //public void OnTable1Button()
     //{
     //    if (MyGameManager.Instance.GameTableList.Count >= 1)

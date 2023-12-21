@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -47,7 +48,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void OnDeleteAccountButton()
     {
-        // TODO sprawdzaæ, czy gracz jest zalogowany i nie wpuszczaæ go tu jeœli nie jest (+ Popup z odpowiednim info czemu nie móg³ wejœæ)
+        // TODO sprawdzaï¿½, czy gracz jest zalogowany i nie wpuszczaï¿½ go tu jeï¿½li nie jest (+ Popup z odpowiednim info czemu nie mï¿½gï¿½ wejï¿½ï¿½)
         SceneManager.LoadScene("DeleteAccount");
     }
 
@@ -59,14 +60,19 @@ public class SettingsMenu : MonoBehaviour
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedŸ
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
+        // odbierz odpowiedï¿½
         byte[] readBuf = new byte[4096];
         StringBuilder menuRequestStr = new StringBuilder();
         int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
         mainServer.stream.Flush();
         menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
         string[] response = menuRequestStr.ToString().Split(new string(":T:"));
-        Debug.Log(response[0]);
+        UnityEngine.Debug.Log(response[0]);
         if (response[0] == "answer Z 1 ")
         {
             ShowPopup("Error: bad request");

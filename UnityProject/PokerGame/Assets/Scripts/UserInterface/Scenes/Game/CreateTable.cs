@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Threading;
 using TMPro;
 using System;
+using System.Diagnostics;
 
 using PokerGameClasses;
 using System.Text;
@@ -19,7 +20,7 @@ public class CreateTable : MonoBehaviour
     [SerializeField] private Button backToMenuButton;
     //[SerializeField] ToggleGroup toggleGroup;
 
-    // informacje o b³êdach, komunikaty dla gracza
+    // informacje o bï¿½ï¿½dach, komunikaty dla gracza
     public GameObject PopupWindow;
 
     // dane z formularza
@@ -42,7 +43,7 @@ public class CreateTable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // wciœniêcie enter robi to samo co wciœniêcie przycisku 'Create'
+        // wciï¿½niï¿½cie enter robi to samo co wciï¿½niï¿½cie przycisku 'Create'
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             if (this.tableName != null && this.chips != null && this.xp != null)
@@ -55,7 +56,7 @@ public class CreateTable : MonoBehaviour
         PlayerState p = MyGameManager.Instance.MainPlayer;
         if(p == null)
         {
-            Debug.Log("Table not created. Player was null");
+            UnityEngine.Debug.Log("Table not created. Player was null");
             if (PopupWindow)
             {
                 ShowPopup("Table not created. Player was null");
@@ -65,7 +66,7 @@ public class CreateTable : MonoBehaviour
 
         if(this.tableName == null)
         {
-            Debug.Log("You must set at least table name to create it.");
+            UnityEngine.Debug.Log("You must set at least table name to create it.");
             if (PopupWindow)
             {
                 ShowPopup("You must set at least table name to create it.");
@@ -74,12 +75,12 @@ public class CreateTable : MonoBehaviour
         }
         //GameModeSelection();
         SendTableToServer();
-        // TODO (cz. PGGP-56) dodaæ kiedyœ czekanie na odpowiedŸ od serwera czy siê uda³o stworzyæ stolik
+        // TODO (cz. PGGP-56) dodaï¿½ kiedyï¿½ czekanie na odpowiedï¿½ od serwera czy siï¿½ udaï¿½o stworzyï¿½ stolik
     }
 
-    // TODO (cz. PGGP-106) dodaæ wartoœci domyœlne dla pól innych ni¿ nazwa stolika,
-    // jeœli gracz ich nie poda³, skoro obowi¹zkowo wymagamy tylko podania nazwy stolika
-    // TODO dodaæ kiedyœ do osobnej klasy
+    // TODO (cz. PGGP-106) dodaï¿½ wartoï¿½ci domyï¿½lne dla pï¿½l innych niï¿½ nazwa stolika,
+    // jeï¿½li gracz ich nie podaï¿½, skoro obowiï¿½zkowo wymagamy tylko podania nazwy stolika
+    // TODO dodaï¿½ kiedyï¿½ do osobnej klasy
     void SendTableToServer()
     {
         if (this.numberOfBots == null)
@@ -93,10 +94,14 @@ public class CreateTable : MonoBehaviour
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "0" + ' ' + this.tableName + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.xp + ' ' + this.chips + ' ' + "20" + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
-        //Debug.Log("data available: " + mainServer.stream.DataAvailable);
+        //UnityEngine.Debug.Log("data available: " + mainServer.stream.DataAvailable);
 
-        Thread.Sleep(100);
-        // odbierz odpowiedŸ
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
+        // odbierz odpowiedï¿½
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -105,7 +110,7 @@ public class CreateTable : MonoBehaviour
             mainServer.stream.Flush();
             menuRequestStr.AppendFormat("{0}", Encoding.ASCII.GetString(readBuf, 0, nrbyt));
             string[] response = menuRequestStr.ToString().Split(new string(":T:"));
-            Debug.Log("response" + response[0]);
+            UnityEngine.Debug.Log("response" + response[0]);
             if (response[0] == "answer Z 1 ")
             {
                 ShowPopup("Error: bad request");
@@ -135,6 +140,8 @@ public class CreateTable : MonoBehaviour
                 MyGameManager.Instance.owner = MyGameManager.Instance.clientToken;
                 SceneManager.LoadScene("Table");
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -158,7 +165,7 @@ public class CreateTable : MonoBehaviour
         }
 
         this.tableName = name;
-        Debug.Log(this.tableName);
+        UnityEngine.Debug.Log(this.tableName);
     }
 
     public void ReadChips(string chips)
@@ -170,7 +177,7 @@ public class CreateTable : MonoBehaviour
         }
 
         this.chips = chips;
-        Debug.Log(this.chips);
+        UnityEngine.Debug.Log(this.chips);
     }
 
     public void ReadXP(string xp)
@@ -182,6 +189,6 @@ public class CreateTable : MonoBehaviour
         }
 
         this.xp = xp;
-        Debug.Log(this.xp);
+        UnityEngine.Debug.Log(this.xp);
     }
 }

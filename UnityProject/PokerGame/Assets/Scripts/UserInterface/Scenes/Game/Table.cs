@@ -17,10 +17,10 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
 using System.Text;
 
-// G³ówny ekran gry - widok stolika, kart i graczy
+// Gï¿½ï¿½wny ekran gry - widok stolika, kart i graczy
 public class Table : MonoBehaviour
 {
-    // Przyciski ruchów gracza (menu w lewym dolnym rogu ekranu)
+    // Przyciski ruchï¿½w gracza (menu w lewym dolnym rogu ekranu)
     [SerializeField] private Button checkButton;
     [SerializeField] private Button allInButton;
     [SerializeField] private Button passButton;
@@ -30,11 +30,11 @@ public class Table : MonoBehaviour
     // Dane pobrane z pola input 'Bid' (menu w lewym dolnym rogu ekranu)
     private string betFieldText;
 
-    // Wyœwietlanie informacji o g³ównym graczu
+    // Wyï¿½wietlanie informacji o gï¿½ï¿½wnym graczu
     /*
      * - Nick
-     * - Ile ma ¿etonów
-     * - Ile postawi³ ¿etonów w tym rozdaniu
+     * - Ile ma ï¿½etonï¿½w
+     * - Ile postawiï¿½ ï¿½etonï¿½w w tym rozdaniu
      * - Jego ikona (GameObject)
      * - Jego karty (GameObject'y)
      */
@@ -46,17 +46,17 @@ public class Table : MonoBehaviour
     [SerializeField] private GameObject InfoTurnPointer;
 
 
-    // Obiekt menu ruchów gracza, u¿ywamy go do chowania lub pokazywania tego menu
+    // Obiekt menu ruchï¿½w gracza, uï¿½ywamy go do chowania lub pokazywania tego menu
     [SerializeField]
     private CanvasRenderer menuCanvas;
 
-    // Lista sprite'ów kart, z której wybieramy odpowiedni
+    // Lista sprite'ï¿½w kart, z ktï¿½rej wybieramy odpowiedni
     // sprite do przypisania do GameObject'u karty gracza
     [SerializeField]
     private CardsSprites collection;
 
-    // Lista sprite'ów ¿etonów, z której wybieramy odpowiedni
-    // sprite, ¿eby zwizualizowaæ ¿etony
+    // Lista sprite'ï¿½w ï¿½etonï¿½w, z ktï¿½rej wybieramy odpowiedni
+    // sprite, ï¿½eby zwizualizowaï¿½ ï¿½etony
     [SerializeField]
     private ChipsSprites chipsSprites;
 
@@ -65,51 +65,51 @@ public class Table : MonoBehaviour
     [SerializeField] private Button nextHandButton;
     [SerializeField] private Button quitTableButton;
 
-    // tekst na górze ekranu która runda trwa
+    // tekst na gï¿½rze ekranu ktï¿½ra runda trwa
     [SerializeField] private TMP_Text InfoRound;
 
-    // Prze³¹cznik ustawiany na 'true', kiedy serwer przyœle do klienta zapytanie o wykonanie ruchu
+    // Przeï¿½ï¿½cznik ustawiany na 'true', kiedy serwer przyï¿½le do klienta zapytanie o wykonanie ruchu
     private bool readyToSendMove = false;
 
-    // Stan stolika, odebrany od serwera (wysy³a po ka¿dym ruchu kogokolwiek)
+    // Stan stolika, odebrany od serwera (wysyï¿½a po kaï¿½dym ruchu kogokolwiek)
     private GameTableState gameTableState;
-    // Stany wszystkich graczy, odebrane od serwera (wysy³a po ka¿dym ruchu kogokolwiek).
-    // S³ownik: klucz - Nick danego gracza (odczytywany z PlayerState), wartoœæ - PlayerState
+    // Stany wszystkich graczy, odebrane od serwera (wysyï¿½a po kaï¿½dym ruchu kogokolwiek).
+    // Sï¿½ownik: klucz - Nick danego gracza (odczytywany z PlayerState), wartoï¿½ï¿½ - PlayerState
     private IDictionary<string, PlayerState> playersStates;
     // informacja o numerze rundy odebrana z serwera
     private int round;
 
-    // informacje o b³êdach, komunikaty dla gracza
+    // informacje o bï¿½ï¿½dach, komunikaty dla gracza
     // m.in. komunikat o tym czyj ruch jest teraz
     public GameObject PopupWindow;
 
-    // GameObject'y na ekranie (update'ujemy je, ¿eby wyœwietla³y info z gry na ekranie)
-    // GameObject'y kart stolika (TYLKO te 5 kart, które le¿¹ na stoliku!)
+    // GameObject'y na ekranie (update'ujemy je, ï¿½eby wyï¿½wietlaï¿½y info z gry na ekranie)
+    // GameObject'y kart stolika (TYLKO te 5 kart, ktï¿½re leï¿½ï¿½ na stoliku!)
     private GameObject[] CardsObject;
-    // GameObject'y graczy (w nich s¹ te¿ GameObject'y ich kart)
+    // GameObject'y graczy (w nich sï¿½ teï¿½ GameObject'y ich kart)
     private GameObject[] Players
     {get; set;}
 
-    // Prze³¹czniki, które wykorzystujemy w Update'owaniu sceny, ¿eby wiedzieæ,
-    // kiedy mamy wyœwietliæ dany tekst informacyjny
+    // Przeï¿½ï¿½czniki, ktï¿½re wykorzystujemy w Update'owaniu sceny, ï¿½eby wiedzieï¿½,
+    // kiedy mamy wyï¿½wietliï¿½ dany tekst informacyjny
     bool displayPlayerTurnPopup = false;
     bool displayWinnerPopup = false;
 
-    // Nick zwyciêzcy gry, od serwera (wysy³a pod koniec gry)
+    // Nick zwyciï¿½zcy gry, od serwera (wysyï¿½a pod koniec gry)
     string winnerNick = null;
 
-    // Zmienne od komunikacji z serwerem na kanale od zapytañ MENU
+    // Zmienne od komunikacji z serwerem na kanale od zapytaï¿½ MENU
     bool gameStartedOnServer = false;
 
-    // Z kana³u GAME
+    // Z kanaï¿½u GAME
     bool isGameOn = false;
     bool showStartGameButton = true;
     bool resetScene = false;
 
-    // którego gracza ruch (nick)
+    // ktï¿½rego gracza ruch (nick)
     string whichPlayerTurn = null;
 
-    // odpowiedŸ od serwera, czy uda³o siê odejœæ od stolika
+    // odpowiedï¿½ od serwera, czy udaï¿½o siï¿½ odejï¿½ï¿½ od stolika
     bool leftTableSuccess = false;
     bool isChangingSettingsOnClick = false;
     bool isChangingSettings = false;
@@ -128,15 +128,15 @@ public class Table : MonoBehaviour
         if (MyGameManager.Instance.MainPlayer == null)
             return;
 
-        // Pierwszy update wyœwietlanego info g³ównego gracza
+        // Pierwszy update wyï¿½wietlanego info gï¿½ï¿½wnego gracza
         this.InfoMainPlayerName.text = MyGameManager.Instance.MainPlayer.Nick;
         this.InfoMainPlayerChips.text = Convert.ToString(MyGameManager.Instance.MainPlayer.TokensCount) + " $";
         this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(0) + " $";
 
-        //Pobranie GameObject'ów przygotowanych na graczy i na karty stolika ze sceny
-        //(Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojœciu kogoœ do stolika,
+        //Pobranie GameObject'ï¿½w przygotowanych na graczy i na karty stolika ze sceny
+        //(Graczy mamy na sztywno utworzonych na scenie, a nie spawn'owanych po dojï¿½ciu kogoï¿½ do stolika,
 
-        //wiêc tutaj pobieramy wszystkie te puste szablony przygotowane na wyœwietlanie informacji o danym graczu)
+        //wiï¿½c tutaj pobieramy wszystkie te puste szablony przygotowane na wyï¿½wietlanie informacji o danym graczu)
         this.Players = InitPlayers();
         this.CardsObject = GameObject.FindGameObjectsWithTag("Card");
         // posortowanie kart po ich numerkach
@@ -154,18 +154,18 @@ public class Table : MonoBehaviour
         }
         //TestHidingCards();
 
-        //Inicjalizacja stanu stolika i s³ownika stanów graczy w grze
+        //Inicjalizacja stanu stolika i sï¿½ownika stanï¿½w graczy w grze
         this.gameTableState = new GameTableState();
         this.playersStates = new Dictionary<string, PlayerState>();
         HideAllPlayers();
         // inicjalizacja numeru rundy
         this.round = -1;
 
-        // W³¹czenie osobnego w¹tku do komunikacji z serwerem na porcie od komunikatów z gry
-        // W tym w¹tku Unity nie pozwala zmieniaæ nic na ekranie - update'owaæ wygl¹d
-        // ekranu mo¿na tylko w w¹tku g³ównym, w którym dzia³a np. funkcja Start i Update
+        // Wï¿½ï¿½czenie osobnego wï¿½tku do komunikacji z serwerem na porcie od komunikatï¿½w z gry
+        // W tym wï¿½tku Unity nie pozwala zmieniaï¿½ nic na ekranie - update'owaï¿½ wyglï¿½d
+        // ekranu moï¿½na tylko w wï¿½tku gï¿½ï¿½wnym, w ktï¿½rym dziaï¿½a np. funkcja Start i Update
 
-        // TODO !!!!!!!!!!! dodaæ zamykanie tych w¹tków po wyjœciu z ekranu Table
+        // TODO !!!!!!!!!!! dodaï¿½ zamykanie tych wï¿½tkï¿½w po wyjï¿½ciu z ekranu Table
 
         this.serverCommunicationGame = new System.Threading.Thread(CommunicateWithServer);
         this.serverCommunicationGame.Start();
@@ -176,17 +176,17 @@ public class Table : MonoBehaviour
 
     public void CommunicateWithServer()
     {
-        // Pobranie strumienia do komunikacji z serwerem na porcie od zdarzeñ gry
-        // (w³¹czamy te ³¹cze obecnie w ekranie Login po udanym logowaniu) - TODO mo¿e przenieœæ to dopiero do tego ekranu?
+        // Pobranie strumienia do komunikacji z serwerem na porcie od zdarzeï¿½ gry
+        // (wï¿½ï¿½czamy te ï¿½ï¿½cze obecnie w ekranie Login po udanym logowaniu) - TODO moï¿½e przenieï¿½ï¿½ to dopiero do tego ekranu?
         NetworkStream gameStream = MyGameManager.Instance.gameServerConnection.stream;
         bool running = true;
 
-        /* Pêtla do odbierania komunikatów od serwera
-         * Tutaj odbierane s¹:
+        /* Pï¿½tla do odbierania komunikatï¿½w od serwera
+         * Tutaj odbierane sï¿½:
          * - zapytania od serwera o wykonanie ruchu przez gracza
          * - komunikaty od serwera z informacjami o stanie stolika i wszystkich graczy (w tym ich kartach)
-         * (TODO (PGGP-54) zmieniæ, ¿eby odbierane by³y tylko karty naszego gracza, a reszty tylko na koniec gry - ale to akurat na serwerze)
-         * - komunikaty od serwera czyj ruch i pod koniec gry, kto zwyciê¿y³
+         * (TODO (PGGP-54) zmieniï¿½, ï¿½eby odbierane byï¿½y tylko karty naszego gracza, a reszty tylko na koniec gry - ale to akurat na serwerze)
+         * - komunikaty od serwera czyj ruch i pod koniec gry, kto zwyciï¿½yï¿½
          */
         while (running)
         {
@@ -196,16 +196,16 @@ public class Table : MonoBehaviour
                 string gameRequest = NetworkHelper.ReadNetworkStream(gameStream);
                 gameStream.Flush();
 
-                /* Wiadomoœci o zdarzeniach z gry od serwera s¹ rozdzielane znacznikiem :G: (od Game)
-                 * i maj¹ postaæ Typ_wiadomoœci|Treœæ
-                 * Podczas przesy³ania wiadomoœci o stanie gry wysy³anych jest na raz kilka wiadomoœci:
-                 * (wszystkie zaczynaj¹ siê od znacznika :G:, wiêc w sumie to osobne wiadomoœci, ale to tak dla jasnoœci jak to dzia³a)
-                 * - wiadomoœæ typu "Round" (która to runda gry) TODO (cz. PGGP-44) dodaæ jej odbieranie tu i wyœwietlanie gdzieœ na górze ekranu numeru rundy
-                 * - wiadomoœæ typu "Table state"
-                 * - kilka wiadomoœci typu "Player state" (o stanie ka¿dego z graczy)
-                 * - wiadomoœæ typu "Which player turn"
+                /* Wiadomoï¿½ci o zdarzeniach z gry od serwera sï¿½ rozdzielane znacznikiem :G: (od Game)
+                 * i majï¿½ postaï¿½ Typ_wiadomoï¿½ci|Treï¿½ï¿½
+                 * Podczas przesyï¿½ania wiadomoï¿½ci o stanie gry wysyï¿½anych jest na raz kilka wiadomoï¿½ci:
+                 * (wszystkie zaczynajï¿½ siï¿½ od znacznika :G:, wiï¿½c w sumie to osobne wiadomoï¿½ci, ale to tak dla jasnoï¿½ci jak to dziaï¿½a)
+                 * - wiadomoï¿½ï¿½ typu "Round" (ktï¿½ra to runda gry) TODO (cz. PGGP-44) dodaï¿½ jej odbieranie tu i wyï¿½wietlanie gdzieï¿½ na gï¿½rze ekranu numeru rundy
+                 * - wiadomoï¿½ï¿½ typu "Table state"
+                 * - kilka wiadomoï¿½ci typu "Player state" (o stanie kaï¿½dego z graczy)
+                 * - wiadomoï¿½ï¿½ typu "Which player turn"
                  */
-                // TODO (cz. PGGP-44) dodaæ jeszcze odbieranie wiadomoœci typu 'Info' i wyœwietlanie takich komunikatów na ekranie
+                // TODO (cz. PGGP-44) dodaï¿½ jeszcze odbieranie wiadomoï¿½ci typu 'Info' i wyï¿½wietlanie takich komunikatï¿½w na ekranie
                 string[] splittedRequests = gameRequest.Split(new string(":G:"));
 
                 foreach (string singleRequest in splittedRequests)
@@ -226,27 +226,32 @@ public class Table : MonoBehaviour
                     }
                     else if (splitted[0] == "Table state") // komunikat stanu stolika
                     {
-                        this.gameTableState.UnpackGameState(splitted); // Treœæ wiadomoœci o stanie stolika ma jak¹œ strukturê, któr¹ odpakowuje ta metoda
+                        this.gameTableState.UnpackGameState(splitted); // Treï¿½ï¿½ wiadomoï¿½ci o stanie stolika ma jakï¿½ï¿½ strukturï¿½, ktï¿½rï¿½ odpakowuje ta metoda
                         Debug.Log(this.gameTableState);
                     }
-                    else if (splitted[0] == "Player state") // komunikat stanu któregoœ z graczy
+                    else if (splitted[0] == "Player state") // komunikat stanu ktï¿½regoï¿½ z graczy
                     {
                         PlayerState playerState = new PlayerState();
-                        playerState.UnpackGameState(splitted); // Treœæ wiadomoœci o stanie gracza ma jak¹œ strukturê, któr¹ odpakowuje ta metoda
+                        playerState.UnpackGameState(splitted); // Treï¿½ï¿½ wiadomoï¿½ci o stanie gracza ma jakï¿½ï¿½ strukturï¿½, ktï¿½rï¿½ odpakowuje ta metoda
                         Debug.Log(playerState);
                         this.playersStates[playerState.Nick] = playerState;
                         Debug.Log("Player state count: " + this.playersStates.Count);
                     }
-                    else if(splitted[0] == "Winner") // komunikat z Nick'iem zwyciêzcy
+                    else if(splitted[0] == "Winner") // komunikat z Nick'iem zwyciï¿½zcy
                     {
                         this.winnerNick = splitted[1];
+                        Debug.Log(this.winnerNick);
+                        if (this.winnerNick == MyGameManager.Instance.MainPlayer.Nick) {
+                            MyGameManager.Instance.MainPlayer.Xp += 100;
+                        }
                         this.displayWinnerPopup = true;
+                        ShowPopup("And the winner is: " + this.winnerNick + "!");
                     }
-                    else if(splitted[0] == "Status") // komunikaty o statusie gry (zaczê³a siê, skoñczy³a)
+                    else if(splitted[0] == "Status") // komunikaty o statusie gry (zaczï¿½a siï¿½, skoï¿½czyï¿½a)
                     {
                         if (splitted[1] == "Game started")
                         {
-                            playersStates.Clear(); // czyszczenie listy graczy na pocz¹tku ka¿dego rozdania
+                            playersStates.Clear(); // czyszczenie listy graczy na poczï¿½tku kaï¿½dego rozdania
                             this.isGameOn = true;
                             this.showStartGameButton = false;
                             this.resetScene = true;
@@ -265,11 +270,11 @@ public class Table : MonoBehaviour
                 running = false;
         }
 
-        // dodatkowo po wyjœciu czyszczenie strumienia od komunikatów z gry, ¿eby nie zosta³a na nim stara proœba o wykonanie ruchu
+        // dodatkowo po wyjï¿½ciu czyszczenie strumienia od komunikatï¿½w z gry, ï¿½eby nie zostaï¿½a na nim stara proï¿½ba o wykonanie ruchu
         gameStream.Flush();
     }
 
-    // analogiczna pêtla odbierania komunikatów od serwera jak CommunicateWithServer, tylko na porcie od zapytañ z Menu
+    // analogiczna pï¿½tla odbierania komunikatï¿½w od serwera jak CommunicateWithServer, tylko na porcie od zapytaï¿½ z Menu
     public void CommunicateWithServerOnMenu()
     {
         NetworkStream menuStream = MyGameManager.Instance.mainServerConnection.stream;
@@ -290,13 +295,13 @@ public class Table : MonoBehaviour
                 {
                     Debug.Log(singleRequest);
 
-                    if (singleRequest == null || singleRequest == "") // pomiñ pusty
+                    if (singleRequest == null || singleRequest == "") // pomiï¿½ pusty
                         continue;
 
                     string[] splitted = singleRequest.Split(new string(" "));
 
-                    // przed pierwsz¹ spacj¹ jest pusty element, dlatego od indeksu 1 jedziemy
-                    if (splitted[1] == "4") // odpowiedŸ na zapytanie o odejœcie od stolika
+                    // przed pierwszï¿½ spacjï¿½ jest pusty element, dlatego od indeksu 1 jedziemy
+                    if (splitted[1] == "4") // odpowiedï¿½ na zapytanie o odejï¿½cie od stolika
                     {
                         if (splitted[2] == "0") // OK
                             this.leftTableSuccess = true;
@@ -311,8 +316,8 @@ public class Table : MonoBehaviour
         }
     }
 
-    // Przestawiene prze³¹cznika, ¿eby metoda Update w g³ównym w¹tku wiedzia³a, ¿e ma pokazaæ Popup
-    // (inne w¹tki ni¿ g³ówny nie mog¹ zmieniaæ wygl¹du sceny w Unity)
+    // Przestawiene przeï¿½ï¿½cznika, ï¿½eby metoda Update w gï¿½ï¿½wnym wï¿½tku wiedziaï¿½a, ï¿½e ma pokazaï¿½ Popup
+    // (inne wï¿½tki niï¿½ gï¿½ï¿½wny nie mogï¿½ zmieniaï¿½ wyglï¿½du sceny w Unity)
     void CommunicatePlayersTurn(string currentPlayer)
     {
         if (currentPlayer == MyGameManager.Instance.MainPlayer.Nick)
@@ -321,9 +326,9 @@ public class Table : MonoBehaviour
         }
     }
 
-    // Kiedy przyjdzie zapytanie od serwera o ruch gracza, ustawiamy prze³¹cznik,
-    // ¿e gracz mo¿e teraz wys³aæ jeden ruch (prze³¹cznik siê przestawia ponownie na 'false'
-    // w trakcie wysy³ania ruchu przez gracza (po klikniêciu przez niego któregoœ z przycisków od ruchów)
+    // Kiedy przyjdzie zapytanie od serwera o ruch gracza, ustawiamy przeï¿½ï¿½cznik,
+    // ï¿½e gracz moï¿½e teraz wysï¿½aï¿½ jeden ruch (przeï¿½ï¿½cznik siï¿½ przestawia ponownie na 'false'
+    // w trakcie wysyï¿½ania ruchu przez gracza (po klikniï¿½ciu przez niego ktï¿½regoï¿½ z przyciskï¿½w od ruchï¿½w)
     void MoveRequestResponse(string[] splitted)
     {
         Debug.Log(splitted[0]);
@@ -338,7 +343,7 @@ public class Table : MonoBehaviour
         if(isGameOn == true)
             ShowChipsBidInGame(amount);
     }
-    //Usuwanie ¿etonów ze œrodka 
+    //Usuwanie ï¿½etonï¿½w ze ï¿½rodka 
     void DeleteChipsBitInGame()
     {
         GameObject chips = GameObject.FindGameObjectWithTag("Chips");
@@ -352,7 +357,7 @@ public class Table : MonoBehaviour
         GameObject chipsText = chips.transform.Find("Bet/BetText").gameObject;
         chipsText.GetComponent<TMP_Text>().enabled = false;
     }
-    //Utworzenie GameObject pojedynczego ¿etonu i przypisanie mu sprite'a oraz pozycji
+    //Utworzenie GameObject pojedynczego ï¿½etonu i przypisanie mu sprite'a oraz pozycji
     void CreateChip(GameObject chipsContainer, Vector3 position, Sprite chipSprite)
     {
         GameObject chipsCanvas = GameObject.FindGameObjectWithTag("Chips");
@@ -444,7 +449,7 @@ public class Table : MonoBehaviour
         }
     }
     // Testowanie pokazywania i ukrywania odpowiednich kart u graczy
-    // oraz chowania i pokazywania tak¿e graczy
+    // oraz chowania i pokazywania takï¿½e graczy
     //
     public void TestHidingCards()
     {
@@ -536,8 +541,8 @@ public class Table : MonoBehaviour
         return Players;
     }
 
-    // Metody od pokazywania i chowania kart, graczy i menu ruchów
-    // TODO przenieœæ to do jakiejœ osobnej klasy?
+    // Metody od pokazywania i chowania kart, graczy i menu ruchï¿½w
+    // TODO przenieï¿½ï¿½ to do jakiejï¿½ osobnej klasy?
 
     //Funkcja pomocnicza dla GraphicPass
     void ChangingPlayerVisibility(bool makeInvisible, GameObject avatar, GameObject nick, GameObject bet)
@@ -633,7 +638,7 @@ public class Table : MonoBehaviour
                 this.InfoMainPlayerName.text = player.Nick;
                 this.InfoMainPlayerChips.text = Convert.ToString(player.TokensCount) + " $";
                 this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(player.CurrentBet) + " $";
-                this.ShowMainPlayerCards(state.Value.Hand); // karty g³ównego gracza
+                this.ShowMainPlayerCards(state.Value.Hand); // karty gï¿½ï¿½wnego gracza
                 mainPlayerSeat = player.SeatNr;
                 players.Add(player);
                 if (player.LastMove == "0")
@@ -686,7 +691,7 @@ public class Table : MonoBehaviour
             this.ShowPlayerOnTable(i, state.Nick);
             this.ChangePlayerBet(state.CurrentBet, i);
             this.ChangePlayerMoney(state.TokensCount, i);
-            this.ShowPlayerCards(i, state.Hand); // karty wspó³graczy
+            this.ShowPlayerCards(i, state.Hand); // karty wspï¿½graczy
             if (state.LastMove == "0")
                 this.GraphicPass(true, false, i);
             else
@@ -699,7 +704,7 @@ public class Table : MonoBehaviour
             this.ShowPlayerOnTable(i, state.Nick);
             this.ChangePlayerBet(state.CurrentBet, i);
             this.ChangePlayerMoney(state.TokensCount, i);
-            this.ShowPlayerCards(i, state.Hand); // karty wspó³graczy
+            this.ShowPlayerCards(i, state.Hand); // karty wspï¿½graczy
             if (state.LastMove == "0")
                 this.GraphicPass(true, false, i);
             else
@@ -810,7 +815,7 @@ public class Table : MonoBehaviour
             menuCanvas.transform.localScale = Vector3.zero;
     }
     
-    // Aktualizacja info danego gracza o jego zak³adzie i ile mu zosta³o ¿etonów
+    // Aktualizacja info danego gracza o jego zakï¿½adzie i ile mu zostaï¿½o ï¿½etonï¿½w
     public void ChangePlayerBet(int amount, int seatNumber)
     {
         GameObject bet = Players[seatNumber].transform.Find("Informations/Bet/BetText").gameObject;
@@ -900,41 +905,41 @@ public class Table : MonoBehaviour
             this.resetScene = false;
         }
 
-        // Pêtla po wszystkich graczach, ¿eby zaktualizowaæ ich wyœwietlane informacje
-        // (na razie tylko o zak³adach i posiadanych ¿etonach)
-        // TODO dodaæ tu aktualizowanie wyœwietlania kart na stoliku i u graczy
+        // Pï¿½tla po wszystkich graczach, ï¿½eby zaktualizowaï¿½ ich wyï¿½wietlane informacje
+        // (na razie tylko o zakï¿½adach i posiadanych ï¿½etonach)
+        // TODO dodaï¿½ tu aktualizowanie wyï¿½wietlania kart na stoliku i u graczy
         setPlayersOnTable(this.playersStates);
 
         //foreach (KeyValuePair<string, PlayerState> state in this.playersStates)
         //{
         //    PlayerState playerState = state.Value;
 
-        //    // Jeœli to g³ówny gracz, to mamy od tego osobne zmienne
-        //    // TODO mo¿na by to zmieniæ, ale nwm, mo¿e tak w sumie wygodniej?
+        //    // Jeï¿½li to gï¿½ï¿½wny gracz, to mamy od tego osobne zmienne
+        //    // TODO moï¿½na by to zmieniï¿½, ale nwm, moï¿½e tak w sumie wygodniej?
         //    if (playerState.Nick == MyGameManager.Instance.MainPlayer.Nick)
         //    {
         //        this.InfoMainPlayerName.text = playerState.Nick;
         //        this.InfoMainPlayerChips.text = Convert.ToString(playerState.TokensCount) + " $";
         //        this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(playerState.CurrentBet) + " $";
-        //        this.ShowMainPlayerCards(playerState.Hand); // karty g³ównego gracza
+        //        this.ShowMainPlayerCards(playerState.Hand); // karty gï¿½ï¿½wnego gracza
         //        continue;
         //    }
 
         //    this.ShowPlayerOnTable(i, playerState.Nick);
         //    this.ChangePlayerBet(playerState.CurrentBet, i);
         //    this.ChangePlayerMoney(playerState.TokensCount, i);
-        //    this.ShowPlayerCards(i, playerState.Hand); // karty wspó³graczy
+        //    this.ShowPlayerCards(i, playerState.Hand); // karty wspï¿½graczy
         //    i++;
         //}
 
-        // Wyœwietlanie kart na stoliku
+        // Wyï¿½wietlanie kart na stoliku
         if (this.gameTableState.Cards != null)
         {
             for (int j = 0; j < this.gameTableState.Cards.Cards.Count; j++)
                 ShowCardOnDeck(this.gameTableState.Cards.Cards[j], j);
 
-            //  Ustawianie pozosta³ych kart ty³em do góry - ¿eby mieæ pewnoœæ, ¿e nie wyœwietlamy jakiejœ starej karty,
-            // jeœli wczeœniej np. mieliœmy 4 karty, a teraz mamy 3 i nigdzie nie ukryliœmy tej czwartej
+            //  Ustawianie pozostaï¿½ych kart tyï¿½em do gï¿½ry - ï¿½eby mieï¿½ pewnoï¿½ï¿½, ï¿½e nie wyï¿½wietlamy jakiejï¿½ starej karty,
+            // jeï¿½li wczeï¿½niej np. mieliï¿½my 4 karty, a teraz mamy 3 i nigdzie nie ukryliï¿½my tej czwartej
             int cardsOnTableLeft = CardsObject.Length - this.gameTableState.Cards.Cards.Count;
             for (int k = 0; k < cardsOnTableLeft; k++)
                 HideCard(CardsObject[this.gameTableState.Cards.Cards.Count + k]);
@@ -947,7 +952,7 @@ public class Table : MonoBehaviour
         else
             UpdateChipsBidInGame(this.gameTableState.TokensInGame);
 
-        // Updatowanie tekstu na górze ekranu z numerem rundy
+        // Updatowanie tekstu na gï¿½rze ekranu z numerem rundy
         this.UpdateRoundInfo(this.round);
 
         // Pokazywanie czyj ruch
@@ -966,7 +971,7 @@ public class Table : MonoBehaviour
         if (this.whichPlayerTurn == this.InfoMainPlayerName.text)
             this.InfoTurnPointer.transform.localScale = Vector3.one;
 
-        // Wyœwietlanie Popupu o kolejnoœci ruchu
+        // Wyï¿½wietlanie Popupu o kolejnoï¿½ci ruchu
         if (this.displayPlayerTurnPopup && PopupWindow)
         {
             ShowMenu(true);
@@ -977,13 +982,14 @@ public class Table : MonoBehaviour
             this.displayPlayerTurnPopup = false;
         }
 
-        // Wyœwietlanie Popupu o zwyciêzcy gry
+        // Wyï¿½wietlanie Popupu o zwyciï¿½zcy gry
         if (this.displayWinnerPopup && PopupWindow)
         {
             Vector3 position = new Vector3(625.0f, 700.0f, 0.0f);
             var popup = Instantiate(PopupWindow, position, Quaternion.identity, transform);
             popup.GetComponent<TextMeshProUGUI>().text = "And the winner is:\n" + this.winnerNick + "\nCongrats!";
             popup.GetComponent<TextMeshProUGUI>().color = new Color32(255, 255, 255, 255);
+            Thread.Sleep(3000);
             this.displayWinnerPopup = false;
         }
 
@@ -1014,12 +1020,12 @@ public class Table : MonoBehaviour
             this.quitTableButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
         }
         
-        // sprawdzanie, czy na klikniêcie przycisku 'quit table' dostaliœmy odpowiedŸ OK
-        // i wyjœcie, jeœli tak
+        // sprawdzanie, czy na klikniï¿½cie przycisku 'quit table' dostaliï¿½my odpowiedï¿½ OK
+        // i wyjï¿½cie, jeï¿½li tak
         if (this.leftTableSuccess)
         {
             this.leftTableSuccess = false;
-            // wy³¹czenie w¹tków od komunikacji z serwerem w ekranie Table
+            // wyï¿½ï¿½czenie wï¿½tkï¿½w od komunikacji z serwerem w ekranie Table
             this.serverCommunicationMenu.Join();
             this.serverCommunicationGame.Join();
 
@@ -1028,7 +1034,7 @@ public class Table : MonoBehaviour
         else if(this.isChangingSettings){
             this.isChangingSettings = false;
             this.isChangingSettingsOnClick = false;
-            // wy³¹czenie w¹tków od komunikacji z serwerem w ekranie Table
+            // wyï¿½ï¿½czenie wï¿½tkï¿½w od komunikacji z serwerem w ekranie Table
             this.serverCommunicationMenu.Join();
             this.serverCommunicationGame.Join();
 
@@ -1049,9 +1055,9 @@ public class Table : MonoBehaviour
         Debug.Log(this.betFieldText);
     }
 
-    // Obs³uga przycisków z menu ruchów,
-    // wysy³anie odpowiednich zapytañ do serwera w ka¿dym z nich
-    // TODO wysy³anie ¿¹dañ mo¿na ewentualnie przenieœæ do osobnej klasy
+    // Obsï¿½uga przyciskï¿½w z menu ruchï¿½w,
+    // wysyï¿½anie odpowiednich zapytaï¿½ do serwera w kaï¿½dym z nich
+    // TODO wysyï¿½anie ï¿½ï¿½daï¿½ moï¿½na ewentualnie przenieï¿½ï¿½ do osobnej klasy
     public void OnCheckButton()
     {
         Debug.Log("Check");
@@ -1085,7 +1091,7 @@ public class Table : MonoBehaviour
             ShowMenu(false);
         }
     }
-    // TODO (cz. PGGP-106) dodaæ sprawdzanie, czy podaliœmy jakiœ zak³ad w polu input 'Bid' i czy to liczba,
+    // TODO (cz. PGGP-106) dodaï¿½ sprawdzanie, czy podaliï¿½my jakiï¿½ zakï¿½ad w polu input 'Bid' i czy to liczba,
     // bo aktualnie podajemy po prostu string
     public void OnBidButton()
     {
@@ -1099,8 +1105,8 @@ public class Table : MonoBehaviour
         }
     }
 
-    // Wysy³anie zapytania do serwera o rozpoczêcie gry
-    // TODO mo¿e przenieœæ kiedyœ do osobnej klasy
+    // Wysyï¿½anie zapytania do serwera o rozpoczï¿½cie gry
+    // TODO moï¿½e przenieï¿½ï¿½ kiedyï¿½ do osobnej klasy
     public void onStartGameButton()
     {
         string token = MyGameManager.Instance.clientToken;
@@ -1136,7 +1142,7 @@ public class Table : MonoBehaviour
     public void onNextGameButton()
     {
         NetworkHelper.WriteNetworkStream(MyGameManager.Instance.gameServerConnection.stream, "100 ");
-         // na kanale od wiadomoœci z gry, kiedy chcemy kolejn¹ turê gry
+         // na kanale od wiadomoï¿½ci z gry, kiedy chcemy kolejnï¿½ turï¿½ gry
         MyGameManager.Instance.gameServerConnection.stream.Flush();
     }
 
@@ -1179,11 +1185,11 @@ public class Table : MonoBehaviour
     {
         isChangingSettingsOnClick = true;
         
-        // TODO dodaæ nie wpuszczanie do tego ekranu, jeœli nie siedzimy przy ¿adnym stoliku i odpowiedni Popup z info
+        // TODO dodaï¿½ nie wpuszczanie do tego ekranu, jeï¿½li nie siedzimy przy ï¿½adnym stoliku i odpowiedni Popup z info
         //SceneManager.LoadScene("TableSettings");
     }
 
-    // TODO jeœli dodamy tak¹ metodê do PopupText, wyrzuciæ
+    // TODO jeï¿½li dodamy takï¿½ metodï¿½ do PopupText, wyrzuciï¿½
     void ShowPopup(string text)
     {
         var popup = Instantiate(PopupWindow, transform.position, Quaternion.identity, transform);

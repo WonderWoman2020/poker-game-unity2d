@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Diagnostics;
 
 using PokerGameClasses;
 using pGrServer;
@@ -13,11 +14,11 @@ using System.Threading;
 using System.Net.NetworkInformation;
 using System.Text;
 
-/* Menu opcji jakie dzia³anie w grze chcemy podj¹æ
- * - stworzyæ stolik
- * - wybraæ i do³¹czyæ do stolika
- * - kupiæ ¿etony (na razie kupuje zahardkowan¹ wartoœæ 1000 ¿etonów) - TODO (cz. PGGP-107) poprawiæ to (ekran do podawania liczby ¿etonów do kupienia czy coœ)
- * - zmieniæ ustawienia naszego stolika/rozgrywki (na razie nie mamy) - TODO (cz. PGGP-107) dodaæ taki ekran i pod³¹czyæ tak¹ logikê
+/* Menu opcji jakie dziaï¿½anie w grze chcemy podjï¿½ï¿½
+ * - stworzyï¿½ stolik
+ * - wybraï¿½ i doï¿½ï¿½czyï¿½ do stolika
+ * - kupiï¿½ ï¿½etony (na razie kupuje zahardkowanï¿½ wartoï¿½ï¿½ 1000 ï¿½etonï¿½w) - TODO (cz. PGGP-107) poprawiï¿½ to (ekran do podawania liczby ï¿½etonï¿½w do kupienia czy coï¿½)
+ * - zmieniï¿½ ustawienia naszego stolika/rozgrywki (na razie nie mamy) - TODO (cz. PGGP-107) dodaï¿½ taki ekran i podï¿½ï¿½czyï¿½ takï¿½ logikï¿½
  */
 public class PlayMenu : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class PlayMenu : MonoBehaviour
     [SerializeField] private Button createTableButton;
     [SerializeField] private Button getChipsButton;
 
-    // Informacje o graczu wyœwietlane na ekranie obok menu
+    // Informacje o graczu wyï¿½wietlane na ekranie obok menu
     [SerializeField] private TMP_Text InfoPlayerNick;
     [SerializeField] private TMP_Text InfoPlayerChips;
     [SerializeField] private TMP_Text InfoPlayerXP;
@@ -43,17 +44,19 @@ public class PlayMenu : MonoBehaviour
         
     }
 
-    // TODO dodaæ kiedyœ do osobnej klasy
+    // TODO dodaï¿½ kiedyï¿½ do osobnej klasy
     public void loadTables()
     {
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
         byte[] request = System.Text.Encoding.ASCII.GetBytes(MyGameManager.Instance.clientToken + ' ' + "2");
         mainServer.stream.Write(request, 0, request.Length);
         MyGameManager.Instance.mainServerConnection.stream.Flush();
+        
         Thread.Sleep(1000);
+
         if(mainServer.stream.DataAvailable)
         {
-            // Usuñ poprzednio za³adowane stoliki
+            // Usuï¿½ poprzednio zaï¿½adowane stoliki
             MyGameManager.Instance.GameTableList.Clear();
             byte[] readBuf = new byte[4096];
             StringBuilder menuRequestStr = new StringBuilder();
@@ -69,7 +72,7 @@ public class PlayMenu : MonoBehaviour
         }
     }
 
-    // TODO dodaæ kiedyœ do osobnej klasy
+    // TODO dodaï¿½ kiedyï¿½ do osobnej klasy
     public void parseTableData(string serverResponse)
     {
         string[] data = serverResponse.Split(' ');
@@ -97,10 +100,10 @@ public class PlayMenu : MonoBehaviour
 
     public void OnJoinTableButton()
     {
-        // TODO (cz. PGGP-69) zrobiæ tak, ¿eby klient co jakiœ czas (np. 10s)
-        // automatycznie wysy³a³ proœbê o aktualizacjê stolików,
-        // a ten przycisk tylko przenosi³ do kolejnego ekranu
-        // (bo czekanie na odpowiedŸ serwera zamula dzia³anie GUI)
+        // TODO (cz. PGGP-69) zrobiï¿½ tak, ï¿½eby klient co jakiï¿½ czas (np. 10s)
+        // automatycznie wysyï¿½aï¿½ proï¿½bï¿½ o aktualizacjï¿½ stolikï¿½w,
+        // a ten przycisk tylko przenosiï¿½ do kolejnego ekranu
+        // (bo czekanie na odpowiedï¿½ serwera zamula dziaï¿½anie GUI)
         loadTables();
         SceneManager.LoadScene("JoinTable");
     }

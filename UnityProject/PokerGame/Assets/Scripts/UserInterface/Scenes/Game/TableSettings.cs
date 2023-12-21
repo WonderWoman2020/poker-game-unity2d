@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -33,7 +34,7 @@ public class TableSettings : MonoBehaviour
 
     private GameMode chosenMode;
 
-    // TODO w stoliku jest jeszcze ustawienie min XP - mo¿na potem te¿ dodaæ do tego input
+    // TODO w stoliku jest jeszcze ustawienie min XP - moï¿½na potem teï¿½ dodaï¿½ do tego input
 
     // Start is called before the first frame update
     void Start()
@@ -65,9 +66,13 @@ public class TableSettings : MonoBehaviour
         byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "5" + ' ' + mode.ToString() + ' ' + this.numberOfBots + ' ' + this.minXp + ' ' + this.minTokens + ' ' + this.bigBlind + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
-        Thread.Sleep(100);
 
-        // odbierz odpowiedŸ
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
+        // odbierz odpowiedï¿½
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -105,6 +110,8 @@ public class TableSettings : MonoBehaviour
             {
                 SceneManager.LoadScene("Table");
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -122,7 +129,7 @@ public class TableSettings : MonoBehaviour
         }
 
         this.bigBlind = bigBlind;
-        Debug.Log(this.bigBlind);
+        UnityEngine.Debug.Log(this.bigBlind);
     }
 
     public void ReadMinTokens(string minTokens)
@@ -134,7 +141,7 @@ public class TableSettings : MonoBehaviour
         }
 
         this.minTokens = minTokens;
-        Debug.Log(this.minTokens);
+        UnityEngine.Debug.Log(this.minTokens);
     }
 
     public void ReadMinXp(string minXp)
@@ -146,7 +153,7 @@ public class TableSettings : MonoBehaviour
         }
 
         this.minXp = minXp;
-        Debug.Log(this.minXp);
+        UnityEngine.Debug.Log(this.minXp);
     }
 
     void ShowPopup(string text)

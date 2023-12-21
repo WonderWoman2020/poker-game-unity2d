@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -21,6 +22,8 @@ public class DeleteAccount : MonoBehaviour
 
     public GameObject PopupWindow;
 
+    private string password;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,10 +42,14 @@ public class DeleteAccount : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + passwordField + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "A" + ' ' + this.password + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
         // odbierz odpowied�
         if (mainServer.stream.DataAvailable)
         {
@@ -60,6 +67,7 @@ public class DeleteAccount : MonoBehaviour
             else if (response[0] == "answer A 0 ")
             {
                 ShowPopup("Account deleted successfuly!");
+                MyGameManager.Instance.MainPlayer = null;
                 SceneManager.LoadScene("MainMenu");
             }
             else if (response[0] == "answer A 1 ")
@@ -82,6 +90,8 @@ public class DeleteAccount : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -92,6 +102,18 @@ public class DeleteAccount : MonoBehaviour
     public void OnBackButton()
     {
         SceneManager.LoadScene("SettingsMenu");
+    }
+
+    public void ReadPassword(string password)
+    {
+        if (password.Length == 0)
+        {
+            this.password = null;
+            return;
+        }
+
+        this.password = password;
+        UnityEngine.Debug.Log(this.password);
     }
 
     void ShowPopup(string text)

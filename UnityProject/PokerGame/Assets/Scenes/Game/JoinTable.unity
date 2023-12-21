@@ -808,7 +808,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000045776367, y: 0.000015258789}
+  m_AnchoredPosition: {x: 0.000061035156, y: 0.000030517578}
   m_SizeDelta: {x: 0, y: -233.9677}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &656713636
@@ -1752,7 +1752,6 @@ MonoBehaviour:
   tablesContainer: {fileID: 1501684203193624322, guid: 67140e1509e1b0d45809e6d02cb30ca2, type: 3}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
   InfoPlayersCount: {fileID: 1724757956}
-  InfoBotsCount: {fileID: 0}
   InfoMinChips: {fileID: 1896503753}
   InfoMinXP: {fileID: 104125720}
 --- !u!1 &1136834602
@@ -1904,7 +1903,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '  Chips:'
+  m_text: '  Big blind:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
@@ -1931,7 +1930,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 37.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

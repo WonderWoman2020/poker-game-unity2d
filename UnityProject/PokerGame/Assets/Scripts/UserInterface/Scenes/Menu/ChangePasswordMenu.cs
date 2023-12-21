@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -51,14 +52,22 @@ public class ChangePasswordMenu : MonoBehaviour
 
     public void OnChangePasswordButton()
     {
+        if (this.newPassword != this.confirmPassword) {
+            ShowPopup("New password and password confirmation need to match");
+            return;
+        }
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "9" + ' ' + this.newPassword + ' ' + this.confirmPassword + ' ' );
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "9" + ' ' + this.currentPassword + ' ' + this.newPassword + ' ' + this.confirmPassword + ' ' );
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedü
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+        // odbierz odpowiedÔøΩ
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -79,7 +88,7 @@ public class ChangePasswordMenu : MonoBehaviour
             }
             else if (response[0] == "answer 9 1 ")
             {
-                ShowPopup("New password and password confirmations need to match!");
+                ShowPopup("New password and password confirmation need to match!");
                 return;
             }
             else if (response[0] == "answer 9 2 ")
@@ -97,6 +106,8 @@ public class ChangePasswordMenu : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -114,7 +125,7 @@ public class ChangePasswordMenu : MonoBehaviour
         }
 
         this.currentPassword = currentPswd;
-        Debug.Log(this.currentPassword);
+        UnityEngine.Debug.Log(this.currentPassword);
     }
 
     public void ReadNewPassword(string newPswd)
@@ -126,7 +137,7 @@ public class ChangePasswordMenu : MonoBehaviour
         }
 
         this.newPassword = newPswd;
-        Debug.Log(this.newPassword);
+        UnityEngine.Debug.Log(this.newPassword);
     }
 
     public void ReadConfirmPassword(string confirmPswd)
@@ -138,7 +149,7 @@ public class ChangePasswordMenu : MonoBehaviour
         }
 
         this.confirmPassword = confirmPswd;
-        Debug.Log(this.confirmPassword);
+        UnityEngine.Debug.Log(this.confirmPassword);
     }
 
     void ShowPopup(string text)

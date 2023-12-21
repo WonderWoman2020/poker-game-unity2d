@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Diagnostics;
 
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -24,6 +25,7 @@ public class ChangeNameMenu : MonoBehaviour
     public GameObject PopupWindow;
 
     private string newName;
+    private string password;
 
     // Start is called before the first frame update
     void Start()
@@ -43,11 +45,16 @@ public class ChangeNameMenu : MonoBehaviour
         TcpConnection mainServer = MyGameManager.Instance.mainServerConnection;
 
         string token = MyGameManager.Instance.clientToken;
-        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "8" + ' ' + this.newName + ' ');
+        byte[] toSend = System.Text.Encoding.ASCII.GetBytes(token + ' ' + "8" + ' ' + this.newName + ' ' + this.password + ' ');
         mainServer.stream.Write(toSend, 0, toSend.Length);
         mainServer.stream.Flush();
 
-        // odbierz odpowiedü
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
+        stopwatch.Stop();
+
+        // odbierz odpowiedÔøΩ
         if (mainServer.stream.DataAvailable)
         {
             byte[] readBuf = new byte[4096];
@@ -64,11 +71,12 @@ public class ChangeNameMenu : MonoBehaviour
             else if (response[0] == "answer 8 0 ")
             {
                 ShowPopup("Nick changed successfuly!");
+                MyGameManager.Instance.MainPlayer.Nick = this.newName;
                 return;
             }
             else if (response[0] == "answer 8 1 ")
             {
-                ShowPopup("Something unexpected happened! Check if your input is correct and try again");
+                ShowPopup("This nick is already in use. Try a different one");
                 return;
             }
             else if (response[0] == "answer 8 2 ")
@@ -78,11 +86,6 @@ public class ChangeNameMenu : MonoBehaviour
             }
             else if (response[0] == "answer 8 3 ")
             {
-                ShowPopup("Couldn't finish the request");
-                return;
-            }
-            else if (response[0] == "answer 8 4 ")
-            {
                 ShowPopup("An error with the database occured, please try again later");
                 return;
             }
@@ -91,6 +94,8 @@ public class ChangeNameMenu : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
+        } else {
+            ShowPopup("Couldn't get a response from the server, please try again later");
         }
     }
 
@@ -109,7 +114,19 @@ public class ChangeNameMenu : MonoBehaviour
         }
 
         this.newName = newName;
-        Debug.Log(this.newName);
+        UnityEngine.Debug.Log(this.newName);
+    }
+
+    public void ReadPassword(string password)
+    {
+        if (password.Length == 0)
+        {
+            this.password = null;
+            return;
+        }
+
+        this.password = password;
+        UnityEngine.Debug.Log(this.password);
     }
 
 
