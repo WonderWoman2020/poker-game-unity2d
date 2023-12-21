@@ -305,6 +305,18 @@ public class Table : MonoBehaviour
                         if (splitted[2] == "0") // OK
                             this.leftTableSuccess = true;
                     }
+                    else if (splitted[1] == "add") {
+                        Debug.Log("Added player" + splitted[2]);
+                        string nick = splitted[2];
+                        int tokens = Int32.Parse(splitted[3]);
+                        int xp = Int32.Parse(splitted[4]);
+                        int seat = Int32.Parse(splitted[5]);
+                        PlayerState newPlayer = new PlayerState(nick,null,tokens,0,xp,seat);
+                        this.playersStates[newPlayer.Nick] = newPlayer;
+                    }
+                    else if (splitted[1] == "rem") {
+                        this.playersStates.Remove(splitted[2]);
+                    }
                 }
                 
             }
