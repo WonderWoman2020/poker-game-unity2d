@@ -380,10 +380,17 @@ namespace pGrServer
                                 Player client = loggedClients[token];
                                 if (client.Table != null && client.Table.alreadyHasGameThread == false) // nie rozpoczynamy nowego wątky gry dla stolika, który już ma taki wątek
                                 {
-                                    Thread gameThread = new Thread(() => Game(client.Table));
-                                    allGameThreads.Add(gameThread);
-                                    gameThread.Start();
-                                    answer = System.Text.Encoding.ASCII.GetBytes("answer 6 0 "); // odpowiedź OK
+                                    if(client.Table.GetPlayerCount() > 1)
+                                    {
+                                        Thread gameThread = new Thread(() => Game(client.Table));
+                                        allGameThreads.Add(gameThread);
+                                        gameThread.Start();
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 6 0 "); // odpowiedź OK
+                                    }
+                                    else
+                                    {
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 6 1 "); // odpowiedź Failed
+                                    }
                                 }
                                 else
                                 {
@@ -917,7 +924,7 @@ namespace pGrServer
                 GameTable tmp = player.Table;
                 tmp.Remove(player.Nick);
                 player.Table = null;
-                if (tmp.GetPlayerTypeCount(PlayerType.Human) == 0)
+                if (tmp.GetPlayerCount() == 0)
                 {
                     openTables.Remove(tmp);
                 }
@@ -958,7 +965,7 @@ namespace pGrServer
             while (true)
             {
                 // zakończ wątek, jeśli nie ma już ludzkich graczy przy tym stoliku
-                if (table.GetPlayerTypeCount(PlayerType.Human) == 0)
+                if (table.GetPlayerCount() < 2)
                 {
                     table.alreadyHasGameThread = false;
                     return;
