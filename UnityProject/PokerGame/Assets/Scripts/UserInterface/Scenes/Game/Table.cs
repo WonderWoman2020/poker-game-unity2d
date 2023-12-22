@@ -656,6 +656,7 @@ public class Table : MonoBehaviour
             {
                 this.InfoMainPlayerName.text = player.Nick;
                 this.InfoMainPlayerChips.text = Convert.ToString(player.TokensCount) + " $";
+                MyGameManager.Instance.MainPlayer.TokensCount = player.TokensCount;
                 this.InfoMainPlayerBid.text = "Bet\n" + Convert.ToString(player.CurrentBet) + " $";
                 this.ShowMainPlayerCards(state.Value.Hand); // karty g��wnego gracza
                 mainPlayerSeat = player.SeatNr;
@@ -849,6 +850,7 @@ public class Table : MonoBehaviour
         if (money != null)
         {
             money.GetComponent<TMP_Text>().text = amount.ToString() +" $";
+            
         }
     }
 
