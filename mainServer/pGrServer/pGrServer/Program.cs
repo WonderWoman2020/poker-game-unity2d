@@ -400,10 +400,6 @@ namespace pGrServer
 
                                             }
                                         }
-                                        else if (!client.Table.isGameActive)
-                                        {
-
-                                        }
                                         else
                                         {
                                             answear = System.Text.Encoding.ASCII.GetBytes("answer 5 2 ");
