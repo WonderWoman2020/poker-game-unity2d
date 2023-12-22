@@ -26,6 +26,7 @@ namespace pGrServer
         public static Mutex loggedClientsAccess;
         public static Mutex file6937Access;
         public static Mutex file6938Access;
+        public static Mutex removeAddplayer;
 
         public static TcpListener loginListener;
         public static TcpListener gameListener;
@@ -251,9 +252,11 @@ namespace pGrServer
                                         if (found)
                                         {
                                             //jesli udalo sie dodac gracza do stołu
+                                            removeAddplayer.WaitOne();
                                             bool git = table.AddPlayer(player);
                                             if (git)
                                             {
+                                                
                                                 player.Table = table;
                                                 answer = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
                                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
@@ -282,6 +285,7 @@ namespace pGrServer
                                                 answer = System.Text.Encoding.ASCII.GetBytes("answer 1 3 "); // odpowiedź FAILED
                                                 player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                             }
+                                            removeAddplayer.ReleaseMutex();
                                         }
                                         else
                                         {
@@ -358,6 +362,7 @@ namespace pGrServer
                                 {
                                     if (!player.Table.isGameActive)
                                     {
+                                        removeAddplayer.WaitOne();
                                         foreach (var ppl in player.Table.Players)
                                         {
                                             if (ppl != player)
@@ -367,6 +372,7 @@ namespace pGrServer
                                             }
                                         }
                                         RemoveFromTable(player);
+                                        removeAddplayer.ReleaseMutex();
                                         answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
                                     }
                                     else
@@ -883,6 +889,7 @@ namespace pGrServer
             openTablesAccess = new Mutex();
             file6937Access = new Mutex();
             file6938Access = new Mutex();
+            removeAddplayer = new Mutex();
             loginListener = new TcpListener(IPAddress.Any, (Int32)6937);
             gameListener = new TcpListener(IPAddress.Any, (Int32)6938);
             loggedTokens = new List<string>();
@@ -1060,6 +1067,7 @@ namespace pGrServer
                 // sprawdzaj, czy na kanale od któregoś z graczy pojawiło się zapytanie o włączenie następnego rozdania
                 startNextGame = false;
                 //for (int i = 0; i < table.Players.Count; i++)
+                removeAddplayer.WaitOne();
                 for (int i = table.Players.Count - 1; i >= 0; i--) // odwrotna iteracja, bo usuwam elementy z listy, po której iteruję w tej pętli 
                 {
                     Player p = table.Players[i];
@@ -1087,6 +1095,7 @@ namespace pGrServer
                         RemoveFromTable(p); // usuwanie gracza, którego połączenie się zerwało
                     }
                 }
+                removeAddplayer.ReleaseMutex();
 
                 // Reset gry wołamy dopiero po odebraniu zapytania o kolejne rozdanie
                 // (podczas czekania na kolejne rozdanie mogli dojść nowi gracze (lub opuścić grę), a poprawny reset gry zależy od poprawnej liczby graczy
