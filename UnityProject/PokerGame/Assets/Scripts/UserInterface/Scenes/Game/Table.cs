@@ -306,20 +306,24 @@ public class Table : MonoBehaviour
                             this.leftTableSuccess = true;
                     }
                     else if (splitted[1] == "add") {
+                        if (!this.playersStates.ContainsKey(MyGameManager.Instance.MainPlayer.Nick)) {
+                            Debug.Log("You weren't in the dictionary, let's add you now!");
+                            this.playersStates.Add(MyGameManager.Instance.MainPlayer.Nick, MyGameManager.Instance.MainPlayer);
+                        }
                         Debug.Log("Added player " + splitted[2]);
                         string nick = splitted[2];
                         int tokens = Int32.Parse(splitted[3]);
                         int xp = Int32.Parse(splitted[4]);
                         int seat = Int32.Parse(splitted[5]);
                         PlayerState newPlayer = new PlayerState(nick,null,tokens,0,xp,seat);
-                        PlayerState newPlayer2 = new PlayerState("testowyxd",null,tokens,0,xp,seat+1);
                         Debug.Log("Dictionary size: " + this.playersStates.Count);
                         this.playersStates.Add(newPlayer.Nick, newPlayer);
-                        this.playersStates.Add(newPlayer2.Nick, newPlayer2);
                         Debug.Log("Dictionary size: " + this.playersStates.Count);
                     }
                     else if (splitted[1] == "rem") {
                         this.playersStates.Remove(splitted[2]);
+                        this.resetScene = true;
+                        Debug.Log("Dictionary size: " + this.playersStates.Count);
                     }
                 }
                 

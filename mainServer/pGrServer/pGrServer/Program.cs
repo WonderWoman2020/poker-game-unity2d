@@ -244,6 +244,8 @@ namespace pGrServer
                                             {
                                                 client.Table = table;
                                                 answer = System.Text.Encoding.ASCII.GetBytes("answer 1 0 "); // odpowiedź OK
+                                                client.MenuRequestsStream.Write(answer, 0, answer.Length);
+                                                Thread.Sleep(1000);
                                                 StringBuilder sb = new StringBuilder();
                                                 foreach(var ppl in client.Table.Players)
                                                 {
@@ -266,12 +268,14 @@ namespace pGrServer
                                             {
                                                 client.Table = null;
                                                 answer = System.Text.Encoding.ASCII.GetBytes("answer 1 3 "); // odpowiedź FAILED
+                                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                             }
                                         }
                                         else
                                         {
                                             //Kiedy nie znaleziono
                                             answer = System.Text.Encoding.ASCII.GetBytes("answer 1 2 "); // odpowiedź FAILED
+                                            player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                         }
 
                                     }
@@ -279,14 +283,15 @@ namespace pGrServer
                                     {
                                         //Kiedy juz jestesmy przy stoliku
                                         answer = System.Text.Encoding.ASCII.GetBytes("answer 1 1 "); // odpowiedź FAILED
+                                        player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                     }
                                 }
                                 else
                                 {
                                     answer = System.Text.Encoding.ASCII.GetBytes("answer 1 A "); // za krótki pakiet
+                                    player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                 }
 
-                                player.MenuRequestsStream.Write(answer, 0, answer.Length);
                                 openTablesAccess.ReleaseMutex();
                             }
                             //informacje o stołach
@@ -338,16 +343,16 @@ namespace pGrServer
                                 {
                                     if (!player.Table.isGameActive)
                                     {
-                                        RemoveFromTable(player);
-                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
                                         foreach (var ppl in player.Table.Players)
                                         {
                                             if (ppl != player)
                                             {
-                                                byte[] info = System.Text.Encoding.ASCII.GetBytes("answer rem " + ppl.Nick + " ");
+                                                byte[] info = System.Text.Encoding.ASCII.GetBytes("answer rem " + player.Nick + " ");
                                                 ppl.MenuRequestsStream.Write(info, 0, info.Length);
                                             }
                                         }
+                                        RemoveFromTable(player);
+                                        answer = System.Text.Encoding.ASCII.GetBytes("answer 4 0 "); // odpowiedź OK
                                     }
                                     else
                                     {
