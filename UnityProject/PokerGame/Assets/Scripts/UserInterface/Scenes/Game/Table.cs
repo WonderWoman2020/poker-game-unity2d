@@ -1033,7 +1033,7 @@ public class Table : MonoBehaviour
             {
                 this.nextHandButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
                 this.startGameButton.transform.localScale = Vector3.zero;
-                this.changeSettingsButton.transform.localScale = Vector3.one;
+                this.changeSettingsButton.transform.localScale = Vector3.zero;
             }
             this.quitTableButton.transform.localScale = new Vector3(1.5f, 1.5f, 1.0f);
         }
