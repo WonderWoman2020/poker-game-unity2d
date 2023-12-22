@@ -135,6 +135,8 @@ namespace PokerGameClasses
             bool equalBets = false;
             while (!equalBets)
             {
+                if (CheckIfGameShouldEnd())
+                    break;
                 for (int i = 0; i < roundParticipantsNr; i++)
                 {
                     int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
@@ -173,9 +175,25 @@ namespace PokerGameClasses
                         this.PositionOfPlayerWhoRaised = currentPlayer;//player.SeatNr; // numer miejsca przy stoliku jest tylko na potrzeby ³adnego wyœwietlania gry w Unity
                     }
                 }
-                if (this.CheckIfAllFolded())
-                    break;
+                //if (this.CheckIfAllFolded())
+                //    break;
+                
             }
+        }
+        private bool CheckIfGameShouldEnd()
+        {
+            bool end = false;
+            int remaining = this.gameTable.Players.Count;
+
+            foreach (Player p in this.gameTable.Players)
+            {
+                if (p.Folded || p.AllInMade)
+                    remaining--;
+            }
+            if (remaining <= 1)
+                end = true;
+
+            return end;
         }
 
         private bool CheckIfAllFolded()
