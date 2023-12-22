@@ -135,7 +135,7 @@ namespace PokerGameClasses
             bool equalBets = false;
             while (!equalBets)
             {
-               ¿ if (CheckIfGameShouldEnd())
+               if (CheckIfGameShouldEnd())
                     break;
                 for (int i = 0; i < roundParticipantsNr; i++)
                 {
