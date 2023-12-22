@@ -387,7 +387,7 @@ namespace pGrServer
                                 {
                                     if (client.Table != null)
                                     {
-                                        if (!client.Table.alreadyHasGameThread)
+                                        if (!client.Table.isGameActive)
                                         {
                                             if (valid)
                                             {
@@ -399,6 +399,10 @@ namespace pGrServer
                                                 answear = System.Text.Encoding.ASCII.GetBytes("answer 5 9 "); // odpowiedź Failed
 
                                             }
+                                        }
+                                        else if (!client.Table.isGameActive)
+                                        {
+
                                         }
                                         else
                                         {
