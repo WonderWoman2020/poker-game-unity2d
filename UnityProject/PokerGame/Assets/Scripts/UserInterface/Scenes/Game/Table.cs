@@ -310,15 +310,21 @@ public class Table : MonoBehaviour
                             Debug.Log("You weren't in the dictionary, let's add you now!");
                             this.playersStates.Add(MyGameManager.Instance.MainPlayer.Nick, MyGameManager.Instance.MainPlayer);
                         }
-                        Debug.Log("Added player " + splitted[2]);
+                        Debug.Log("Adding player " + splitted[2]);
                         string nick = splitted[2];
                         int tokens = Int32.Parse(splitted[3]);
                         int xp = Int32.Parse(splitted[4]);
                         int seat = Int32.Parse(splitted[5]);
-                        PlayerState newPlayer = new PlayerState(nick,null,tokens,0,xp,seat);
-                        Debug.Log("Dictionary size: " + this.playersStates.Count);
-                        this.playersStates.Add(newPlayer.Nick, newPlayer);
-                        Debug.Log("Dictionary size: " + this.playersStates.Count);
+                        if (!this.playersStates.ContainsKey(nick)) {
+                            PlayerState newPlayer = new PlayerState(nick,null,tokens,0,xp,seat);
+                            Debug.Log("Dictionary size: " + this.playersStates.Count);
+                            this.playersStates.Add(newPlayer.Nick, newPlayer);
+                            Debug.Log("Dictionary size: " + this.playersStates.Count);
+                            Debug.Log("Added player " + splitted[2]);
+                        }
+                        else {
+                            Debug.Log("Skipped because player " + splitted[2] + " was already in the dictionary");
+                        }
                     }
                     else if (splitted[1] == "rem") {
                         this.playersStates.Remove(splitted[2]);
