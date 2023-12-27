@@ -21,7 +21,7 @@ namespace pGrServer
                 sb.AppendFormat("{0}", Encoding.ASCII.GetString(readBuffer, 0, bytesRead));
 
                 Console.WriteLine("Will return string");
-
+                Program.log6938(sb.ToString());
                 return sb.ToString();
             }
             catch (Exception e)
@@ -38,6 +38,7 @@ namespace pGrServer
             {
                 byte[] message = Encoding.ASCII.GetBytes(data);
                 stream.Write(message, 0, message.Length);
+                Program.log6938(data);
                 stream.Flush();
             }
             catch (Exception e)

@@ -70,7 +70,8 @@ public class SettingsMenu : MonoBehaviour
         while(stopwatch.Elapsed.TotalSeconds < 5 && !mainServer.stream.DataAvailable) {}
         stopwatch.Stop();
         // odbierz odpowied�
-            if(mainServer.stream.DataAvailable){
+        if(mainServer.stream.DataAvailable)
+        {
             byte[] readBuf = new byte[4096];
             StringBuilder menuRequestStr = new StringBuilder();
             int nrbyt = mainServer.stream.Read(readBuf, 0, readBuf.Length);
@@ -87,21 +88,17 @@ public class SettingsMenu : MonoBehaviour
                 ShowPopup("Something went wrong with sending information to the server, please try again later");
                 return;
             }
-            else if (response[0] == "answer 3 0 ")
+            else
             {
                 ShowPopup("Logged out successfuly!");
                 MyGameManager.Instance.MainPlayer = null;
                 SceneManager.LoadScene("MainMenu");
             }
-            else
-            {
-                ShowPopup("Something went wrong, please try again later");
-            }
         }
-        else
-            {
+        else 
+        {
                 ShowPopup("Something went wrong, please try again later");
-            }
+        }
     }
 
     public void OnBackButton()

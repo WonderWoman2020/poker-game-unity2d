@@ -31,7 +31,8 @@ namespace PokerGameClasses
         public void playTheGame()
         {
             //this.ResetGame();
-            Console.WriteLine("Next hand is on");
+            Program.log6938(gameTable.Name + " Next hand is on");
+            //Console.WriteLine("Next hand is on");
             this.gameTable.isGameActive = true;
             this.gameTable.SortPlayersBySeats();
 
@@ -129,15 +130,20 @@ namespace PokerGameClasses
         // ze stolika
         private void MakeTurn(int startingPlayerNr, int roundParticipantsNr)
         {
-            Console.WriteLine("It's round nr " + this.CurrentRound);
+            //Console.WriteLine("It's round nr " + this.CurrentRound);
+            Program.log6938(gameTable.Name + " It's round nr " + this.CurrentRound);
             bool equalBets = false;
             while (!equalBets)
             {
+               if (CheckIfGameShouldEnd())
+                    break;
                 for (int i = 0; i < roundParticipantsNr; i++)
                 {
                     int currentPlayer = (startingPlayerNr + i) % this.gameTable.Players.Count;
-                    Console.WriteLine("It's player's " + currentPlayer + " turn. (" + this.gameTable.Players[currentPlayer].Nick + ", seat: "+ this.gameTable.Players[currentPlayer].SeatNr+")");
-                    Console.WriteLine("Position of player who raised last is: " + this.PositionOfPlayerWhoRaised);
+                    //Console.WriteLine("It's player's " + currentPlayer + " turn. (" + this.gameTable.Players[currentPlayer].Nick + ", seat: "+ this.gameTable.Players[currentPlayer].SeatNr+")");
+                    //Console.WriteLine("Position of player who raised last is: " + this.PositionOfPlayerWhoRaised);
+                    Program.log6938(gameTable.Name + " It's player's " + currentPlayer + " turn. (" + this.gameTable.Players[currentPlayer].Nick + ", seat: " + this.gameTable.Players[currentPlayer].SeatNr + ")");
+                    Program.log6938(gameTable.Name + " Position of player who raised last is: " + this.PositionOfPlayerWhoRaised);
                     if (this.PositionOfPlayerWhoRaised == currentPlayer) // koiec tury, wróciliœmy do ostatniego gracza, który przebi³
                     {
                         equalBets = true;
@@ -152,7 +158,8 @@ namespace PokerGameClasses
                     //rozsy³anie stanu gry do wszystkich graczy przed ka¿dym ruchem
                     foreach (Player p in this.gameTable.Players)
                     {
-                        Console.WriteLine("Trying to send message to player '" + p.Nick + "'");
+                        //Console.WriteLine("Trying to send message to player '" + p.Nick + "'");
+                        Program.log6938(gameTable.Name + " Trying to send message to player '" + p.Nick + "'");
                         NetworkHelper.WriteNetworkStream(p.GameRequestsStream, this.MessageGameState(player, p, false));
                         //Console.WriteLine("Message sent to " + p.Nick + " was:\n" + this.MessageGameState(player, p, false));
                     }
@@ -168,9 +175,25 @@ namespace PokerGameClasses
                         this.PositionOfPlayerWhoRaised = currentPlayer;//player.SeatNr; // numer miejsca przy stoliku jest tylko na potrzeby ³adnego wyœwietlania gry w Unity
                     }
                 }
-                if (this.CheckIfAllFolded())
-                    break;
+                //if (this.CheckIfAllFolded())
+                //    break;
+                
             }
+        }
+        private bool CheckIfGameShouldEnd()
+        {
+            bool end = false;
+            int remaining = this.gameTable.Players.Count;
+
+            foreach (Player p in this.gameTable.Players)
+            {
+                if (p.Folded || p.AllInMade)
+                    remaining--;
+            }
+            if (remaining <= 1)
+                end = true;
+
+            return end;
         }
 
         private bool CheckIfAllFolded()
@@ -285,7 +308,8 @@ namespace PokerGameClasses
                 CardsCollection PlayerCards = player.PlayerHand + gameTable.shownHelpingCards;
                 PlayerCards.SortDesc();
                 PlayerCards.SortDesc();
-                Console.WriteLine(PlayerCards);
+                //Console.WriteLine(PlayerCards);
+                Program.log6938(player.Nick + " " + PlayerCards);
                 int playerScore = handsComparer.valueOfCards(PlayerCards);
                 if (playerScore < biggestScore)
                 {
