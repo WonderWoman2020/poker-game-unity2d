@@ -2484,6 +2484,7 @@ GameObject:
   - component: {fileID: 994241595}
   - component: {fileID: 994241594}
   - component: {fileID: 994241599}
+  - component: {fileID: 994241600}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2590,6 +2591,23 @@ MonoBehaviour:
   newPasswordField: {fileID: 1809471864}
   confirmPasswordField: {fileID: 2113803700}
   PopupWindow: {fileID: 7093573349336429343, guid: 3520195338085c141b9317b5811dbbcf, type: 3}
+--- !u!114 &994241600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994241593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7a7d53dd535406429f2e5ad98ff9ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fields:
+  - {fileID: 683988135}
+  - {fileID: 704048723}
+  - {fileID: 1809471864}
+  - {fileID: 2113803700}
 --- !u!1 &1111787381
 GameObject:
   m_ObjectHideFlags: 0
