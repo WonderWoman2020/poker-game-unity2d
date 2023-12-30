@@ -50,6 +50,10 @@ public class Table : MonoBehaviour
     [SerializeField]
     private CanvasRenderer menuCanvas;
 
+    // Obiekt menu po nacisnieciu Esc
+    [SerializeField]
+    private CanvasRenderer escCanvas;
+
     // Lista sprite'�w kart, z kt�rej wybieramy odpowiedni
     // sprite do przypisania do GameObject'u karty gracza
     [SerializeField]
@@ -122,7 +126,7 @@ public class Table : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        escCanvas.transform.localScale = Vector3.zero;
         ShowMenu(false); //zakrycie MENU na start
         //ShowMenu(true);
         if (MyGameManager.Instance.MainPlayer == null)
@@ -1022,6 +1026,7 @@ public class Table : MonoBehaviour
         // Pokazywanie/chowanie przycisku 'start game', 'next hand', 'quit Table' i 'Table settings' 
         if (this.isGameOn)
         {
+            this.escCanvas.transform.localScale = Vector3.zero;
             this.nextHandButton.transform.localScale = Vector3.zero;
             this.startGameButton.transform.localScale = Vector3.zero;
             this.quitTableButton.transform.localScale = Vector3.zero;
@@ -1067,6 +1072,28 @@ public class Table : MonoBehaviour
             SceneManager.LoadScene("TableSettings");
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isGameOn==false)
+            {
+                escCanvas.transform.localScale = Vector3.one;
+            }
+            else
+            {
+                ShowPopup("You can't leave the game while it's still ongoing!");
+            }
+        }
+    }
+
+    public void OnYesButton()
+    {
+        onQuitTableButton();
+        escCanvas.transform.localScale = Vector3.zero;
+    }
+
+    public void OnNoButton()
+    {
+        escCanvas.transform.localScale = Vector3.zero;
     }
 
     // Wczytanie stawki z pola input 'Bid'

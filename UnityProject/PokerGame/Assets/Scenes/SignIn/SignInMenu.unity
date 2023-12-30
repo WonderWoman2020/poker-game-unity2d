@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 994241595}
   - component: {fileID: 994241594}
   - component: {fileID: 994241598}
+  - component: {fileID: 994241599}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -256,6 +257,19 @@ MonoBehaviour:
   exitToMenuButton: {fileID: 716606195}
   loginButton: {fileID: 1571997390}
   registerButton: {fileID: 1694380610}
+--- !u!114 &994241599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994241593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17cc87dc98aedc144bc6015883fd2952, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scene: MainMenu
 --- !u!82 &1063706527 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 6277327518735016961, guid: d090c7dea4d6589429cf5e43f80b97ce, type: 3}

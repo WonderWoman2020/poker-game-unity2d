@@ -21,15 +21,15 @@ public class GUIManager : MonoBehaviour
     void Update()
     {
         // Jeœli w którymœ ekranie zostanie naciœniêty 'Esc', wy³¹czy aplikacjê
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            // ¯eby dzia³a³o te¿ w edytorze Unity (dla dewelopera)
-            #if UNITY_EDITOR
-                    UnityEditor.EditorApplication.isPlaying = false;
-            #endif
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    // ¯eby dzia³a³o te¿ w edytorze Unity (dla dewelopera)
+        //    #if UNITY_EDITOR
+        //            UnityEditor.EditorApplication.isPlaying = false;
+        //    #endif
 
-            // ¯eby dzia³a³o w zbudowanej wersji gry
-            Application.Quit();
-        }
+        //    // ¯eby dzia³a³o w zbudowanej wersji gry
+        //    Application.Quit();
+        //}
     }
 }
